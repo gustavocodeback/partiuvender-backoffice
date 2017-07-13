@@ -1,0 +1,22 @@
+{
+  "name": "backoffice",
+  "authors": [
+    "Gustavo Vilas Boas <gu.boas13@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "assets",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vue": "^2.3.4",
+    "bootstrap": "^3.3.7"
+  }
+}

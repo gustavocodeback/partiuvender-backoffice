@@ -1,0 +1,22 @@
+body {
+    background: #f1f1f1;
+}
+#wrapper {
+    height: 100vh;
+    width: calc( 100vw - 250px );
+    left: 250px;
+    position: absolute;
+    top: 0px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+    #wrapper {
+        width: 100%;
+        left: 0px;
+    }
+}

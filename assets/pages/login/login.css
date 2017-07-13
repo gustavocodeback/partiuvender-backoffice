@@ -1,0 +1,11 @@
+.right-panel {
+    height: 100vh;
+    background: url( ../../../images/background.jpg );
+    background-position: center;
+    background-size: cover;
+}
+
+#login-form {
+    height: 500px;
+    margin-top: calc( 50vh - 250px );
+}

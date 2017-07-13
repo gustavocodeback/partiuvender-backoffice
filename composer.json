@@ -1,0 +1,12 @@
+{
+    "name": "codeback/neotass-dashboard",
+    "authors": [
+        {
+            "name": "Gustavo Vilas Boas",
+            "email": "gu.boas13@gmail.com"
+        }
+    ],
+    "require": {
+        "phpclasses/simple-xlsx": ">=0.7.1"
+    }
+}

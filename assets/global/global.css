@@ -1,0 +1,81 @@
+* {
+    font-family: 'Varela Round', sans-serif;
+}
+
+.fade-in {
+    opacity: 0;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+body {
+    background: #F7FAFF;
+}
+#wrapper {
+    height: 100vh;
+    width: calc( 100vw - 250px );
+    left: 250px;
+    position: absolute;
+    top: 0px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background: #F7FAFF;    
+}
+
+.container {
+  max-width: calc( 100vw - 300px );
+}
+.margin {
+  margin: 5px;
+}
+
+.btn-primary {
+  background: #1429A0 !important;
+  border-color: #1429A0 !important;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+    #wrapper {
+        width: 100%;
+        left: 0px;
+    }
+    .container {
+      max-width: 100%;
+    }
+}
+
+
+.z-depth-0 {
+  box-shadow: none !important;
+}
+
+.z-depth-1 {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+
+.z-depth-1-half {
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2);
+}
+
+.z-depth-2 {
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+.z-depth-3 {
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.3);
+}
+
+.z-depth-4, .modal {
+  box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3);
+}
+
+.z-depth-5 {
+  box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.3);
+}
