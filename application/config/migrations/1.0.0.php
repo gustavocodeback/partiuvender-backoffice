@@ -295,10 +295,6 @@ $config['schema']['Questionarios'] = [
         'type'       => 'varchar',
         'constraint' => '50',
         'null'       => true
-    ],
-    'Minimo' => [
-        'type'       => 'int',
-        'constraint' => '11'
     ]
 ];
 

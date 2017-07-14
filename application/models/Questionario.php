@@ -11,9 +11,6 @@ class Questionario extends MY_Model {
     // foto
     public $foto;
 
-    // valor minimo
-    public $minimo;
-
     // descricao
     public $descricao;
 
@@ -53,13 +50,7 @@ class Questionario extends MY_Model {
         $this->foto = $foto;
         return $this;        
     }
-
-    // minimo
-    public function setMinimo( $min ) {
-        $this->minimo = $min;
-        return $this;
-    }
-
+    
     // descricao
     public function setDescricao( $desc ) {
         $this->descricao = $desc;

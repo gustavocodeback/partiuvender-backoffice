@@ -13,10 +13,6 @@ class Api extends MY_Controller {
     */
     public function __construct() {
         parent::__construct();
-
-        // seta o header
-        header( 'Access-Control-Allow-Origin: *' );
-
         // adiciona o json ao post
         $data = json_decode(file_get_contents('php://input'), true);
         if ( $data ) $_POST = $data; 
@@ -195,10 +191,13 @@ class Api extends MY_Controller {
             $tot = 0;
 
             // percorre as perguntas
-            foreach( $perguntas as $pergunta ) {
-                $sum += $pergunta->pontos;
-                $tot++;
+            if ( is_array( $perguntas ) ) {
+                foreach( $perguntas as $pergunta ) {
+                    $sum += $pergunta->pontos;
+                    $tot++;
+                }
             }
+            
 
             // volta os dados formatados
             return  [ 

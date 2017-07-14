@@ -86,8 +86,7 @@ $config['Log'] = [
 $config['Questionario'] = [
     'descricao' => 'Descricao',
     'nome'      => 'Nome',
-    'foto'      => 'Foto',
-    'minimo'    => 'Minimo'
+    'foto'      => 'Foto'
 ];
 
 $config['Pergunta'] = [
