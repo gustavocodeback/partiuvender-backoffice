@@ -36,7 +36,6 @@
                             class="form-control cnpj" 
                             id="cnpj" 
                             name="cnpj" 
-                            required
                             value="<?php echo $loja ? mascara_cnpj( $loja->cnpj ) : ''; ?>"
                             placeholder="99.999.999/9999-99">
                 </div>
@@ -103,7 +102,6 @@
                             class="form-control" 
                             id="bairro" 
                             name="bairro" 
-                            required
                             value="<?php echo $loja ? $loja->bairro : ''; ?>"
                             placeholder="Bairro">
                 </div>
@@ -119,7 +117,6 @@
                             class="form-control" 
                             id="endereco" 
                             name="endereco" 
-                            required
                             value="<?php echo $loja ? $loja->endereco : ''; ?>"
                             placeholder="Rua das Laranjeiras">
                 </div>
@@ -131,7 +128,6 @@
                             class="form-control" 
                             id="numero" 
                             name="numero" 
-                            required
                             value="<?php echo $loja ? $loja->numero : ''; ?>"
                             placeholder="99">
                 </div>
@@ -144,7 +140,6 @@
                             class="form-control" 
                             id="complemento" 
                             name="complemento" 
-                            required
                             value="<?php echo $loja ? $loja->complemento : ''; ?>"
                             placeholder="Rua das Laranjeiras">
                 </div>

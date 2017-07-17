@@ -38,7 +38,7 @@ class Lojas extends MY_Controller {
             ], [
                 'field' => 'cnpj',
                 'label' => 'CNPJ',
-                'rules' => 'required|min_length[18]|max_length[18]|trim'
+                'rules' => 'min_length[18]|max_length[18]|trim'
             ], [
                 'field' => 'razao',
                 'label' => 'Razao',
@@ -50,27 +50,27 @@ class Lojas extends MY_Controller {
             ], [
                 'field' => 'endereco',
                 'label' => 'Endereco',
-                'rules' => 'required|min_length[3]|max_length[50]|trim'
+                'rules' => 'min_length[3]|max_length[50]|trim'
             ], [
                 'field' => 'numero',
                 'label' => 'Numero',
-                'rules' => 'required|min_length[1]|max_length[5]|trim'
+                'rules' => 'min_length[1]|max_length[5]|trim'
             ], [
                 'field' => 'complemento',
                 'label' => 'Complemento',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
+                'rules' => 'min_length[3]|max_length[32]|trim'
             ], [
                 'field' => 'bairro',
                 'label' => 'Bairro',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
+                'rules' => 'min_length[3]|max_length[32]|trim'
             ], [
                 'field' => 'cidade',
                 'label' => 'Cidade',
-                'rules' => 'required|min_length[1]|trim'
+                'rules' => 'min_length[1]|trim'
             ], [
                 'field' => 'estado',
                 'label' => 'Estado',
-                'rules' => 'required|min_length[1]|trim'
+                'rules' => 'min_length[1]|trim'
             ]
         ];
 
