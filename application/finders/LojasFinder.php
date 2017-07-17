@@ -18,7 +18,7 @@ class LojasFinder extends MY_Model {
         'Cluster' => 'Cluster',
         'CNPJ' => 'CNPJ',
         'Razao' => 'Razao',
-        'Nome' => 'Nome',
+        'l.Nome' => 'Nome',
         'Endereco' => 'Endereco',
         'Numero' => 'Numero',
         'Complemento' => 'Complemento',
