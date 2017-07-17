@@ -67,6 +67,7 @@ $config['Categoria'] = [
 ];
 
 $config['Produto'] = [
+    'basiccode' => 'BasicCode',
     'nome'      => 'Nome',
     'categoria' => 'CodCategoria',
     'descricao' => 'Descricao',

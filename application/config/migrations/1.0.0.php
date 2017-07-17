@@ -233,6 +233,10 @@ $config['schema']['Produtos'] = [
         'primary_key'    => TRUE,
         'auto_increment' => TRUE,
     ],
+    'BasicCode' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
     'Nome' => [
         'type'       => 'varchar',
         'constraint' => '255'

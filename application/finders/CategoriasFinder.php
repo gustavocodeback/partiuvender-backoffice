@@ -50,6 +50,11 @@ class CategoriasFinder extends MY_Model {
         ->select( 'CodCategoria as Código, Nome, Foto, CodCategoria as Ações' );
         return $this;
     }
+
+    public function nome( $nome ) {
+        $this->where( " Nome = '$nome' " );
+        return $this;
+    }
 }
 
 /* end of file */

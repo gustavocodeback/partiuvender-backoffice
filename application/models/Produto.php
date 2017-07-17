@@ -4,6 +4,9 @@ class Produto extends MY_Model {
 
     // id do estado
     public $CodProduto;
+    
+    // basiccode
+    public $basiccode;
 
     // nome
     public $nome;
@@ -44,6 +47,11 @@ class Produto extends MY_Model {
     
     public function setCod( $cod ) {
         $this->CodProduto = $cod;
+    }
+
+    // basiccode
+    public function setBasicCode( $basiccode ) {
+        $this->basiccode = $basiccode;
     }
 
     // nome

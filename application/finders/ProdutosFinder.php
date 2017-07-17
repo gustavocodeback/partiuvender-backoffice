@@ -65,6 +65,11 @@ class ProdutosFinder extends MY_Model {
         // seta o where
         $this->where( " CodCategoria = $CodCategoria " );
         return $this;
+    }    
+    
+    public function basicCode( $basiccode ) {
+        $this->where( " BasicCode = '$basiccode' " );
+        return $this;
     }
 }
 

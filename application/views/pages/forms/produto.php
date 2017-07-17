@@ -16,6 +16,21 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
+                    <label for="basiccode">Basic Code</label>
+                    <input  type="text" 
+                            class="form-control" 
+                            id="basiccode" 
+                            name="basiccode" 
+                            required
+                            value="<?php echo $produto ? $produto->basiccode : ''; ?>"
+                            placeholder="CODE001">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
                     <label for="nome">Nome</label>
                     <input  type="text" 
                             class="form-control" 

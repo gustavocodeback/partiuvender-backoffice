@@ -35,6 +35,10 @@ class Produtos extends MY_Controller {
         // seta as regras
         $rules = [
             [
+                'field' => 'basiccode',
+                'label' => 'BasicCode',
+                'rules' => 'required'
+            ], [
                 'field' => 'nome',
                 'label' => 'Nome',
                 'rules' => 'required|min_length[3]|max_length[32]|trim'
@@ -79,7 +83,9 @@ class Produtos extends MY_Controller {
 
         // seta as funcoes nas colunas
 		->onApply( 'Foto', function( $row, $key ) {
-			echo '<img src="'.base_url( 'uploads/'.$row[$key] ).'" style="width: 50px; height: 50px;">';
+            if( $row[$key] )
+			    echo '<img src="'.base_url( 'uploads/'.$row[$key] ).'" style="width: 50px; height: 50px;">';
+            else echo 'Sem Foto';
 		})
 
 		// renderiza o grid
@@ -87,6 +93,10 @@ class Produtos extends MY_Controller {
 		
         // seta a url para adiciona
         $this->view->set( 'add_url', site_url( 'produtos/adicionar' ) );
+
+        // seta a url para adiciona
+        $this->view->set( 'add_url', site_url( 'produtos/adicionar' ) )
+        ->set( 'import_url', site_url( 'produtos/importar_planilha' ) );
 
 		// seta o titulo da pagina
 		$this->view->setTitle( 'Produtos - listagem' )->render( 'grid' );
@@ -168,6 +178,7 @@ class Produtos extends MY_Controller {
             $produto = $this->ProdutosFinder->getProduto();
         }
 
+        $produto->setBasicCode( $this->input->post( 'basiccode' ) );
         $produto->setNome( $this->input->post( 'nome' ) );
         $produto->setCategoria( $this->input->post( 'categoria' ) );
         $produto->setDescricao( $this->input->post( 'descricao' ) );
@@ -210,4 +221,170 @@ class Produtos extends MY_Controller {
             redirect( site_url( 'produtos/index' ) );
         }
     }
+    
+   /**
+    * verificaEntidade
+    *
+    * verifica se um entidade existe no banco
+    *
+    */
+    public function verificaEntidade( $finder, $method, $dado, $nome, $planilha, $linha, $attr, $status ) {
+
+        // carrega o finder de logs
+        $this->load->finder( 'LogsFinder' );
+
+        // verifica se nao esta vazio
+        if ( in_cell( $dado ) ) {
+
+            // carrega o finder
+            $this->load->finder( $finder );
+
+            // pega a entidade
+            if ( $entidade = $this->$finder->clean()->$method( $dado )->get( true ) ) {
+                return $entidade->$attr;
+            } else {
+
+                // grava o log
+                $this->LogsFinder->getLog()
+                ->setEntidade( $planilha )
+                ->setPlanilha( $this->planilhas->filename )
+                ->setMensagem( 'O campo '.$nome.' com valor '.$dado.' nao esta gravado no banco - linha '.$linha )
+                ->setData( date( 'Y-m-d H:i:s', time() ) )
+                ->setStatus( $status )
+                ->save();
+
+                // retorna falso
+                return null;
+            }
+        } else {
+
+            // grava o log
+            $this->LogsFinder->getLog()
+            ->setEntidade( $planilha )
+            ->setPlanilha( $this->planilhas->filename )
+            ->setMensagem( 'Nenhum '.$nome.' encontrado - linha '.$linha )
+            ->setData( date( 'Y-m-d H:i:s', time() ) )
+            ->setStatus( $status )            
+            ->save();
+
+            // retorna falso
+            return null;
+        }
+    }
+    
+   /**
+    * importar_linha
+    *
+    * importa a linha
+    *
+    */
+    public function importar_linha( $linha, $num ) {
+
+        // percorre todos os campos
+        foreach( $linha as $chave => $coluna ) {
+            $linha[$chave] = in_cell( $linha[$chave] ) ? $linha[$chave] : null;
+        }
+
+        // pega as entidades relacionaveis
+        $linha['CodCategoria'] = $this->verificaEntidade( 'CategoriasFinder', 'nome', $linha['CATEGORIA'], 'Categorias', 'Produtos', $num, 'CodCategoria', 'I' );
+
+        // verifica se existe os campos
+        if ( !in_cell( $linha['CATEGORIA'] ) || !in_cell( $linha['BASICCODE'] ) || !in_cell( $linha['PRODUTO'] ) || !in_cell( $linha['PONTOS']) ) {
+            
+            if ( !in_cell( $linha['CATEGORIA'] ) ) $erro = 'Categoria';
+            if ( !in_cell( $linha['BASICCODE'] ) ) {
+                if( $erro ) $erro .= ', Basic Code';
+                else $erro = 'Basic Code';
+            }
+            if ( !in_cell( $linha['PRODUTO'] ) ) {
+                if( $erro ) $erro .= ', Produto';
+                else $erro = 'Produto';
+            }
+            if ( !in_cell( $linha['PONTOS'] ) ) {
+                if( $erro ) $erro .= ', Pontos';
+                else $erro = 'Pontos';
+            }
+
+            // grava o log
+            $this->LogsFinder->getLog()
+            ->setEntidade( 'Produtos' )
+            ->setPlanilha( $this->planilhas->filename )
+            ->setMensagem( 'Não foi possivel inserir a loja pois nenhum '. $erro .' foi informado - linha '.$num )
+            ->setData( date( 'Y-m-d H:i:s', time() ) )
+            ->setStatus( 'B' )            
+            ->save();
+
+        } else {
+
+            // tenta carregar a loja pelo nome
+            $produto = $this->ProdutosFinder->clean()->basicCode( $linha['BASICCODE'] )->get( true );
+
+            // verifica se carregou
+            if ( !$produto ) $produto = $this->ProdutosFinder->getProduto();
+
+            // preenche os dados
+            
+            $produto->setBasicCode( $linha['BASICCODE'] );
+            $produto->setNome( $linha['PRODUTO'] );
+            $produto->setCategoria( $linha['CodCategoria'] );
+            $produto->setPontos( $linha['PONTOS'] );
+            $produto->setDescricao( null );
+            $produto->setVideo( null );
+            
+            // tenta salvar a loja
+            if ( $produto->save() ) {
+
+                // grava o log
+                $this->LogsFinder->getLog()
+                ->setEntidade( 'Produtos' )
+                ->setPlanilha( $this->planilhas->filename )
+                ->setMensagem( 'Produto criado com sucesso - '.$num )
+                ->setData( date( 'Y-m-d H:i:s', time() ) )
+                ->setStatus( 'S' )            
+                ->save();
+
+            } else {
+
+                // grava o log
+                $this->LogsFinder->getLog()
+                ->setEntidade( 'Produtos' )
+                ->setPlanilha( $this->planilhas->filename )
+                ->setMensagem( 'Não foi possivel inserir o produto - linha '.$num )
+                ->setData( date( 'Y-m-d H:i:s', time() ) )
+                ->setStatus( 'B' )            
+                ->save();
+            }
+        }
+    }
+    
+   /**
+    * importar_planilha
+    *
+    * importa os dados de uma planilha
+    *
+    */
+    public function importar_planilha() {
+
+        // importa a planilha
+        $this->load->library( 'Planilhas' );
+
+        // faz o upload da planilha
+        $planilha = $this->planilhas->upload();
+
+        // tenta fazer o upload
+        if ( !$planilha ) {
+            // seta os erros
+            $this->view->set( 'errors', $this->planilhas->errors );
+        } else {
+            $planilha->apply( function( $linha, $num ) {
+                $this->importar_linha( $linha, $num );
+            });
+            $planilha->excluir();
+        }
+
+        // carrega a view
+        $this->index();
+    }
+
 }
+
