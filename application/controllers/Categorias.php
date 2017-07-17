@@ -71,7 +71,10 @@ class Categorias extends MY_Controller {
 
         // seta as funcoes nas colunas
 		->onApply( 'Foto', function( $row, $key ) {
-			echo '<img src="'.base_url( 'uploads/'.$row[$key] ).'" style="width: 50px; height: 50px;">';
+            if( $row[$key] )
+			    echo '<img src="'.base_url( 'uploads/'.$row[$key] ).'" style="width: 50px; height: 50px;">';
+            else
+                echo 'Sem Foto';
 		})
 
 		// renderiza o grid
@@ -131,6 +134,7 @@ class Categorias extends MY_Controller {
         $this->picture->delete( $categoria->foto );
         $categoria->delete();
         $this->index();
+        redirect( 'categorias/index' );
     }
 
    /**
@@ -150,25 +154,21 @@ class Categorias extends MY_Controller {
 
             // instancia um novo objeto grpo
             $categoria = $this->CategoriasFinder->getCategoria();
+            $categoria->setFoto( null );
         }
 
         $categoria->setNome( $this->input->post( 'nome' ) );
         $categoria->setCod( $this->input->post( 'cod' ) );
 
-        if( !$file_name && !$categoria->foto ) {
-            $this->view->set( 'categoria', $categoria );
-            $this->view->set( 'errors', 'Escolha uma foto!' );
-            return;
-        }
-
         if ( $file_name ) {
+            
             $this->picture->delete( $categoria->foto );
             $categoria->setFoto( $file_name );
         }
 
         // verifica se o formulario é valido
         if ( !$this->_formularioCategorias() ) {
-
+        
             // seta os erros de validacao            
             $this->view->set( 'categoria', $categoria );
             $this->view->set( 'errors', validation_errors() );
@@ -180,6 +180,7 @@ class Categorias extends MY_Controller {
 
         // verifica se o dado foi salvo
         if ( $categoria->save() ) {
+            
             redirect( site_url( 'categorias/index' ) );
         }
     }
