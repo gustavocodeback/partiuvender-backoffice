@@ -70,6 +70,17 @@ class FuncionariosFinder extends MY_Model {
         $this->where( " CPF = $cpf" );
         return $this;
     }
+
+    /**
+    * uid
+    *
+    * filtra pelo uid
+    *
+    */
+    public function uid( $uid ) {
+        $this->where( " UID = '$uid'" );
+        return $this;
+    }
 }
 
 /* end of file */

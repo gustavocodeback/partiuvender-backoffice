@@ -101,9 +101,10 @@ $config['Pergunta'] = [
     'alternativa4' => 'Alternativa4',
 ];
 
-$config['Alternativa'] = [
-    'pergunta' => 'CodPergunta',
-    'texto'    => 'Texto'
+$config['Resposta'] = [
+    'usuario'     => 'CodUsuario',
+    'pergunta'    => 'CodPergunta',
+    'alternativa' => 'Alternativa',
 ];
 
 /* end of file */

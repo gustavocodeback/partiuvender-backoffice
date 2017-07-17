@@ -6,11 +6,11 @@ class Api extends MY_Controller {
 	protected $public = true;
 
    /**
-    * __construct
-    *
-    * metodo construtor
-    *
-    */
+     * __construct
+     *
+     * metodo construtor
+     *
+     */
     public function __construct() {
         parent::__construct();
         // adiciona o json ao post
@@ -21,12 +21,18 @@ class Api extends MY_Controller {
         $this->load->library( [ 'Response', 'Request' ] );
     }
 
+    /**  -----------------------------------------------------------
+     * 
+     * METODOS DE LOGIN
+     *
+     * --------------------------------------------------------------- */
+
     /**
-    * verificar_cpf
-    *
-    * verifica se existe um cpf para o usuario digitado
-    *
-    */
+     * verificar_cpf
+     *
+     * verifica se existe um cpf para o usuario digitado
+     *
+     */
     public function verificar_cpf( $cpf ) {
 
         // carrega os finders
@@ -49,12 +55,12 @@ class Api extends MY_Controller {
         return $this->response->resolve( $data );
     }
 
-   /**
-    * salvar_uid
-    *
-    * salva um uid para um cpf
-    *
-    */
+    /**
+     * salvar_uid
+     *
+     * salva um uid para um cpf
+     *
+     */
     public function salvar_uid( $cpf ) {
 
         // carrega os finders
@@ -87,12 +93,18 @@ class Api extends MY_Controller {
         } else return $this->response->reject( 'Houve um erro ao tentar salvar o UID desse funcionário.' );
     }
 
-   /**
-    * obter_produtos_categoria
-    *
-    * busca os produtos de uma determinada categoria
-    *
-    */
+    /**  -----------------------------------------------------------
+     * 
+     * METODOS DE PRODUTOS
+     *
+     * --------------------------------------------------------------- */
+
+    /**
+     * obter_produtos_categoria
+     *
+     * busca os produtos de uma determinada categoria
+     *
+     */
     public function obter_produtos_categoria( $CodCategoria, $indice ) {
 
         // carrega o finder
@@ -127,12 +139,12 @@ class Api extends MY_Controller {
         return $this->response->resolve( $produtos );
     }
 
-   /**
-    * obter_categorias
-    *
-    * busca todas categorias
-    *
-    */
+    /**
+     * obter_categorias
+     *
+     * busca todas categorias
+     *
+     */
     public function obter_categorias() {
 
         // carrega o finder
@@ -162,12 +174,18 @@ class Api extends MY_Controller {
         return $this->response->resolve( $categorias );
     }
 
-   /**
-    * obter_questionarios
-    *
-    * lista os questionarios
-    *
-    */
+    /**  -----------------------------------------------------------
+     * 
+     * METODOS DE QUIZ
+     *
+     * --------------------------------------------------------------- */
+
+    /**
+     * obter_questionarios
+     *
+     * lista os questionarios
+     *
+     */
     public function obter_questionarios( $indice ) {
 
         // carrega o finder
@@ -207,6 +225,7 @@ class Api extends MY_Controller {
                         'Descricao'       => $questionario->descricao,
                         'Pontos'          => $sum,
                         'Total'           => $tot,
+                        'Encerrado'       => $questionario->encerrado( $this->request->user()->CodFuncionario ),
                         'Acertadas'       => rand( 0, $tot )
                     ];
         }, $questionarios );
@@ -215,35 +234,203 @@ class Api extends MY_Controller {
     }
 
     /**
-    * obter_questionarios
-    *
-    * lista os questionarios
-    *
-    */
+     * obter_questionarios
+     *
+     * lista os questionarios
+     *
+     */
     public function obter_perguntas( $quiz ) {
 
         // carrega o finder
-        $this->load->finder( [ 'QuestionariosFinder' ] );
+        $this->load->finder( [ 'PerguntasFinder' ] );
 
         // carrega os produtos da categoria
-        $questionarios = $this->QuestionariosFinder
-		->quis( $quiz )->get();
+        $perguntas = $this->PerguntasFinder
+		->quiz( $quiz )->get();
 
         // verifica se existem questionarios
-        if ( count( $questionarios ) == 0 ) {
+        if ( count( $perguntas ) == 0 ) {
             return $this->response->resolve( [] );
         }
 
         // faz o mapeamento das cidades
-        $questionarios = array_map( function( $questionario ) {
+        $perguntas = array_map( function( $perguntas ) {
             return  [ 
-                        'CodQuestionario' => $questionario->CodQuestionario, 
-                        'Nome'            => $questionario->nome,
-                        'Foto'            => base_url( 'uploads/' .$questionario->foto ),                        
-                        'Descricao'       => $questionario->descricao
+                        'CodPergunta'     => $perguntas->CodPergunta, 
+                        'Texto'           => $perguntas->texto,
+                        'Alternativa1'    => $perguntas->alternativa1,                        
+                        'Alternativa2'    => $perguntas->alternativa2,                        
+                        'Alternativa3'    => $perguntas->alternativa3,                        
+                        'Alternativa4'    => $perguntas->alternativa4,
+                        'Respondida'      => $perguntas->respondida( $this->request->user()->CodFuncionario )
                     ];
-        }, $questionarios );
+        }, $perguntas );
 
-        return $this->response->resolve( $questionarios );
+        // volta as perguntas
+        return $this->response->resolve( $perguntas );
     }
+
+    /**
+     * responder_pergunta
+     *
+     * responde uma pergunta
+     *
+     */
+    public function responder_pergunta( $id ) {
+
+        // carrega os finders
+        $this->load->finder( [ 'RespostasFinder', 'PerguntasFinder' ] );
+
+        // carrega a pergunta
+        $pergunta = $this->PerguntasFinder->key( $id )->get( true );
+        if ( !$pergunta ) return $this->response->reject( 'A pergunta nao existe' );
+
+        // pega a alternativa
+        $alternativa = $this->input->post( 'resposta' );
+        if ( !in_array( $alternativa, [ 1, 2, 3, 4 ] ) ) return $this->response->reject( 'Alternativa inexistente' );
+
+        // carrega a resposta
+        $resposta = $this->RespostasFinder->clean()
+                    ->func( $this->request->user()->CodFuncionario )
+                    ->pergunta( $pergunta->CodPergunta )
+                    ->get( true );
+
+        // verifica se ja existe uma resposta
+        if ( $resposta ) return $this->response->reject( 'Usuario já respondeu a essa pergunta' );
+
+        // prepara a resposta
+        $resposta = $this->RespostasFinder->getResposta();
+        $resposta->setUsuario( $this->request->user()->CodFuncionario )
+        ->setPergunta( $pergunta->CodPergunta )
+        ->setAlternativa( $alternativa );
+
+        // salva a resposta
+        if ( $resposta->save() ) {
+            return $this->response->resolve( 'Resposta registrada com sucesso' );
+        } else {
+            return $this->response->reject( 'Erro ao salvar a resposta.' );
+        }
+    }
+
+    /**
+     * encerrar_questionario
+     *
+     * encerra um questionario
+     *
+     */
+    public function encerrar_questionario( $id ) {
+
+        // carrega o finder
+        $this->load->finder( [ 'QuestionariosFinder', 'PerguntasFinder' ] );
+
+        // carrega o questionario
+        $questionario = $this->QuestionariosFinder->clean()->key( $id )->get( true );
+        if ( !$questionario ) return $this->response->reject( 'Questionario inexistente' );
+
+        // verifica se o mesmo ja nao foi encerrado
+        if ( $questionario->encerrado(  $this->request->user()->CodFuncionario  ) ) {
+            $this->response->reject( 'Este quiz ja foi encerrado' );
+        } else {
+
+            // fecha o questionario
+            if ( $questionario->encerrar( $this->request->user()->CodFuncionario ) ) {
+
+                // carrega os produtos da categoria
+                $perguntas = $this->PerguntasFinder->quiz( $questionario->CodQuestionario )->get();
+
+                // total
+                $sum = 0;
+
+                // percorre as perguntas
+                foreach( $perguntas as $pergunta ) {
+
+                    // verifica se esta correta
+                    if ( $pergunta->correta( $this->request->user()->CodFuncionario ) ) {
+                        $sum += $pergunta->pontos;
+                    }
+                }
+
+                // carrega o funcionario
+                $func = $this->FuncionariosFinder->clean()->key( $this->request->user()->CodFuncionario )->get( true );
+                $sum += $func->pontos;
+
+                // seta os pontos
+                $func->setPontos( $sum );
+                $func->save();
+
+                // exibe o resultado
+                $this->response->resolve( 'Questionario fechado.' );    
+            } else return $this->response->reject( 'Erro ao encerrar o quis' );
+        }
+    }
+
+    /**
+     * obter_gabarito
+     *
+     * mostra o gabarito de um questionario
+     *
+     */
+    public function obter_gabarito( $id ) {
+        
+        // carrega o finder
+        $this->load->finder( [ 'QuestionariosFinder', 'PerguntasFinder' ] );
+
+        // carrega o questionario
+        $questionario = $this->QuestionariosFinder->clean()->key( $id )->get( true );
+        if ( !$questionario ) return $this->response->reject( 'Questionario inexistente' );
+
+        // verifica se o questionario foi encerrado
+        if ( !$questionario->encerrado( $this->request->user()->CodFuncionario ) )
+            return $this->response->reject( 'Questionario nao finalizado' );
+
+        // pega as perguntas
+        $perguntas = $this->PerguntasFinder->clean()->quiz( $id )->get();
+
+        // verifica se existem questionarios
+        if ( count( $perguntas ) == 0 ) return $this->response->resolve( [] );
+        
+        // faz o mapeamento
+        $perguntas = array_map( function ( $pergunta ) {
+            $indice = 'alternativa'.$pergunta->resposta;
+            return [
+                'Status'        => $pergunta->correta( $this->request->user()->CodFuncionario ),
+                'Texto'         => $pergunta->texto,
+                'Resposta'      => $pergunta->resposta,
+                'TextoResposta' => $pergunta->$indice
+            ];
+        }, $perguntas );
+
+        // volta a resposta
+        $this->response->resolve( $perguntas );
+    }
+
+    /**  -----------------------------------------------------------
+     * 
+     * METODOS DE TRANSACOES
+     *
+     * ------------------------------------------------------------- */
+
+    /**  -----------------------------------------------------------
+     * 
+     * METODOS DE RANKING
+     *
+     * ------------------------------------------------------------- */
+     public function obter_primeiros_colocados() {
+         $uid = $this->request->header( 'AUTH_UID' );
+         $email = $this->request->header( 'AUTH_EMAIL' );
+         $this->response->resolve( [ 'uid' => $this->request->user()->uid, 
+                                     'email' => $this->request->user()->email ] );
+     }
+
+    /**  -----------------------------------------------------------
+     * 
+     * METODOS DE TREINAMENTO
+     *
+     * ------------------------------------------------------------- */
+
+     /**  -----------------------------------------------------------
+     * 
+     * METODOS DE NOTIFICACAO
+     *
+     * ------------------------------------------------------------- */
 }

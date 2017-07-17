@@ -56,6 +56,34 @@ class Questionario extends MY_Model {
         $this->descricao = $desc;
         return $this;
     }
+
+    // fecha o questionario
+    public function encerrar( $func ) {
+        
+        // prepara os dados
+        $dados = [
+            'CodQuestionario' => $this->CodQuestionario,
+            'CodUsuario'      => $func
+        ];
+
+        // salva os dados
+        return $this->db->insert( 'QuestionariosEncerrados', $dados );
+    }
+
+    // verifica se o questionario ja foi encerrado
+    public function encerrado( $func ) {
+
+        // prepara a busca
+        $this->db->from( 'QuestionariosEncerrados' )
+        ->select( '*' )
+        ->where( " CodUsuario = $func AND CodQuestionario = $this->CodQuestionario " );
+
+        // faz a busca
+        $busca = $this->db->get();
+
+        // verifica se esta encerrado
+        return ( $busca->num_rows() > 0 ) ? true : false;
+    }
 }
 
 /* end of file */

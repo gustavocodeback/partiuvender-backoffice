@@ -280,6 +280,24 @@ $config['schema']['Categorias'] = [
     ]
 ];
 
+// questionarios encerrados
+$config['schema']['QuestionariosEncerrados'] = [
+    'CodQuestionarioEncerrado' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+        'primary_key'    => TRUE,
+        'auto_increment' => TRUE
+    ],
+    'CodQuestionario' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+    ],
+    'CodUsuario' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+    ]
+];
+
 // Tabela Questionarios
 $config['schema']['Questionarios'] = [
     'CodQuestionario' => [

@@ -31,6 +31,24 @@ class Response {
     }
 
    /**
+    * denied
+    *
+    * volta acesso negado
+    *
+    */
+    public function denied() {
+        
+        // prepara os dados
+        $data = [
+            'code'    => '403',
+            'message' => 'Acesso negado'
+        ];
+
+        // envia a resposta
+        return $this->show( $data );
+    }
+
+   /**
     * reject
     *
     * volta um erro

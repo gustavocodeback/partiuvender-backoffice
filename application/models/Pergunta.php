@@ -101,6 +101,32 @@ class Pergunta extends MY_Model {
         $this->alternativa4 = $alternativa4;
         return $this;
     }
+
+    // verifica se ja foi respondida
+    public function respondida( $func ) {
+
+        // prepara a busca
+        $this->db->from( $this->table.' p' )
+        ->select( 'p.CodPergunta, r.*' )
+        ->join( "Respostas r", "r.CodPergunta = p.CodPergunta" )
+        ->where( "r.CodPergunta = $this->CodPergunta AND r.CodUsuario = $func " );
+
+        // faz a busca
+        $busca = $this->db->get();
+
+        // volta o resultado
+        return ( $busca->num_rows() > 0 ) ? $busca->result_array()[0] : false;
+    }
+
+    // verifica se esta correta
+    public function correta( $func ) {
+
+        // pega a resposta
+        $resposta = $this->respondida( $func );
+
+        // volta se esta correta
+        return ( $resposta['Alternativa'] == $this->resposta ) ? true : false;
+    }
 }
 
 /* end of file */
