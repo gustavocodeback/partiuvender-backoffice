@@ -70,6 +70,24 @@ class FuncionariosFinder extends MY_Model {
         $this->where( " CPF = $cpf" );
         return $this;
     }
+
+    /**
+    * cargo
+    *
+    * filtra pelo cpf
+    *
+    */
+    public function cargo( $cargo ) {
+
+        if( $cargo == 'Gerente' ) {
+            $this->where( " Cargo = 'Gerente' OR Cargo = 'Sub-Gerente' " );
+            return $this;
+        }
+        if( $cargo == 'Vendedor' ) {
+            $this->where( " Cargo = 'Vendedor' " );
+            return $this;
+        }
+    }
 }
 
 /* end of file */

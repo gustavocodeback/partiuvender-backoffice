@@ -113,4 +113,11 @@ $config['Notificacao'] = [
     'texto'         => 'Texto'
 ];
 
+$config['Disparo'] = [
+    'funcionario'   => 'CodFuncionario',
+    'notificacao'   => 'CodNotificacao',
+    'data'          => 'Data',
+    'status'        => 'Status'
+];
+
 /* end of file */

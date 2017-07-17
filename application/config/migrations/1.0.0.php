@@ -418,4 +418,28 @@ $config['schema']['Notificacoes'] = [
     ],
 ];
 
+$config['schema']['Disparos'] = [
+    'CodDisparo' => [
+        'type'           => 'int',
+        'primary_key'    => TRUE,
+        'constraint'     => '11',
+        'auto_increment' => true
+    ],
+    'CodNotificacao' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+    ],
+    'CodFuncionario' => [
+        'type'       => 'int',
+        'constraint' => '11'
+    ],
+    'Data' => [
+        'type'       => 'datetime'
+    ],
+    'Status' => [
+        'type'       => 'varchar',
+        'constraint' => '2'
+    ],
+];
+
 /* end of file */
