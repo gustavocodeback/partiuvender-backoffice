@@ -188,7 +188,7 @@ class Produtos extends MY_Controller {
         $produto->setCod( $this->input->post( 'cod' ) );
 
         if ( $file_name ) {
-            $this->picture->delete( $produto->foto );
+            if( $file_name != 'sem-foto' ) $this->picture->delete( $produto->foto );
             $produto->setFoto( $file_name );
         }
 

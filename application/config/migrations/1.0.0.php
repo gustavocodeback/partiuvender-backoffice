@@ -442,4 +442,29 @@ $config['schema']['Disparos'] = [
     ],
 ];
 
+// Tabela de Treinamento
+$config['schema']['Treinamentos'] = [
+    'CodTreinamento' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+        'primary_key'    => TRUE,
+        'auto_increment' => TRUE,
+    ],
+    'Nome' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
+    'Descricao' => [
+        'type' => 'text'
+    ],
+    'Foto' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
+    'Video' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ]
+];
+
 /* end of file */

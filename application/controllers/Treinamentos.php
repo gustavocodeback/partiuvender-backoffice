@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Categorias extends MY_Controller {
+class Treinamentos extends MY_Controller {
 
     // indica se o controller é publico
 	protected $public = false;
@@ -15,7 +15,7 @@ class Categorias extends MY_Controller {
         parent::__construct();
         
         // carrega o finder
-        $this->load->finder( [ 'CategoriasFinder' ] );
+        $this->load->finder( [ 'TreinamentosFinder' ] );
 
         // carrega a librarie de fotos
 		$this->load->library( 'Picture' );
@@ -30,7 +30,7 @@ class Categorias extends MY_Controller {
     * valida o formulario de estados
     *
     */
-    private function _formularioCategorias() {
+    private function _formularioTreinamentos() {
 
         // seta as regras
         $rules = [
@@ -38,7 +38,11 @@ class Categorias extends MY_Controller {
                 'field' => 'nome',
                 'label' => 'Nome',
                 'rules' => 'required|min_length[3]|max_length[32]|trim'
-            ]
+            ], [
+                'field' => 'descricao',
+                'label' => 'Descricao',
+                'rules' => 'required|min_length[20]|max_length[255]|trim'
+            ],
         ];
 
         // valida o formulário
@@ -55,7 +59,7 @@ class Categorias extends MY_Controller {
 	public function index() {
 
         // faz a paginacao
-		$this->CategoriasFinder->grid()
+		$this->TreinamentosFinder->grid()
 
 		// seta os filtros
         ->addFilter( 'nome', 'text' )
@@ -65,26 +69,25 @@ class Categorias extends MY_Controller {
 
 		// seta as funcoes nas colunas
 		->onApply( 'Ações', function( $row, $key ) {
-			echo '<a href="'.site_url( 'categorias/alterar/'.$row['Código'] ).'" class="margin btn btn-xs btn-info"><span class="glyphicon glyphicon-pencil"></span></a>';
-			echo '<a href="'.site_url( 'categorias/excluir/'.$row['Código'] ).'" class="margin btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';            
+			echo '<a href="'.site_url( 'treinamentos/alterar/'.$row['Código'] ).'" class="margin btn btn-xs btn-info"><span class="glyphicon glyphicon-pencil"></span></a>';
+			echo '<a href="'.site_url( 'treinamentos/excluir/'.$row['Código'] ).'" class="margin btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';            
 		})
 
         // seta as funcoes nas colunas
 		->onApply( 'Foto', function( $row, $key ) {
             if( $row[$key] )
 			    echo '<img src="'.base_url( 'uploads/'.$row[$key] ).'" style="width: 50px; height: 50px;">';
-            else
-                echo 'Sem Foto';
+            else echo 'Sem Foto';
 		})
 
 		// renderiza o grid
-		->render( site_url( 'categorias/index' ) );
+		->render( site_url( 'treinamentos/index' ) );
 		
         // seta a url para adiciona
-        $this->view->set( 'add_url', site_url( 'categorias/adicionar' ) );
+        $this->view->set( 'add_url', site_url( 'treinamentos/adicionar' ) );
 
 		// seta o titulo da pagina
-		$this->view->setTitle( 'Categorias - listagem' )->render( 'grid' );
+		$this->view->setTitle( 'Treinamentos - listagem' )->render( 'grid' );
     }
 
    /**
@@ -96,7 +99,7 @@ class Categorias extends MY_Controller {
     public function adicionar() {
 
         // carrega a view de adicionar
-        $this->view->setTitle( 'Samsung - Adicionar categoria' )->render( 'forms/categoria' );
+        $this->view->setTitle( 'Samsung - Adicionar treinamento' )->render( 'forms/treinamento' );
     }
 
    /**
@@ -108,19 +111,19 @@ class Categorias extends MY_Controller {
     public function alterar( $key ) {
 
         // carrega o cargo
-        $categoria = $this->CategoriasFinder->key( $key )->get( true );
+        $treinamento = $this->TreinamentosFinder->key( $key )->get( true );
 
         // verifica se o mesmo existe
-        if ( !$categoria ) {
-            redirect( 'categorias/index' );
+        if ( !$treinamento ) {
+            redirect( 'treinamentos/index' );
             exit();
         }
 
         // salva na view
-        $this->view->set( 'categoria', $categoria );
+        $this->view->set( 'treinamento', $treinamento );
 
         // carrega a view de adicionar
-        $this->view->setTitle( 'Samsung - Alterar categoria' )->render( 'forms/categoria' );
+        $this->view->setTitle( 'Samsung - Alterar treinamento' )->render( 'forms/treinamento' );
     }
 
    /**
@@ -130,11 +133,10 @@ class Categorias extends MY_Controller {
     *
     */
     public function excluir( $key ) {
-        $categoria = $this->CategoriasFinder->key( $key )->get( true );
-        $this->picture->delete( $categoria->foto );
-        $categoria->delete();
+        $treinamento = $this->TreinamentosFinder->key( $key )->get( true );
+        $this->picture->delete( $treinamento->foto );
+        $treinamento->delete();
         $this->index();
-        redirect( 'categorias/index' );
     }
 
    /**
@@ -149,39 +151,41 @@ class Categorias extends MY_Controller {
         $file_name = $this->picture->upload( 'foto', [ 'square' => 200 ] );
 
         if ( $this->input->post( 'cod' ) ) {
-            $categoria = $this->CategoriasFinder->key( $this->input->post( 'cod' ) )->get( true );
+            $treinamento = $this->TreinamentosFinder->key( $this->input->post( 'cod' ) )->get( true );
         } else {
 
             // instancia um novo objeto grpo
-            $categoria = $this->CategoriasFinder->getCategoria();
-            $categoria->setFoto( 'sem-foto.jpg' );
+            $treinamento = $this->TreinamentosFinder->getTreinamento();            
+            $treinamento->setFoto( 'sem-foto.jpg' );
         }
 
-        $categoria->setNome( $this->input->post( 'nome' ) );
-        $categoria->setCod( $this->input->post( 'cod' ) );
+        $treinamento->setNome( $this->input->post( 'nome' ) );
+        $treinamento->setDescricao( $this->input->post( 'descricao' ) );
+        $treinamento->setVideo( $this->input->post( 'video' ) );
+        $treinamento->setCod( $this->input->post( 'cod' ) );
 
         if ( $file_name ) {
-            
-            if( $file_name != 'sem-foto' ) $this->picture->delete( $categoria->foto );
-            $categoria->setFoto( $file_name );
+            if( $file_name != 'sem-foto' ) $this->picture->delete( $treinamento->foto );
+            $treinamento->setFoto( $file_name );
         }
 
         // verifica se o formulario é valido
-        if ( !$this->_formularioCategorias() ) {
-        
+        if ( !$this->_formularioTreinamentos() ) {
+
             // seta os erros de validacao            
-            $this->view->set( 'categoria', $categoria );
+            $this->view->set( 'treinamento', $treinamento );
             $this->view->set( 'errors', validation_errors() );
             
             // carrega a view de adicionar
-            $this->view->setTitle( 'Samsung - Adicionar categoria' )->render( 'forms/categoria' );
+            $this->view->setTitle( 'Samsung - Adicionar treinamento' )->render( 'forms/treinamento' );
             return;
         }
 
         // verifica se o dado foi salvo
-        if ( $categoria->save() ) {
-            
-            redirect( site_url( 'categorias/index' ) );
+        if ( $treinamento->save() ) {
+            redirect( site_url( 'treinamentos/index' ) );
         }
     }
+
 }
+
