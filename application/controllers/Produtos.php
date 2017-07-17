@@ -176,7 +176,7 @@ class Produtos extends MY_Controller {
 
             // instancia um novo objeto grpo
             $produto = $this->ProdutosFinder->getProduto();            
-            $categoria->setFoto( 'sem-imagem.jpg' );
+            $produto->setFoto( 'sem-foto.jpg' );
         }
 
         $produto->setBasicCode( $this->input->post( 'basiccode' ) );

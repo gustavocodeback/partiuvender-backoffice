@@ -393,4 +393,29 @@ $config['schema']['Logs'] = [
     ]
 ];
 
+// Tabela Notificacoes
+$config['schema']['Notificacoes'] = [
+    'CodNotificacao' => [
+        'type'           => 'int',
+        'primary_key'    => TRUE,
+        'constraint'     => '11',
+        'auto_increment' => true
+    ],
+    'Nome' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
+    'Notificacao' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
+    'Disparos' => [
+        'type'       => 'int',
+        'constraint' => '11'
+    ],
+    'Texto' => [
+        'type' => 'text'
+    ],
+];
+
 /* end of file */

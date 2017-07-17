@@ -106,4 +106,11 @@ $config['Alternativa'] = [
     'texto'    => 'Texto'
 ];
 
+$config['Notificacao'] = [
+    'notificacao'   => 'Notificacao',
+    'nome'          => 'Nome',
+    'disparos'      => 'Disparos',
+    'texto'         => 'Texto'
+];
+
 /* end of file */
