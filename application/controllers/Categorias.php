@@ -154,7 +154,7 @@ class Categorias extends MY_Controller {
 
             // instancia um novo objeto grpo
             $categoria = $this->CategoriasFinder->getCategoria();
-            $categoria->setFoto( null );
+            $categoria->setFoto( 'sem-imagem.jpg' );
         }
 
         $categoria->setNome( $this->input->post( 'nome' ) );

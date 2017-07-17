@@ -175,7 +175,8 @@ class Produtos extends MY_Controller {
         } else {
 
             // instancia um novo objeto grpo
-            $produto = $this->ProdutosFinder->getProduto();
+            $produto = $this->ProdutosFinder->getProduto();            
+            $categoria->setFoto( 'sem-imagem.jpg' );
         }
 
         $produto->setBasicCode( $this->input->post( 'basiccode' ) );
@@ -185,15 +186,6 @@ class Produtos extends MY_Controller {
         $produto->setPontos( $this->input->post( 'pontos' ) );
         $produto->setVideo( $this->input->post( 'video' ) );
         $produto->setCod( $this->input->post( 'cod' ) );
-
-        if( !$file_name && !$produto->foto ) {
-            $this->view->set( 'produto', $produto );
-            $this->view->set( 'errors', 'Escolha uma foto!' );
-
-            // carrega a view de adicionar
-            $this->view->setTitle( 'Samsung - Adicionar produto' )->render( 'forms/produto' );
-            return;
-        }
 
         if ( $file_name ) {
             $this->picture->delete( $produto->foto );
@@ -330,6 +322,7 @@ class Produtos extends MY_Controller {
             $produto->setPontos( $linha['PONTOS'] );
             $produto->setDescricao( null );
             $produto->setVideo( null );
+            $produto->setFoto( 'sem-foto.jpg' );
             
             // tenta salvar a loja
             if ( $produto->save() ) {
