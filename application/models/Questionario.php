@@ -58,12 +58,13 @@ class Questionario extends MY_Model {
     }
 
     // fecha o questionario
-    public function encerrar( $func ) {
+    public function encerrar( $func, $pontos ) {
         
         // prepara os dados
         $dados = [
             'CodQuestionario' => $this->CodQuestionario,
-            'CodUsuario'      => $func
+            'CodUsuario'      => $func,
+            'Pontos'          => $pontos
         ];
 
         // salva os dados
@@ -82,7 +83,7 @@ class Questionario extends MY_Model {
         $busca = $this->db->get();
 
         // verifica se esta encerrado
-        return ( $busca->num_rows() > 0 ) ? true : false;
+        return ( $busca->num_rows() > 0 ) ? $busca->result_array()[0] : false;
     }
 }
 

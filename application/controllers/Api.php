@@ -215,7 +215,9 @@ class Api extends MY_Controller {
                     $tot++;
                 }
             }
-            
+
+            // verifica se esta encerrado
+            $encerrado = $questionario->encerrado( $this->request->user()->CodFuncionario );
 
             // volta os dados formatados
             return  [ 
@@ -225,8 +227,8 @@ class Api extends MY_Controller {
                         'Descricao'       => $questionario->descricao,
                         'Pontos'          => $sum,
                         'Total'           => $tot,
-                        'Encerrado'       => $questionario->encerrado( $this->request->user()->CodFuncionario ),
-                        'Acertadas'       => rand( 0, $tot )
+                        'Encerrado'       => $encerrado ? true : false,
+                        'Acertadas'       => $encerrado ? $encerrado['Pontos'] : 0
                     ];
         }, $questionarios );
 
@@ -332,31 +334,32 @@ class Api extends MY_Controller {
             $this->response->reject( 'Este quiz ja foi encerrado' );
         } else {
 
-            // fecha o questionario
-            if ( $questionario->encerrar( $this->request->user()->CodFuncionario ) ) {
+            // pega o funcionario
+            $CodFunc = $this->request->user()->CodFuncionario;
 
-                // carrega os produtos da categoria
-                $perguntas = $this->PerguntasFinder->quiz( $questionario->CodQuestionario )->get();
+            // carrega os produtos da categoria
+            $perguntas = $this->PerguntasFinder->quiz( $questionario->CodQuestionario )->get();
 
-                // total
-                $sum = 0;
+            // total
+            $sum = 0;
 
-                // percorre as perguntas
-                foreach( $perguntas as $pergunta ) {
+            // percorre as perguntas
+            foreach( $perguntas as $pergunta ) {
 
-                    // verifica se esta correta
-                    if ( $pergunta->correta( $this->request->user()->CodFuncionario ) ) {
-                        $sum += $pergunta->pontos;
-                    }
+                // verifica se esta correta
+                if ( $pergunta->correta( $CodFunc ) ) {
+                    $sum += $pergunta->pontos;
                 }
+            }
 
-                // carrega o funcionario
-                $func = $this->FuncionariosFinder->clean()->key( $this->request->user()->CodFuncionario )->get( true );
-                $sum += $func->pontos;
+            // carrega o funcionario
+            $func = $this->FuncionariosFinder->clean()->key( $this->request->user()->CodFuncionario )->get( true );
+
+            // fecha o questionario
+            if ( $questionario->encerrar( $CodFunc, $sum ) ) {
 
                 // seta os pontos
-                $func->setPontos( $sum );
-                $func->save();
+                $func->addPontos( $sum );
 
                 // exibe o resultado
                 $this->response->resolve( 'Questionario fechado.' );    
@@ -401,7 +404,7 @@ class Api extends MY_Controller {
                 'Alternativa4' => $pergunta->alternativa4,
                 'Resposta'     => $pergunta->resposta,
                 'Status'       => $pergunta->correta( $this->request->user()->CodFuncionario ),                    
-                'Respondida'   => $pergunta->respondida( $this->request->user()->CodFuncionario )
+                'Respondida'   => $pergunta->respondida( $this->request->user()->CodFuncionario )['Alternativa']
             ];
         }, $perguntas );
 
