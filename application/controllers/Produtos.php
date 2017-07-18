@@ -213,6 +213,38 @@ class Produtos extends MY_Controller {
             redirect( site_url( 'produtos/index' ) );
         }
     }
+        
+   /**
+    * obter_produtos_categoria
+    *
+    * obtem os produtos de uma categoria
+    *
+    */
+    public function obter_produtos_categoria( $CodCategoria ) {
+
+        // carrega a categoria
+        $categoria = $this->CategoriasFinder->key( $CodCategoria )->get( true );
+        
+        if ( !$categoria ) return $this->close();
+
+        // carrega os produtos de uma categoria
+        $produtos = $this->ProdutosFinder->clean()->porCategoria( $CodCategoria )->get();
+        if ( count( $produtos ) == 0 ) {
+            echo json_encode( [] );
+            return;
+        }
+
+        // faz o mapeamento dos produtos
+        $produtos = array_map( function( $produto ) {
+            return  [ 
+                        'value' => $produto->CodProduto, 
+                        'label' => $produto->nome
+                    ];
+        }, $produtos );
+        // volta o json
+        echo json_encode( $produtos );
+        return;
+    }
     
    /**
     * verificaEntidade

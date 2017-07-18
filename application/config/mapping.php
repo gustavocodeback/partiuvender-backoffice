@@ -120,11 +120,12 @@ $config['Disparo'] = [
     'status'        => 'Status'
 ];
 
-$config['Treinamento'] = [
-    'nome'      => 'Nome',
-    'descricao' => 'Descricao',
-    'foto'      => 'Foto',
-    'video'     => 'Video'
+$config['Venda'] = [
+    'funcionario'   => 'CodFuncionario',
+    'quantidade'    => 'Quantidade',
+    'produto'       => 'CodProduto',
+    'pontos'        => 'Pontos',
+    'data'          => 'Data'
 ];
 
 /* end of file */

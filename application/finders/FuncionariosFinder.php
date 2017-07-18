@@ -15,15 +15,15 @@ class FuncionariosFinder extends MY_Model {
 
     // labels
     public $labels = [
-        'CodLoja' => 'Loja',
-        'UID' => 'UID',
-        'Token' => 'Token',
-        'Cargo' => 'Cargo',
-        'Nome' => 'Nome',
-        'Email' => 'Email',
+        'Loja' => 'Loja',
+        'f.UID' => 'UID',
+        'f.Token' => 'Token',
+        'f.Cargo' => 'Cargo',
+        'f.Nome' => 'Nome',
+        'f.Email' => 'Email',
         'Senha' => 'Senha',
-        'CPF' => 'CPF',
-        'Pontos' => 'Pontos'
+        'f.CPF' => 'CPF',
+        'f.Pontos' => 'Pontos'
     ];
 
    /**

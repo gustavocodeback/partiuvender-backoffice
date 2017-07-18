@@ -467,4 +467,32 @@ $config['schema']['Treinamentos'] = [
     ]
 ];
 
+$config['schema']['Vendas'] = [
+    'CodVenda' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+        'primary_key'    => TRUE,
+        'auto_increment' => TRUE
+    ],
+    'CodFuncionario' => [
+        'type'       => 'int',
+        'constraint' => '11'
+    ],
+    'CodProduto' => [
+        'type'       => 'int',
+        'constraint' => '11',
+    ],
+    'Quantidade' => [
+        'type'       => 'int',
+        'constraint' => '11',
+    ],
+    'Pontos' => [
+        'type'       => 'int',
+        'constraint' => '11',
+    ],
+    'Data' => [
+        'type'       => 'datetime'
+    ],
+];
+
 /* end of file */
