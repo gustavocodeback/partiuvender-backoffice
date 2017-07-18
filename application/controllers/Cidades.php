@@ -81,6 +81,38 @@ class Cidades extends MY_Controller {
     }
 
    /**
+    * obter_cidades_estado
+    *
+    * obtem as cidades de um estado
+    *
+    */
+    public function obter_cidades_estado( $CodEstado ) {
+
+        // carrega o estado
+        $estado = $this->EstadosFinder->key( $CodEstado )->get( true );
+        
+        if ( !$estado ) return $this->close();
+
+        // carrega as cidades do estado
+        $cidades = $this->CidadesFinder->clean()->porEstado( $CodEstado )->get();
+        if ( count( $cidades ) == 0 ) {
+            echo json_encode( [] );
+            return;
+        }
+
+        // faz o mapeamento das cidades
+        $cidades = array_map( function( $cidade ) {
+            return  [ 
+                        'value' => $cidade->CodCidade, 
+                        'label' => $cidade->nome
+                    ];
+        }, $cidades );
+        // volta o json
+        echo json_encode( $cidades );
+        return;
+    }
+
+   /**
     * adicionar
     *
     * mostra o formulario de adicao

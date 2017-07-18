@@ -411,4 +411,106 @@ $config['schema']['Logs'] = [
     ]
 ];
 
+// Tabela Notificacoes
+$config['schema']['Notificacoes'] = [
+    'CodNotificacao' => [
+        'type'           => 'int',
+        'primary_key'    => TRUE,
+        'constraint'     => '11',
+        'auto_increment' => true
+    ],
+    'Nome' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
+    'Notificacao' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
+    'Disparos' => [
+        'type'       => 'int',
+        'constraint' => '11'
+    ],
+    'Texto' => [
+        'type' => 'text'
+    ],
+];
+
+$config['schema']['Disparos'] = [
+    'CodDisparo' => [
+        'type'           => 'int',
+        'primary_key'    => TRUE,
+        'constraint'     => '11',
+        'auto_increment' => true
+    ],
+    'CodNotificacao' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+    ],
+    'CodFuncionario' => [
+        'type'       => 'int',
+        'constraint' => '11'
+    ],
+    'Data' => [
+        'type'       => 'datetime'
+    ],
+    'Status' => [
+        'type'       => 'varchar',
+        'constraint' => '2'
+    ],
+];
+
+// Tabela de Treinamento
+$config['schema']['Treinamentos'] = [
+    'CodTreinamento' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+        'primary_key'    => TRUE,
+        'auto_increment' => TRUE,
+    ],
+    'Nome' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
+    'Descricao' => [
+        'type' => 'text'
+    ],
+    'Foto' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
+    'Video' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ]
+];
+
+$config['schema']['Vendas'] = [
+    'CodVenda' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+        'primary_key'    => TRUE,
+        'auto_increment' => TRUE
+    ],
+    'CodFuncionario' => [
+        'type'       => 'int',
+        'constraint' => '11'
+    ],
+    'CodProduto' => [
+        'type'       => 'int',
+        'constraint' => '11',
+    ],
+    'Quantidade' => [
+        'type'       => 'int',
+        'constraint' => '11',
+    ],
+    'Pontos' => [
+        'type'       => 'int',
+        'constraint' => '11',
+    ],
+    'Data' => [
+        'type'       => 'datetime'
+    ],
+];
+
 /* end of file */

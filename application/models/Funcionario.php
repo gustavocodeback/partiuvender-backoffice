@@ -87,6 +87,18 @@ class Funcionario extends MY_Model {
     public function setPontos( $pontos ) {
         $this->pontos = $pontos;
     }
+
+    // adiciona pontos
+    public function addPontos( $pontos ) {
+        $this->pontos += $pontos;
+        $this->save();
+    }
+
+    // remove pontos
+    public function removePontos( $pontos ) {
+        $this->pontos -= $pontos;
+        $this->save();
+    }
 }
 
 /* end of file */

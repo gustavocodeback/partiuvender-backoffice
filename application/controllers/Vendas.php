@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Funcionarios extends MY_Controller {
+class Vendas extends MY_Controller {
 
     // indica se o controller é publico
 	protected $public = false;
@@ -15,7 +15,7 @@ class Funcionarios extends MY_Controller {
         parent::__construct();
         
         // carrega o finder
-        $this->load->finder( [ 'LojasFinder', 'FuncionariosFinder' ] );
+        $this->load->finder( [ 'FuncionariosFinder', 'CategoriasFinder', 'ProdutosFinder', 'VendasFinder' ] );
         
         // chama o modulo
         $this->view->module( 'navbar' )->module( 'aside' )->module( 'jquery-mask' );
@@ -27,29 +27,21 @@ class Funcionarios extends MY_Controller {
     * valida o formulario de estados
     *
     */
-    private function _formularioFuncionario() {
+    private function _formularioVenda() {
 
         // seta as regras
         $rules = [
             [
-                'field' => 'loja',
-                'label' => 'Loja',
-                'rules' => 'required'
-            ], [
                 'field' => 'cpf',
                 'label' => 'CPF',
                 'rules' => 'required|min_length[14]|max_length[14]|trim'
             ], [
-                'field' => 'nome',
-                'label' => 'Nome',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
-            ], [
-                'field' => 'cargo',
-                'label' => 'Cargo',
+                'field' => 'produto',
+                'label' => 'Produto',
                 'rules' => 'required'
             ], [
-                'field' => 'pontos',
-                'label' => 'Pontos',
+                'field' => 'quantidade',
+                'label' => 'Quantidade',
                 'rules' => 'required'
             ]
         ];
@@ -69,35 +61,36 @@ class Funcionarios extends MY_Controller {
 	public function index() {
 
         // faz a paginacao
-		$this->FuncionariosFinder->clean()->grid()
+		$this->VendasFinder->clean()->grid()
 
 		// seta os filtros
-        ->addFilter( 'f.Nome', 'text' )
-        ->addFilter( 'CPF', 'text' )
+        ->addFilter( 'Funcionario', 'text' )
 		->filter()
 		->order()
 		->paginate( 0, 20 )
 
 		// seta as funcoes nas colunas
 		->onApply( 'Ações', function( $row, $key ) {
-			echo '<a href="'.site_url( 'funcionarios/alterar/'.$row[$key] ).'" class="margin btn btn-xs btn-info"><span class="glyphicon glyphicon-pencil"></span></a>';
-			echo '<a href="'.site_url( 'funcionarios/excluir/'.$row[$key] ).'" class="margin btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';            
+			echo '<a href="'.site_url( 'vendas/excluir/'.$row[$key] ).'" class="margin btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';            
 		})
+        ->onApply( 'Data', function( $row, $key ) {
+            echo '<small>'.date( 'd/m/Y', strtotime( $row[$key] ) ).'</small>';
+        })
 
         // formata o Cnpj para exibicao
-        ->onApply( 'CPF', function( $row, $key ) {
+        ->onApply( 'Funcionario', function( $row, $key ) {
 			echo mascara_cpf( $row[$key] );        
 		})
 
 		// renderiza o grid
-		->render( site_url( 'funcionarios/index' ) );
+		->render( site_url( 'vendas/index' ) );
 		
         // seta a url para adiciona
-        $this->view->set( 'add_url', site_url( 'funcionarios/adicionar' ) )
-        ->set( 'import_url', site_url( 'funcionarios/importar_planilha' ) );
+        $this->view->set( 'add_url', site_url( 'vendas/adicionar' ) )
+        ->set( 'import_url', site_url( 'vendas/importar_planilha' ) );
 
 		// seta o titulo da pagina
-		$this->view->setTitle( 'Funcionários - listagem' )->render( 'grid' );
+		$this->view->setTitle( 'Vendas - listagem' )->render( 'grid' );
     }
 
    /**
@@ -112,42 +105,11 @@ class Funcionarios extends MY_Controller {
         $this->view->module( 'jquery-mask' );
 
         // carrega os lojas
-        $lojas = $this->LojasFinder->get();
-        $this->view->set( 'lojas', $lojas );
+        $categorias = $this->CategoriasFinder->get();
+        $this->view->set( 'categorias', $categorias );
 
         // carrega a view de adicionar
-        $this->view->setTitle( 'Samsung - Adicionar funcionário' )->render( 'forms/funcionario' );
-    }
-
-   /**
-    * alterar
-    *
-    * mostra o formulario de edicao
-    *
-    */
-    public function alterar( $key ) {
-
-         // carrega o jquery mask
-        $this->view->module( 'jquery-mask' );
-
-        // carrega o classificacao
-        $funcionario = $this->FuncionariosFinder->key( $key )->get( true );
-
-        // carrega os lojas
-        $lojas = $this->LojasFinder->get();
-        $this->view->set( 'lojas', $lojas );
-
-        // verifica se o mesmo existe
-        if ( !$funcionario ) {
-            redirect( 'lojas/index' );
-            exit();
-        }
-
-        // salva na view
-        $this->view->set( 'funcionario', $funcionario );
-
-        // carrega a view de adicionar
-        $this->view->setTitle( 'Samsung - Alterar funcionário' )->render( 'forms/funcionario' );
+        $this->view->setTitle( 'Samsung - Adicionar venda' )->render( 'forms/venda' );
     }
 
    /**
@@ -157,9 +119,16 @@ class Funcionarios extends MY_Controller {
     *
     */
     public function excluir( $key ) {
-        $funcionario = $this->FuncionariosFinder->getFuncionario();
-        $funcionario->setCod( $key );
-        $funcionario->delete();
+
+        // carrega a venda
+        $venda = $this->VendasFinder->key( $key )->get( true );
+
+        // carrega o funcionario
+        $funcionario = $this->FuncionariosFinder->key( $venda->funcionario )->get( true );
+
+        $funcionario->removePontos( $venda->pontos );
+
+        $venda->delete();
         $this->index();
     }
 
@@ -171,37 +140,55 @@ class Funcionarios extends MY_Controller {
     */
     public function salvar() {
         
-        // carrega os lojas
-        $lojas = $this->LojasFinder->get();
-        $this->view->set( 'lojas', $lojas );
+        // carrega as categorias
+        $categorias = $this->CategoriasFinder->get();
+        $this->view->set( 'categorias', $categorias );
 
         $search = array('.','/','-');
         $cpf = str_replace ( $search , '' , $this->input->post( 'cpf') );
 
+        // pega o funcionario da venda
+        $funcionario = $this->FuncionariosFinder->cpf( $cpf )->get(true);
+
+        // retorna erro caso o funcionario não exista no sistema
+        if( !$funcionario ) {
+            $this->view->set( 'errors', 'Funcionário inexistente no sistema!' );
+            return;
+        }
+
+        //carrega o produto da venda
+        $produto = $this->ProdutosFinder->key( $this->input->post( 'produto' ) )->get( true );
+
+        $pontos = $produto->pontos * $this->input->post( 'quantidade' );
+
+        $funcionario->addPontos( $pontos );
+
+        $data = date( 'Y-m-d', strtotime( $this->input->post( 'data' ) ) );
+
         // instancia um novo objeto classificacao
-        $funcionario = $this->FuncionariosFinder->getFuncionario();
-        $funcionario->setLoja( $this->input->post( 'loja' ) );
-        $funcionario->setCpf( $cpf );
-        $funcionario->setNome( $this->input->post( 'nome' ) );
-        $funcionario->setCargo( $this->input->post( 'cargo' ) );
-        $funcionario->setPontos( $this->input->post( 'pontos' ) );
-        $funcionario->setCod( $this->input->post( 'cod' ) );
+        $venda = $this->VendasFinder->getVenda();
+        $venda->setFuncionario( $funcionario->CodFuncionario );
+        $venda->setProduto( $this->input->post( 'produto' ) );
+        $venda->setQuantidade( $this->input->post( 'quantidade' ) );
+        $venda->setPontos( $pontos );
+        $venda->setData( $data );
+        $venda->setCod( $this->input->post( 'cod' ) );
 
         // verifica se o formulario é valido
-        if ( !$this->_formularioFuncionario() ) {
+        if ( !$this->_formularioVenda() ) {
 
             // seta os erros de validacao            
-            $this->view->set( 'funcionario', $funcionario );
+            $this->view->set( 'venda', $venda );
             $this->view->set( 'errors', validation_errors() );
             
             // carrega a view de adicionar
-            $this->view->setTitle( 'Samsung - Adicionar funcionário' )->render( 'forms/funcionario' );
+            $this->view->setTitle( 'Samsung - Adicionar venda' )->render( 'forms/venda' );
             return;
         }
 
         // verifica se o dado foi salvo
-        if ( $funcionario->save() ) {
-            redirect( site_url( 'funcionarios/index' ) );
+        if ( $venda->save() ) {
+            redirect( site_url( 'vendas/index' ) );
         }
     }
 

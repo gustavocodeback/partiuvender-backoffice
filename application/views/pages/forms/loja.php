@@ -72,7 +72,7 @@
                 <div class="form-group">
                     <label for="estado">Estado</label>
                     <select id="estado" name="estado" class="form-control"
-                    onchange="atualizarSelect( '#cidade', 'lojas/obter_cidades_estado', $( this ) )">
+                    onchange="atualizarSelect( '#cidade', 'cidades/obter_cidades_estado', $( this ) )">
                         <option value="">-- Selecione --</option>
                         <?php foreach( $view->item( 'estados' ) as $item ): ?>
                         <option value="<?php echo $item->CodEstado?>" 

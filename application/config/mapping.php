@@ -107,4 +107,26 @@ $config['Resposta'] = [
     'alternativa' => 'Alternativa',
 ];
 
+$config['Notificacao'] = [
+    'notificacao'   => 'Notificacao',
+    'nome'          => 'Nome',
+    'disparos'      => 'Disparos',
+    'texto'         => 'Texto'
+];
+
+$config['Disparo'] = [
+    'funcionario'   => 'CodFuncionario',
+    'notificacao'   => 'CodNotificacao',
+    'data'          => 'Data',
+    'status'        => 'Status'
+];
+
+$config['Venda'] = [
+    'funcionario'   => 'CodFuncionario',
+    'quantidade'    => 'Quantidade',
+    'produto'       => 'CodProduto',
+    'pontos'        => 'Pontos',
+    'data'          => 'Data'
+];
+
 /* end of file */

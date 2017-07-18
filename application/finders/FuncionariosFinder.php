@@ -15,15 +15,15 @@ class FuncionariosFinder extends MY_Model {
 
     // labels
     public $labels = [
-        'CodLoja' => 'Loja',
-        'UID' => 'UID',
-        'Token' => 'Token',
-        'Cargo' => 'Cargo',
-        'Nome' => 'Nome',
-        'Email' => 'Email',
+        'Loja' => 'Loja',
+        'f.UID' => 'UID',
+        'f.Token' => 'Token',
+        'f.Cargo' => 'Cargo',
+        'f.Nome' => 'Nome',
+        'f.Email' => 'Email',
         'Senha' => 'Senha',
-        'CPF' => 'CPF',
-        'Pontos' => 'Pontos'
+        'f.CPF' => 'CPF',
+        'f.Pontos' => 'Pontos'
     ];
 
    /**
@@ -80,6 +80,24 @@ class FuncionariosFinder extends MY_Model {
     public function uid( $uid ) {
         $this->where( " UID = '$uid'" );
         return $this;
+    }
+
+   /**
+    * cargo
+    *
+    * filtra pelo cpf
+    *
+    */
+    public function cargo( $cargo ) {
+
+        if( $cargo == 'Gerente' ) {
+            $this->where( " Cargo = 'Gerente' OR Cargo = 'Sub-Gerente' " );
+            return $this;
+        }
+        if( $cargo == 'Vendedor' ) {
+            $this->where( " Cargo = 'Vendedor' " );
+            return $this;
+        }
     }
 }
 

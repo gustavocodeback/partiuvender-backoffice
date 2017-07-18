@@ -176,7 +176,7 @@ class Produtos extends MY_Controller {
 
             // instancia um novo objeto grpo
             $produto = $this->ProdutosFinder->getProduto();            
-            $categoria->setFoto( 'sem-imagem.jpg' );
+            $produto->setFoto( 'sem-foto.jpg' );
         }
 
         $produto->setBasicCode( $this->input->post( 'basiccode' ) );
@@ -188,7 +188,7 @@ class Produtos extends MY_Controller {
         $produto->setCod( $this->input->post( 'cod' ) );
 
         if ( $file_name ) {
-            $this->picture->delete( $produto->foto );
+            if( $file_name != 'sem-foto' ) $this->picture->delete( $produto->foto );
             $produto->setFoto( $file_name );
         }
 
@@ -212,6 +212,38 @@ class Produtos extends MY_Controller {
         if ( $produto->save() ) {
             redirect( site_url( 'produtos/index' ) );
         }
+    }
+        
+   /**
+    * obter_produtos_categoria
+    *
+    * obtem os produtos de uma categoria
+    *
+    */
+    public function obter_produtos_categoria( $CodCategoria ) {
+
+        // carrega a categoria
+        $categoria = $this->CategoriasFinder->key( $CodCategoria )->get( true );
+        
+        if ( !$categoria ) return $this->close();
+
+        // carrega os produtos de uma categoria
+        $produtos = $this->ProdutosFinder->clean()->porCategoria( $CodCategoria )->get();
+        if ( count( $produtos ) == 0 ) {
+            echo json_encode( [] );
+            return;
+        }
+
+        // faz o mapeamento dos produtos
+        $produtos = array_map( function( $produto ) {
+            return  [ 
+                        'value' => $produto->CodProduto, 
+                        'label' => $produto->nome
+                    ];
+        }, $produtos );
+        // volta o json
+        echo json_encode( $produtos );
+        return;
     }
     
    /**
