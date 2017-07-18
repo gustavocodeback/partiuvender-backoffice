@@ -392,11 +392,16 @@ class Api extends MY_Controller {
         // faz o mapeamento
         $perguntas = array_map( function ( $pergunta ) {
             $indice = 'alternativa'.$pergunta->resposta;
-            return [
-                'Status'        => $pergunta->correta( $this->request->user()->CodFuncionario ),
-                'Texto'         => $pergunta->texto,
-                'Resposta'      => $pergunta->resposta,
-                'TextoResposta' => $pergunta->$indice
+            return  [ 
+                'CodPergunta'  => $pergunta->CodPergunta, 
+                'Texto'        => $pergunta->texto,
+                'Alternativa1' => $pergunta->alternativa1,                        
+                'Alternativa2' => $pergunta->alternativa2,                        
+                'Alternativa3' => $pergunta->alternativa3,                        
+                'Alternativa4' => $pergunta->alternativa4,
+                'Resposta'     => $pergunta->resposta,
+                'Status'       => $pergunta->correta( $this->request->user()->CodFuncionario ),                    
+                'Respondida'   => $pergunta->respondida( $this->request->user()->CodFuncionario )
             ];
         }, $perguntas );
 
