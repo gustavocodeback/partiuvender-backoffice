@@ -295,6 +295,10 @@ $config['schema']['QuestionariosEncerrados'] = [
     'CodUsuario' => [
         'type'           => 'int',
         'constraint'     => '11',
+    ],
+    'Pontos' => [
+        'type'           => 'int',
+        'constraint'     => '11',
     ]
 ];
 

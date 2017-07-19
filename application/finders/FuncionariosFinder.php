@@ -85,7 +85,7 @@ class FuncionariosFinder extends MY_Model {
    /**
     * cargo
     *
-    * filtra pelo cpf
+    * filtra pelo cargo
     *
     */
     public function cargo( $cargo ) {
@@ -98,6 +98,77 @@ class FuncionariosFinder extends MY_Model {
             $this->where( " Cargo = 'Vendedor' " );
             return $this;
         }
+    }
+
+   /**
+    * loja
+    *
+    * filtra pela loja
+    *
+    */
+    public function loja( $loja ) {
+
+        // seta a loja
+        $this->where( " CodLoja = $loja " );
+        return $this;
+    }
+
+   /**
+    * orderByPontos
+    *
+    * ordena pelos pontos
+    *
+    */
+    public function orderByPontos() {
+        $this->db->order_by( 'Pontos', 'DESC' );
+        return $this;
+    }
+
+   /**
+    * rankingClusterPessoal
+    *
+    * pega o ranking
+    *
+    */
+    public function rankingClusterPessoal( $cluster, $cod ) {
+
+        // faz a busca
+        $busca = $this->db->query( "SELECT * FROM 
+            ( SELECT f.*, @i := @i+1 AS ranking
+                FROM (SELECT @i:=0) AS foo, 
+                ( SELECT f.* FROM Funcionarios f
+            INNER JOIN Lojas l on f.CodLoja = l.CodLoja 
+            INNER JOIN Clusters c on l.CodCluster = c.CodCluster 
+            WHERE c.CodCluster = '$cluster'
+            ORDER BY f.Pontos DESC ) as f ) as s
+        WHERE CodFuncionario = $cod
+        LiMIT 10" );
+
+        // volta o array
+        return $busca->result_array()[0];
+    }
+
+   /**
+    * rankingCluster
+    *
+    * pega o ranking
+    *
+    */
+    public function rankingCluster( $cluster ) {
+
+        // faz a busca
+        $busca = $this->db->query( "SELECT * FROM 
+            ( SELECT f.*, @i := @i+1 AS ranking
+                FROM (SELECT @i:=0) AS foo, 
+                ( SELECT f.* FROM Funcionarios f
+            INNER JOIN Lojas l on f.CodLoja = l.CodLoja 
+            INNER JOIN Clusters c on l.CodCluster = c.CodCluster 
+            WHERE c.CodCluster = '$cluster'
+            ORDER BY f.Pontos DESC ) as f ) as s
+        LiMIT 10" );
+
+        // volta o array
+        return $busca->result_array();
     }
 }
 

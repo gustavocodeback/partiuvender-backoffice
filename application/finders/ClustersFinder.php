@@ -50,6 +50,12 @@ class ClustersFinder extends MY_Model {
         return $this;
     }
 
+   /**
+    * nome
+    *
+    * filtra por nome
+    *
+    */
     public function nome( $nome ) {
         $this->where( " Nome = '$nome'" );
         return $this;

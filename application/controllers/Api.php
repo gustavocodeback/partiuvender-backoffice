@@ -424,12 +424,131 @@ class Api extends MY_Controller {
      *
      * ------------------------------------------------------------- */
      public function obter_primeiros_colocados() {
-         $uid = $this->request->header( 'AUTH_UID' );
-         $email = $this->request->header( 'AUTH_EMAIL' );
-         $this->response->resolve( [ 'uid' => $this->request->user()->uid, 
-                                     'email' => $this->request->user()->email ] );
      }
 
+    /**
+     * obter_ranking_loja
+     *
+     * pega o ranking da loja
+     *
+     */
+     public function obter_ranking_loja() {
+
+        // carrega os finders
+        $this->load->finder( [ 'FuncionariosFinder' ] );
+
+        // obtem o funcionario
+        $func = $this->FuncionariosFinder
+                ->clean()
+                ->key( $this->request->user()->CodFuncionario )
+                ->get( true );
+
+        // filtrar por loja
+        $funcionarios = $this->FuncionariosFinder
+                        ->clean()
+                        ->loja( $func->loja )
+                        ->cargo( 'Vendedor' )
+                        ->orderByPontos()
+                        ->get();
+
+        // faz o mapeamento do array
+        $funcionarios = array_map( function( $func ) {
+            return [
+                'uid'    => $func->uid,
+                'pontos' => $func->pontos,
+                'cpf'    => $func->cpf,
+                'nome'   => $func->nome,
+            ];
+        }, $funcionarios );
+
+        // verifica se obteve o ranking
+        if ( $funcionarios ) {
+            $this->response->resolve( $funcionarios );
+        } else {
+            $this->response->reject( 'Nao foi possivel obter o ranking.' );
+        }
+     }
+
+    /**
+     * obter_ranking_cluster
+     *
+     * pega o ranking do cluster
+     *
+     */
+     public function obter_ranking_cluster() {
+
+        // carrega os finders
+        $this->load->finder( [ 'FuncionariosFinder', 'LojasFinder' ] );
+
+        // obtem o funcionario
+        $func = $this->FuncionariosFinder
+                ->clean()
+                ->key( $this->request->user()->CodFuncionario )
+                ->get( true );
+        
+        // verifica se é vendedor
+        if ( $func->cargo == 'Vendedor' ) {
+
+            // pega a loja
+            $loja = $this->LojasFinder->key( $func->loja )->get( true );
+
+            // pega o ranking
+            $ranking = $this->FuncionariosFinder->rankingCluster( $loja->cluster );
+        
+            // faz o mapeamento do array
+            $ranking = array_map( function( $func ) {
+                return [
+                    'uid'    => $func['UID'],
+                    'pontos' => $func['Pontos'],
+                    'cpf'    => $func['CPF'],
+                    'nome'   => $func['Nome'],
+                ];
+            }, $ranking );
+
+            // seta o resolve
+            $this->response->resolve( $ranking );
+        }
+     }
+
+    /**
+     * obter_minha_colocacao
+     *
+     * pega o ranking do cluster
+     *
+     */
+     public function obter_minha_colocacao() {
+
+          // carrega os finders
+        $this->load->finder( [ 'FuncionariosFinder', 'LojasFinder' ] );
+
+        // obtem o funcionario
+        $func = $this->FuncionariosFinder
+                ->clean()
+                ->key( $this->request->user()->CodFuncionario )
+                ->get( true );
+        
+        // verifica se é vendedor
+        if ( $func->cargo == 'Vendedor' ) {
+
+            // pega a loja
+            $loja = $this->LojasFinder->key( $func->loja )->get( true );
+
+            // pega o ranking
+            $ranking = $this->FuncionariosFinder->rankingClusterPessoal( $loja->cluster, $func->CodFuncionario );
+        
+            // faz o mapeamento do array
+            $ranking = [
+                            'uid'     => $ranking['UID'],
+                            'pontos'  => $ranking['Pontos'],
+                            'cpf'     => $ranking['CPF'],
+                            'nome'    => $ranking['Nome'],
+                            'ranking' => $ranking['ranking']
+                        ];
+    
+            // seta o resolve
+            $this->response->resolve( $ranking );
+        }
+     }
     /**  -----------------------------------------------------------
      * 
      * METODOS DE TREINAMENTO
@@ -440,5 +559,16 @@ class Api extends MY_Controller {
      * 
      * METODOS DE NOTIFICACAO
      *
+     
      * ------------------------------------------------------------- */
 }
+
+// SELECT * FROM 
+// 	( SELECT f.*, @i := @i+1 AS ranking
+// 		FROM (SELECT @i:=0) AS foo, 
+//      	( SELECT f.* FROM Funcionarios f
+// 	INNER JOIN Lojas l on f.CodLoja = l.CodLoja 
+// 	INNER JOIN Clusters c on l.CodCluster = c.CodCluster 
+// 	WHERE c.Nome = 'Cluster A'
+// 	ORDER BY f.Pontos DESC ) as f ) as s
+// WHERE CPF <> '44391032864'
