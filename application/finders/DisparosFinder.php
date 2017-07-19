@@ -15,9 +15,9 @@ class DisparosFinder extends MY_Model {
 
     // labels
     public $labels = [
-        'Data'          => 'Data',
-        'Notificacao'   => 'Notificacao',
-        'Nome'         => 'Nome'
+        'Data'        => 'Data',
+        'Notificacao' => 'Notificacao',
+        'Nome'        => 'Nome'
     ];
 
    /**
@@ -63,7 +63,6 @@ class DisparosFinder extends MY_Model {
     public function porFunc( $CodFuncionario ) {        
         $this->where( " CodFuncionario = $CodFuncionario" );
         $this->db->order_by( 'Data', 'DESC' );
-
         return $this;
     }
 }

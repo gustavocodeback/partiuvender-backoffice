@@ -137,4 +137,10 @@ $config['Treinamento'] = [
     'video'     => 'Video'
 ];
 
+$config['Mensagem'] = [
+    'funcionario' => 'CodFuncionario',
+    'texto'       => 'Texto',
+    'data'        => 'Data'
+];
+
 /* end of file */

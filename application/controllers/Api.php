@@ -426,6 +426,42 @@ class Api extends MY_Controller {
      * METODOS DE TRANSACOES
      *
      * ------------------------------------------------------------- */
+    public function obter_extrato( $page = 1 ) {
+
+        // carrega os finders
+        $this->load->finder( 'FuncionariosFinder' );
+
+        // pega o usuario
+        $user = $this->request->user();
+
+        // obtem o funcionario
+        $func = $this->FuncionariosFinder->clean()->key( $user->CodFuncionario )->get( true );
+        
+        // obtem o extrato
+        $extrato = $func->obterExtrato( $page );
+
+        // faz o mapeamento do extrato
+        $extrato = array_map( function( $item ) {
+
+            // pega os dados da data
+            $time = strtotime( $item['Data'] );
+            $dia  = date( 'd',  $time );
+            $mes  = date( 'M', $time );
+            $hora = date( 'H:i', $time );
+
+            // retorna os dados
+            return [
+                'Item'   => $item['Item'],
+                'Pontos' => $item['Pontos'],
+                'Dia'    => $dia,
+                'Mes'    => $mes,
+                'Hora'   => $hora
+            ];
+        }, $extrato );
+
+        // volta os dados
+        $this->response->resolve( $extrato );
+    }
 
     /**  -----------------------------------------------------------
      * 
@@ -654,7 +690,7 @@ class Api extends MY_Controller {
         return $this->response->resolve( $notificacoes );
      }
 
-     /**
+    /**
      * ler_notificacao
      *
      * marca uma notificacao como lida
@@ -675,14 +711,98 @@ class Api extends MY_Controller {
 
         return $this->response->reject( "Por favor tente mais tarde." );
      }
+    
+    /**  -----------------------------------------------------------
+     * 
+     * METODOS DE SUPORTE
+     *
+     
+     * ------------------------------------------------------------- */
+
+    /**
+     * obter_mensagens
+     *
+     * obtem as mensagens que um usuario enviou
+     *
+     */
+     public function obter_mensagens( $page = 1 ) {
+
+        // carrega os finders
+        $this->load->finder( [ 'MensagensFinder' ] );
+
+        // seta o funcionario
+        $func = $this->request->user();
+
+        // faz a paginacao
+        $msg = $this->MensagensFinder->clean()
+                    ->func( $func->CodFuncionario )
+                    ->paginate( $page, 5, true );
+        
+        // verifica se existem mensagens
+        if ( !$msg ) return $this->response->resolve( [] );
+
+        // faz o mapping
+        $msg = array_map( function( $m ) {
+            
+            // pega os dados da data
+            $time = strtotime( $m->data );
+            $dia  = date( 'd',  $time );
+            $mes  = date( 'M', $time );
+            $hora = date( 'H:i', $time );
+
+            // seta a data
+            $m->dia = $dia;
+            $m->mes = $mes;
+            $m->hora = $hora;
+
+            // volta a mensagem
+            return [
+                'texto' => $m->texto,
+                'dia'   => $dia,
+                'mes'   => $mes,
+                'hora'  => $hora
+            ];
+        }, $msg );
+
+        // envia as mensagens
+        return $this->response->resolve( $msg ); 
+     }
+
+     /**
+     * obter_mensagens
+     *
+     * obtem as mensagens que um usuario enviou
+     *
+     */
+     public function enviar_mensagem() {
+
+        // carrega os finders
+        $this->load->finder( [ 'FuncionariosFinder', 'MensagensFinder' ] );
+
+        // pega o funcionario
+        $func = $this->request->user();
+
+        // pega a mesangem
+        $msg = $this->input->post( 'msg' );
+        if ( !$msg ) return $this->response->reject( 'Nenhum mensagem enviada' );
+        
+        // limpa a mensagem
+        $msg = trim( strip_tags( addslashes( $msg ) ) );
+        if ( strlen( $msg ) == 0 ) return $this->response->reject( 'Nenhum mensagem enviada' );
+
+        // instancia a mensagem
+        $mensagem = $this->MensagensFinder->clean()->getMensagem();
+        $mensagem->setFuncionario( $func->CodFuncionario )
+        ->setTexto( $msg )
+        ->setData( date( 'Y-m-d H:i:s', time() ) );
+
+        // tenta salvar
+        if ( $mensagem->save() ) {
+            return $this->response->resolve( 'Mensagem enviada com sucesso' );
+        } else {
+            return $this->request->reject( 'Erro ao enviar a mensagem' );
+        }
+    }
 }
 
-// SELECT * FROM 
-// 	( SELECT f.*, @i := @i+1 AS ranking
-// 		FROM (SELECT @i:=0) AS foo, 
-//      	( SELECT f.* FROM Funcionarios f
-// 	INNER JOIN Lojas l on f.CodLoja = l.CodLoja 
-// 	INNER JOIN Clusters c on l.CodCluster = c.CodCluster 
-// 	WHERE c.Nome = 'Cluster A'
-// 	ORDER BY f.Pontos DESC ) as f ) as s
-// WHERE CPF <> '44391032864'
+/* end of file */

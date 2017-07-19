@@ -64,7 +64,8 @@ class Questionario extends MY_Model {
         $dados = [
             'CodQuestionario' => $this->CodQuestionario,
             'CodUsuario'      => $func,
-            'Pontos'          => $pontos
+            'Pontos'          => $pontos,
+            'Data'            => date( 'Y-m-d H:i:s', time() )
         ];
 
         // salva os dados

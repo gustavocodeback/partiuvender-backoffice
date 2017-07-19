@@ -289,16 +289,19 @@ $config['schema']['QuestionariosEncerrados'] = [
         'auto_increment' => TRUE
     ],
     'CodQuestionario' => [
-        'type'           => 'int',
-        'constraint'     => '11',
+        'type'       => 'int',
+        'constraint' => '11',
     ],
     'CodUsuario' => [
-        'type'           => 'int',
-        'constraint'     => '11',
+        'type'       => 'int',
+        'constraint' => '11',
     ],
     'Pontos' => [
-        'type'           => 'int',
-        'constraint'     => '11',
+        'type'       => 'int',
+        'constraint' => '11',
+    ],
+    'Data' => [
+        'type' => 'datetime',
     ]
 ];
 
@@ -440,6 +443,7 @@ $config['schema']['Notificacoes'] = [
     ],
 ];
 
+// Tabela de Disparos
 $config['schema']['Disparos'] = [
     'CodDisparo' => [
         'type'           => 'int',
@@ -489,6 +493,7 @@ $config['schema']['Treinamentos'] = [
     ]
 ];
 
+// Tabela de Vendas
 $config['schema']['Vendas'] = [
     'CodVenda' => [
         'type'           => 'int',
@@ -519,6 +524,26 @@ $config['schema']['Vendas'] = [
         'type'       => 'int',
         'constraint' => '11',
     ],
+];
+
+// Tabela de Mensagens
+$config['schema']['Mensagens'] = [
+    'CodMensagem' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+        'primary_key'    => TRUE,
+        'auto_increment' => TRUE
+    ],
+    'CodFuncionario' => [
+        'type'       => 'int',
+        'constraint' => '11'
+    ],
+    'Texto' => [
+        'type' => 'text',
+    ],
+    'Data' => [
+        'type' => 'datetime',
+    ]
 ];
 
 /* end of file */
