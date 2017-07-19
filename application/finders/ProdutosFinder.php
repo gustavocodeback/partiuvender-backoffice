@@ -15,7 +15,7 @@ class ProdutosFinder extends MY_Model {
 
     // labels
     public $labels = [
-        'Nome'       => 'p.Nome',
+        'Nome'       => 'Nome',
         'Categoria'  => 'Categoria',
         'Foto'       => 'Foto',
         'Pontos'     => 'Pontos',
@@ -50,7 +50,7 @@ class ProdutosFinder extends MY_Model {
     */
     public function grid() {
         $this->db->from( $this->table .' p' )
-        ->select( 'p.BasicCode, p.Nome, c.Nome as Categoria, p.Foto, p.Pontos, CodProduto as Ações' )
+        ->select( 'p.BasicCode, p.Nome as Nome, c.Nome as Categoria, p.Foto, p.Pontos, CodProduto as Ações' )
         ->join('Categorias c', 'c.CodCategoria = p.CodCategoria');
         return $this;
     }
