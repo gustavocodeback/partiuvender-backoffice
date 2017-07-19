@@ -130,4 +130,11 @@ $config['Venda'] = [
     'loja'          => 'Loja'
 ];
 
+$config['Treinamento'] = [
+    'nome'      => 'Nome',
+    'descricao' => 'Descricao',
+    'foto'      => 'Foto',
+    'video'     => 'Video'
+];
+
 /* end of file */
