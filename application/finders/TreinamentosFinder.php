@@ -53,6 +53,13 @@ class TreinamentosFinder extends MY_Model {
         return $this;
     }
 
+    public function treinamentos() {
+        
+        $this->db->order_by( 'CodTreinamento', 'DESC' );
+
+        return $this;
+    }
+
 }
 
 /* end of file */

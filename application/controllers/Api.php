@@ -126,13 +126,14 @@ class Api extends MY_Controller {
         // faz o mapeamento das cidades
         $produtos = array_map( function( $produto ) {
             return  [ 
-                        'CodProduto' => $produto->CodProduto, 
-                        'CodCategoria' => $produto->categoria,
-                        'Nome' => $produto->nome,
-                        'Pontos' => $produto->pontos,
-                        'Foto' => base_url('uploads/' .$produto->foto),
-                        'Descricao' => $produto->descricao,
-                        'Video' => $produto->video
+                        'CodProduto'    => $produto->CodProduto, 
+                        'CodCategoria'  => $produto->categoria,
+                        'BasicCode'     => $produto->basiccode,
+                        'Nome'          => $produto->nome,
+                        'Pontos'        => $produto->pontos,
+                        'Foto'          => $produto->foto ? base_url('uploads/' .$produto->foto) : $produto->foto,
+                        'Descricao'     => $produto->descricao,
+                        'Video'         => $produto->video
                     ];
         }, $produtos );
 
@@ -585,11 +586,42 @@ class Api extends MY_Controller {
             $this->response->resolve( $ranking );
         }
      }
+
     /**  -----------------------------------------------------------
      * 
      * METODOS DE TREINAMENTO
      *
      * ------------------------------------------------------------- */
+     /**
+     * obter_notificacoes_usuario
+     *
+     * obtem uma lista de notificacoe recentes do usuario
+     *
+     */
+     public function obter_treinamentos( $pagina ) {
+
+         // carrega os finders
+         $this->load->finder( [ 'TreinamentosFinder' ] );
+
+         $treinamentos = $this->TreinamentosFinder->treinamentos()->paginate( $pagina, 5, true );
+
+         if ( count( $treinamentos ) == 0 ) {
+            return $this->response->resolve( [] );
+        }
+
+        // faz o mapeamento dos treinamentos
+        $treinamentos = array_map( function( $treinamento ) {
+            return  [ 
+                        'CodTreinamento' => $treinamento->CodTreinamento, 
+                        'Nome' => $treinamento->nome,
+                        'Foto' => base_url('uploads/' .$treinamento->foto),
+                        'Descricao' => $treinamento->descricao,
+                        'Video' => $treinamento->video
+                    ];
+        }, $treinamentos );
+
+        return $this->response->resolve( $treinamentos );
+     }
 
     /**  -----------------------------------------------------------
      * 
