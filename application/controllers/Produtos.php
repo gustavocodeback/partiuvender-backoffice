@@ -176,7 +176,7 @@ class Produtos extends MY_Controller {
 
             // instancia um novo objeto grpo
             $produto = $this->ProdutosFinder->getProduto();            
-            $produto->setFoto( 'sem-foto.jpg' );
+            $produto->setFoto( NULL );
         }
 
         $produto->setBasicCode( $this->input->post( 'basiccode' ) );
@@ -188,7 +188,7 @@ class Produtos extends MY_Controller {
         $produto->setCod( $this->input->post( 'cod' ) );
 
         if ( $file_name ) {
-            if( $file_name != 'sem-foto' ) $this->picture->delete( $produto->foto );
+            $this->picture->delete( $produto->foto );
             $produto->setFoto( $file_name );
         }
 

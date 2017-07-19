@@ -131,7 +131,7 @@ class Api extends MY_Controller {
                         'BasicCode'     => $produto->basiccode,
                         'Nome'          => $produto->nome,
                         'Pontos'        => $produto->pontos,
-                        'Foto'          => base_url('uploads/' .$produto->foto),
+                        'Foto'          => $produto->foto ? base_url('uploads/' .$produto->foto) : $produto->foto,
                         'Descricao'     => $produto->descricao,
                         'Video'         => $produto->video
                     ];
