@@ -511,6 +511,10 @@ $config['schema']['Vendas'] = [
     'Data' => [
         'type'       => 'datetime'
     ],
+    'CodLoja' => [
+        'type'       => 'int',
+        'constraint' => '11',
+    ],
 ];
 
 /* end of file */

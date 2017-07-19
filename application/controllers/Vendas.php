@@ -172,6 +172,7 @@ class Vendas extends MY_Controller {
         $venda->setQuantidade( $this->input->post( 'quantidade' ) );
         $venda->setPontos( $pontos );
         $venda->setData( $data );
+        $venda->setLoja( $funcionario->loja );
         $venda->setCod( $this->input->post( 'cod' ) );
 
         // verifica se o formulario é valido

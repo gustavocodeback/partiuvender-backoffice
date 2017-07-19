@@ -20,6 +20,9 @@ class Venda extends MY_Model {
     // pontos
     public $pontos;
 
+    // loja
+    public $loja;
+
     // entidade
     public $entity = 'Venda';
     
@@ -66,6 +69,11 @@ class Venda extends MY_Model {
     // pontos
     public function setPontos( $pontos ) {
         $this->pontos = $pontos;
+    }
+
+    // loja
+    public function setLoja( $loja ) {
+        $this->loja = $loja;
     }
 }
 
