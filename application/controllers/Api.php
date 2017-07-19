@@ -417,6 +417,42 @@ class Api extends MY_Controller {
      * METODOS DE TRANSACOES
      *
      * ------------------------------------------------------------- */
+    public function obter_extrato( $page = 1 ) {
+
+        // carrega os finders
+        $this->load->finder( 'FuncionariosFinder' );
+
+        // pega o usuario
+        $user = $this->request->user();
+
+        // obtem o funcionario
+        $func = $this->FuncionariosFinder->clean()->key( $user->CodFuncionario )->get( true );
+        
+        // obtem o extrato
+        $extrato = $func->obterExtrato( $page );
+
+        // faz o mapeamento do extrato
+        $extrato = array_map( function( $item ) {
+
+            // pega os dados da data
+            $time = strtotime( $item['Data'] );
+            $dia  = date( 'd',  $time );
+            $mes  = date( 'M', $time );
+            $hora = date( 'H:i', $time );
+
+            // retorna os dados
+            return [
+                'Item'   => $item['Item'],
+                'Pontos' => $item['Pontos'],
+                'Dia'    => $dia,
+                'Mes'    => $mes,
+                'Hora'   => $hora
+            ];
+        }, $extrato );
+
+        // volta os dados
+        $this->response->resolve( $extrato );
+    }
 
     /**  -----------------------------------------------------------
      * 
@@ -642,3 +678,24 @@ class Api extends MY_Controller {
 // 	WHERE c.Nome = 'Cluster A'
 // 	ORDER BY f.Pontos DESC ) as f ) as s
 // WHERE CPF <> '44391032864'
+// SELECT SUM( Pontos ) as Total, Data, CodLoja FROM Vendas
+// GROUP BY CodLoja
+// HAVING Data < '2017-08-01'
+
+// EXTRATO
+// SELECT * FROM 
+
+// 	( 	SELECT 	Vendas.Pontos as Pontos, 
+//      			Vendas.Data, 
+//      			Produtos.Nome as Item FROM Vendas
+// 					INNER JOIN Produtos ON Produtos.CodProduto = Vendas.CodProduto
+// 					WHERE CodFuncionario = 1627
+// 				UNION
+// 		SELECT 	Pontos, 
+//      			Data, 
+//      			'Quiz' as Item 
+//      			FROM QuestionariosEncerrados
+// WHERE CodUsuario = 1627 ) as Extrato
+// ORDER BY Data
+// LIMIT 10
+// OFFSET 1

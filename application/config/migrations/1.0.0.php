@@ -289,16 +289,19 @@ $config['schema']['QuestionariosEncerrados'] = [
         'auto_increment' => TRUE
     ],
     'CodQuestionario' => [
-        'type'           => 'int',
-        'constraint'     => '11',
+        'type'       => 'int',
+        'constraint' => '11',
     ],
     'CodUsuario' => [
-        'type'           => 'int',
-        'constraint'     => '11',
+        'type'       => 'int',
+        'constraint' => '11',
     ],
     'Pontos' => [
-        'type'           => 'int',
-        'constraint'     => '11',
+        'type'       => 'int',
+        'constraint' => '11',
+    ],
+    'Data' => [
+        'type' => 'datetime',
     ]
 ];
 

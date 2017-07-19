@@ -99,6 +99,37 @@ class Funcionario extends MY_Model {
         $this->pontos -= $pontos;
         $this->save();
     }
+
+    // obtem o extrato
+    public function obterExtrato( $pagina = 1 ) {
+        
+        // pagina
+        $offset = ( $pagina - 1 ) * 10;
+
+        // monta a query
+        $query = "SELECT * FROM 
+        	( 	SELECT 	Vendas.Pontos as Pontos, 
+             			Vendas.Data, 
+             			CONCAT( Produtos.BasicCode, ' - ', Produtos.Nome )as Item FROM Vendas
+        					INNER JOIN Produtos ON Produtos.CodProduto = Vendas.CodProduto
+        					WHERE CodFuncionario = $this->CodFuncionario
+        				UNION
+        		SELECT 	Pontos, 
+             			Data, 
+             			CONCAT( 'Quiz - ', Nome )as Item 
+             			FROM QuestionariosEncerrados
+                         INNER JOIN Questionarios ON QuestionariosEncerrados.CodQuestionario = Questionarios.CodQuestionario
+        WHERE CodUsuario = $this->CodFuncionario ) as Extrato
+        ORDER BY Data
+        LIMIT 10
+        OFFSET $offset";
+
+        // faz a busca
+        $busca = $this->db->query( $query );
+
+        // volta o resultado
+        return $busca->result_array();
+    }
 }
 
 /* end of file */
