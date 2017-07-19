@@ -92,15 +92,15 @@ class Lojas extends MY_Controller {
 		$this->LojasFinder->grid()
 
 		// seta os filtros
-        ->addFilter( 'nome', 'text' )
+        ->addFilter( 'Razao', 'text' )
 		->filter()
 		->order()
 		->paginate( 0, 20 )
 
 		// seta as funcoes nas colunas
 		->onApply( 'Ações', function( $row, $key ) {
-			echo '<a href="'.site_url( 'lojas/alterar/'.$row['Código'] ).'" class="margin btn btn-xs btn-info"><span class="glyphicon glyphicon-pencil"></span></a>';
-			echo '<a href="'.site_url( 'lojas/excluir/'.$row['Código'] ).'" class="margin btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';            
+			echo '<a href="'.site_url( 'lojas/alterar/'.$row[$key] ).'" class="margin btn btn-xs btn-info"><span class="glyphicon glyphicon-pencil"></span></a>';
+			echo '<a href="'.site_url( 'lojas/excluir/'.$row[$key] ).'" class="margin btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';            
 		})
 
         // formata o Cnpj para exibicao

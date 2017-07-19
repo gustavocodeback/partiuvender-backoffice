@@ -72,7 +72,6 @@ class Funcionarios extends MY_Controller {
 		$this->FuncionariosFinder->clean()->grid()
 
 		// seta os filtros
-        ->addFilter( 'f.Nome', 'text' )
         ->addFilter( 'CPF', 'text' )
 		->filter()
 		->order()

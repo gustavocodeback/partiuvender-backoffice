@@ -59,8 +59,6 @@ class Cidades extends MY_Controller {
 		$this->CidadesFinder->grid()
 
 		// seta os filtros
-        ->addFilter( 'nome', 'text' )
-		->filter()
 		->order()
 		->paginate( 0, 20 )
 

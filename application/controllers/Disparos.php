@@ -59,8 +59,6 @@ class Disparos extends MY_Controller {
 		$this->DisparosFinder->grid()
 
 		// seta os filtros
-        ->addFilter( 'grupo', 'text' )
-		->filter()
 		->order()
 		->paginate( 0, 20 )
 

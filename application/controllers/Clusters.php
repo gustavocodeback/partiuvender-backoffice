@@ -55,7 +55,7 @@ class Clusters extends MY_Controller {
 		$this->ClustersFinder->grid()
 
 		// seta os filtros
-        ->addFilter( 'nome', 'text' )
+        ->addFilter( 'Nome', 'text' )
 		->filter()
 		->order()
 		->paginate( 0, 20 )
