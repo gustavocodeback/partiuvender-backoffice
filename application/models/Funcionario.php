@@ -130,6 +130,21 @@ class Funcionario extends MY_Model {
         // volta o resultado
         return $busca->result_array();
     }
+
+    // obtem as notificacoes nao lidas
+    public function naoLidas() {
+
+        // prepara a query
+        $query = " SELECT COUNT(*) as Notificacoes FROM Disparos
+                WHERE CodFuncionario = $this->CodFuncionario AND 
+                Status = 'N' ";
+
+        // executa
+        $busca = $this->db->query( $query );
+
+        // volta o resultado
+        return ( $busca->num_rows() > 0 ) ? $busca->result_array()[0]['Notificacoes'] : 0;
+    }
 }
 
 /* end of file */

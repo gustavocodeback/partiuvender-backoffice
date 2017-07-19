@@ -25,6 +25,29 @@ class Response {
     */
     public function show( $data ) {
 
+        // seta o atributo
+        $data['notificacoes'] = 0;
+
+        // carrega a library de request
+        $this->ci->load->library( 'Request' );
+
+        // pega o header
+        $uid   = $this->ci->request->header( 'AUTH_UID' );
+        $email = $this->ci->request->header( 'AUTH_EMAIL' );
+
+        // verifica se existe uid
+        if ( $uid ) {
+
+            // carrega o finder
+            $this->ci->load->finder( 'FuncionariosFinder' );
+
+            // carrega o usuario
+            $func = $this->ci->FuncionariosFinder->clean()->uid( $uid )->get( true );
+        
+            // pega as notificacoes
+            $data['notificacoes'] = $func->naoLidas();
+        }
+        
         // envia os dados
         echo json_encode( $data );
         return;
