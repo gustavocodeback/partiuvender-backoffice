@@ -631,8 +631,6 @@ class Api extends MY_Controller {
 
         return $this->response->reject( "Por favor tente mais tarde." );
      }
-
-     
 }
 
 // SELECT * FROM 
