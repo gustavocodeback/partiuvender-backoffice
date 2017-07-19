@@ -53,6 +53,19 @@ class DisparosFinder extends MY_Model {
         ->join( 'Funcionarios f', 'f.CodFuncionario = d.CodFuncionario' );
         return $this;
     }
+
+    /**
+    * porFunc
+    *
+    * funcao usada para buscar os disparos relacionados ao funcionario
+    *
+    */
+    public function porFunc( $CodFuncionario ) {        
+        $this->where( " CodFuncionario = $CodFuncionario" );
+        $this->db->order_by( 'Data', 'DESC' );
+
+        return $this;
+    }
 }
 
 /* end of file */

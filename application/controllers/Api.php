@@ -555,12 +555,84 @@ class Api extends MY_Controller {
      *
      * ------------------------------------------------------------- */
 
-     /**  -----------------------------------------------------------
+    /**  -----------------------------------------------------------
      * 
      * METODOS DE NOTIFICACAO
      *
      
      * ------------------------------------------------------------- */
+     /**
+     * obter_notificacoes_usuario
+     *
+     * obtem uma lista de notificacoe recentes do usuario
+     *
+     */
+     public function obter_notificacoes_usuario( $pagina ) {
+
+        // carrega os finder
+        $this->load->finder( [ 'DisparosFinder', 'NotificacoesFinder', 'FuncionariosFinder' ] );
+
+        $CodFuncionario = $this->request->user()->CodFuncionario;
+
+        // carrega o funcionario
+        $funcionario = $this->FuncionariosFinder->key( $CodFuncionario )->get( true );
+
+        // carrega os disparos
+        $disparos = $this->DisparosFinder->porFunc( $CodFuncionario )->paginate( $pagina, 10, true );
+
+        // verifica se tem disparos
+        if( !$disparos ) return $this->response->resolve( [] );
+
+        // percorre todos os disparos
+        foreach ( $disparos as $key => $disparo ) {
+
+            // busca a notificacao de cada disparo
+            $notificacao = $this->NotificacoesFinder->key( $disparo->notificacao )->get( true );
+
+            // guarda o codigo do disparo
+            $notificacao->disparo = $disparo->CodDisparo;
+
+            // coloca a notificacao na array de notificacoes
+            $notificacoes[] = $notificacao;
+        }
+
+        // faz o mapeamento das notificacoes
+        $notificacoes = array_map( function( $notificacao ) {
+            return  [ 
+                        'CodDisparo' => $notificacao->disparo,
+                        'CodNotificacao' => $notificacao->CodNotificacao,
+                        'Nome' => $notificacao->nome,
+                        'Foto' => base_url('uploads/' .$notificacao->notificacao),
+                        'Texto' => $notificacao->texto
+                    ];
+        }, $notificacoes );
+
+        return $this->response->resolve( $notificacoes );
+     }
+
+     /**
+     * ler_notificacao
+     *
+     * marca uma notificacao como lida
+     *
+     */
+     public function ler_notificacao( $CodDisparo ) {
+
+         // carrega os finder
+        $this->load->finder( [ 'DisparosFinder' ] );
+
+        // carrega o disparo
+        $disparo = $this->DisparosFinder->key( $CodDisparo )->get( true );
+
+        // seta como lido
+        $disparo->setStatus( 'S' );
+
+        if( $disparo->save() ) return $this->response->resolve( "Mensagem lida com sucesso." );
+
+        return $this->response->reject( "Por favor tente mais tarde." );
+     }
+
+     
 }
 
 // SELECT * FROM 

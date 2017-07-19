@@ -126,7 +126,8 @@ $config['Venda'] = [
     'quantidade'    => 'Quantidade',
     'produto'       => 'CodProduto',
     'pontos'        => 'Pontos',
-    'data'          => 'Data'
+    'data'          => 'Data',
+    'loja'          => 'Loja'
 ];
 
 /* end of file */
