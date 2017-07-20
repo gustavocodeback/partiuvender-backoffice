@@ -148,7 +148,7 @@ class Notificacoes extends MY_Controller {
     public function salvar() {
 
         // faz o upload da imagem
-        $file_name = $this->picture->upload( 'foto', [ 'square' => 200 ] );
+        $file_name = $this->picture->upload( 'foto' );
 
         if ( $this->input->post( 'cod' ) ) {
             $notificacao = $this->NotificacoesFinder->key( $this->input->post( 'cod' ) )->get( true );
