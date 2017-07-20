@@ -64,7 +64,7 @@ class Api extends MY_Controller {
     public function salvar_uid( $cpf ) {
 
         // carrega os finders
-        $this->load->finder( [ 'FuncionariosFinder' ] );
+        $this->load->finder( [ 'FuncionariosFinder', 'LojasFinder', 'ClustersFinder' ] );
 
         // verifica se o cpf eh valido
         if ( !$this->valid_cpf( $cpf ) ) return $this->response->reject( 'O CPF informado é inválido.' );
@@ -72,6 +72,12 @@ class Api extends MY_Controller {
         // carrega pelo cpf
         $func = $this->FuncionariosFinder->clean()->cpf( $cpf )->get( true );
         if ( !$func ) return $this->response->reject( 'Nenhum funcionário encontrado para esse CPF.' );
+
+        // carrega a loja do funcionario
+        $loja = $this->LojasFinder->clean()->key( $func->loja )->get( true );
+
+        // carrega o cluster da loja
+        $cluster = $this->ClustersFinder->clean()->key( $loja->cluster )->get( true );
 
         // pega o uid
         $uid = $this->input->post( 'uid' );
@@ -83,12 +89,12 @@ class Api extends MY_Controller {
 
             // devolve o funcionario
             $data = [
-                'nome'    => $func->nome,
-                'cpf'     => $func->cpf,
-                'cargo'   => $func->cargo,
-                'loja'    => $func->cargo,
-                'cluster' => $func->cargo,
-                'uid'     => $func->uid
+                'nome'      => $func->nome,
+                'cpf'       => $func->cpf,
+                'cargo'     => $func->cargo,
+                'uid'       => $func->uid,
+                'loja'      => $loja->nome,
+                'cluster'   => $cluster->nome
             ];
             return $this->response->resolve( $data );
 
@@ -662,6 +668,9 @@ class Api extends MY_Controller {
             // guarda o codigo do disparo
             $notificacao->disparo = $disparo->CodDisparo;
 
+            // guarda o status
+            $notificacao->status = $disparo->status;
+
             // coloca a notificacao na array de notificacoes
             $notificacoes[] = $notificacao;
         }
@@ -669,11 +678,12 @@ class Api extends MY_Controller {
         // faz o mapeamento das notificacoes
         $notificacoes = array_map( function( $notificacao ) {
             return  [ 
-                        'CodDisparo' => $notificacao->disparo,
-                        'CodNotificacao' => $notificacao->CodNotificacao,
-                        'Nome' => $notificacao->nome,
-                        'Foto' => base_url('uploads/' .$notificacao->notificacao),
-                        'Texto' => $notificacao->texto
+                        'CodDisparo'        => $notificacao->disparo,
+                        'CodNotificacao'    => $notificacao->CodNotificacao,
+                        'Nome'              => $notificacao->nome,
+                        'Foto'              => base_url('uploads/' .$notificacao->notificacao),
+                        'Texto'             => $notificacao->texto,
+                        'Status'            => $notificacao->status
                     ];
         }, $notificacoes );
 

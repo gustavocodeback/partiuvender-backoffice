@@ -70,15 +70,15 @@ class Produtos extends MY_Controller {
 		$this->ProdutosFinder->grid()
 
 		// seta os filtros
-        ->addFilter( 'nome', 'text' )
+        ->addFilter( 'BasicCode', 'text' )
 		->filter()
 		->order()
 		->paginate( 0, 20 )
 
 		// seta as funcoes nas colunas
 		->onApply( 'Ações', function( $row, $key ) {
-			echo '<a href="'.site_url( 'produtos/alterar/'.$row['Código'] ).'" class="margin btn btn-xs btn-info"><span class="glyphicon glyphicon-pencil"></span></a>';
-			echo '<a href="'.site_url( 'produtos/excluir/'.$row['Código'] ).'" class="margin btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';            
+			echo '<a href="'.site_url( 'produtos/alterar/'.$row[$key] ).'" class="margin btn btn-xs btn-info"><span class="glyphicon glyphicon-pencil"></span></a>';
+			echo '<a href="'.site_url( 'produtos/excluir/'.$row[$key] ).'" class="margin btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';            
 		})
 
         // seta as funcoes nas colunas

@@ -19,7 +19,7 @@ class FuncionariosFinder extends MY_Model {
         'f.UID' => 'UID',
         'f.Token' => 'Token',
         'f.Cargo' => 'Cargo',
-        'f.Nome' => 'Nome',
+        'f.Nome' => 'f.Nome',
         'f.Email' => 'Email',
         'Senha' => 'Senha',
         'f.CPF' => 'CPF',
