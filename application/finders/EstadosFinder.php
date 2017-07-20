@@ -55,6 +55,38 @@ class EstadosFinder extends MY_Model {
         $this->where( "Uf = '$uf'" );
         return $this;
     }
+
+       /**
+    * filtro
+    *
+    * volta o array para formatar os filtros
+    *
+    */
+    public function filtro() {
+
+        // prepara os dados
+        $this->db->from( $this->table )
+        ->select( 'CodEstado as Valor, Nome as Label' );
+
+        // faz a busca
+        $busca = $this->db->get();
+
+        // verifica se existe resultados
+        if ( $busca->num_rows() > 0 ) {
+
+            // seta o array de retorna
+            $ret = [];
+
+            // percorre todos os dados
+            foreach( $busca->result_array() as $item ) {
+                $ret[$item['Valor']] = $item['Label'];
+            }
+
+            // retorna os dados
+            return $ret;
+
+        } else return [];
+    }
 }
 
 /* end of file */

@@ -10,7 +10,7 @@
             <h2>Nova venda</h2>
         </div>
         <?php if( $venda ): ?>
-        <input type="hidden" name="cod" value="<?php echo $venda->CodVenda; ?>">
+            <input type="hidden" name="cod" value="<?php echo $venda->CodVenda; ?>">
         <?php endif; ?><!-- id -->
         
         <div class="row">
@@ -22,7 +22,7 @@
                             id="cpf" 
                             name="cpf" 
                             required
-                            value="<?php echo $venda ? mascara_cpf( $venda->cpf ) : ''; ?>"
+                            value="<?php echo $venda && $venda->cpf ? mascara_cpf( $venda->cpf ) : ''; ?>"
                             placeholder="999.999.999-99">
                 </div>
             </div>
@@ -49,11 +49,11 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="produto">Produto</label>
-                    <select id="produto" name="produto" <?php echo $venda && $venda->produto  ? '' : 'disabled="disabled"'; ?> class="form-control">
+                    <select id="produto" name="produto" <?php echo $venda && $venda->categoria  ? '' : 'disabled="disabled"'; ?> class="form-control">
                         <option value="">-- Selecione --</option>
                         <?php foreach( $view->item( 'produtos' ) as $item ): ?>
                         <option value="<?php echo $item->CodProduto?>" 
-                                <?php echo $venda && $venda->cidade == $item->CodProduto ? 'selected="selected"' : ''; ?>>
+                                <?php echo $venda && $venda->produto == $item->CodProduto ? 'selected="selected"' : ''; ?>>
                         <?php echo $item->nome; ?></option>
                         <?php endforeach; ?>
                     </select>

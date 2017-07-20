@@ -50,11 +50,16 @@ class Perguntas extends MY_Controller {
     *
     */
 	public function index() {
+        
+        // carrega os categorias
+        $questionarios = $this->QuestionariosFinder->filtro();
 
         // faz a paginacao
 		$this->PerguntasFinder->clean()->grid()
 
 		// seta os filtros
+        ->addFilter( 'CodQuestionario', 'select', $questionarios, 'p' )
+        ->filter()
 		->order()
 		->paginate( 0, 20 )
 

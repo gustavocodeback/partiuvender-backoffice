@@ -87,12 +87,17 @@ class Lojas extends MY_Controller {
     *
     */
 	public function index() {
+        
+        // carrega os categorias
+        $clusters = $this->ClustersFinder->filtro();
 
         // faz a paginacao
 		$this->LojasFinder->grid()
 
 		// seta os filtros
         ->addFilter( 'Razao', 'text' )
+        ->addFilter( 'Nome', 'text', false, 'l' )
+        ->addFilter( 'CodCluster', 'select', $clusters, 'l')
 		->filter()
 		->order()
 		->paginate( 0, 20 )

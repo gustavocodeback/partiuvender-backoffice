@@ -23,7 +23,7 @@
                             name="nome" 
                             required
                             value="<?php echo $cluster ? $cluster->nome : ''; ?>"
-                            placeholder="Minas Gerais">
+                            placeholder="Cluster X">
                 </div>
             </div>
         </div>

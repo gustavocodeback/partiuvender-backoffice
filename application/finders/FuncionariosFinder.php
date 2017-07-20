@@ -15,15 +15,15 @@ class FuncionariosFinder extends MY_Model {
 
     // labels
     public $labels = [
-        'Loja' => 'Loja',
-        'f.UID' => 'UID',
-        'f.Token' => 'Token',
-        'f.Cargo' => 'Cargo',
-        'f.Nome' => 'f.Nome',
-        'f.Email' => 'Email',
-        'Senha' => 'Senha',
-        'f.CPF' => 'CPF',
-        'f.Pontos' => 'Pontos'
+        'CodLoja'   => 'Loja',
+        'UID'       => 'UID',
+        'Token'     => 'Token',
+        'Cargo'     => 'Cargo',
+        'Nome'      => 'Nome',
+        'Email'     => 'Email',
+        'Senha'     => 'Senha',
+        'CPF'       => 'CPF',
+        'Pontos'    => 'Pontos'
     ];
 
    /**
@@ -170,6 +170,7 @@ class FuncionariosFinder extends MY_Model {
         // volta o array
         return $busca->result_array();
     }
+    
 }
 
 /* end of file */

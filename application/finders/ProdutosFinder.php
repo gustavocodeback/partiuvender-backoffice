@@ -15,11 +15,9 @@ class ProdutosFinder extends MY_Model {
 
     // labels
     public $labels = [
-        'Nome'       => 'Nome',
-        'Categoria'  => 'Categoria',
-        'Foto'       => 'Foto',
-        'Pontos'     => 'Pontos',
-        'BasicCode'  => 'Basic Code'
+        'CodCategoria'  => 'Categoria',
+        'Pontos'        => 'Pontos',
+        'BasicCode'     => 'Basic Code'
     ];
 
    /**

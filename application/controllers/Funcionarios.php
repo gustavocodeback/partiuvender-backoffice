@@ -68,11 +68,16 @@ class Funcionarios extends MY_Controller {
     */
 	public function index() {
 
+        // carrega os categorias
+        $lojas = $this->LojasFinder->filtro();
+
         // faz a paginacao
 		$this->FuncionariosFinder->clean()->grid()
 
 		// seta os filtros
         ->addFilter( 'CPF', 'text' )
+        ->addFilter( 'Nome', 'text', false, 'f' )
+        ->addFilter( 'CodLoja', 'select', $lojas, 'f' )
 		->filter()
 		->order()
 		->paginate( 0, 20 )

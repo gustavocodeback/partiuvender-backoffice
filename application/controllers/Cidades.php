@@ -55,10 +55,15 @@ class Cidades extends MY_Controller {
     */
 	public function index() {
 
+        // carrega os categorias
+        $estados = $this->EstadosFinder->filtro();
+
         // faz a paginacao
 		$this->CidadesFinder->grid()
 
 		// seta os filtros
+        ->addFilter( 'CodEstado', 'select', $estados, 'c')
+        ->filter()
 		->order()
 		->paginate( 0, 20 )
 

@@ -62,6 +62,8 @@ class Questionarios extends MY_Controller {
 		$this->QuestionariosFinder->clean()->grid()
 
 		// seta os filtros
+        ->addFilter( 'Nome', 'text')
+        ->filter()
 		->order()
 		->paginate( 0, 20 )
 
