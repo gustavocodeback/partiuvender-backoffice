@@ -15,8 +15,7 @@ class CategoriasFinder extends MY_Model {
 
     // labels
     public $labels = [
-        'nome'  => 'Nome',
-        'foto'  => 'Foto'
+        'Nome'  => 'Nome',
     ];
 
    /**
@@ -54,6 +53,38 @@ class CategoriasFinder extends MY_Model {
     public function nome( $nome ) {
         $this->where( " Nome = '$nome' " );
         return $this;
+    }
+
+    /**
+    * filtro
+    *
+    * volta o array para formatar os filtros
+    *
+    */
+    public function filtro() {
+
+        // prepara os dados
+        $this->db->from( $this->table )
+        ->select( 'CodCategoria as Valor, Nome as Label' );
+
+        // faz a busca
+        $busca = $this->db->get();
+
+        // verifica se existe resultados
+        if ( $busca->num_rows() > 0 ) {
+
+            // seta o array de retorna
+            $ret = [];
+
+            // percorre todos os dados
+            foreach( $busca->result_array() as $item ) {
+                $ret[$item['Valor']] = $item['Label'];
+            }
+
+            // retorna os dados
+            return $ret;
+
+        } else return [];
     }
 }
 

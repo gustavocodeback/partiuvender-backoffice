@@ -14,7 +14,9 @@ class PerguntasFinder extends MY_Model {
     public $primaryKey = 'CodPergunta';
 
     // labels
-    public $labels = [];
+    public $labels = [
+        'CodQuestionario' => 'Questionario'
+        ];
 
    /**
     * __construct

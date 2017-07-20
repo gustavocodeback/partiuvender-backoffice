@@ -15,10 +15,10 @@ class LojasFinder extends MY_Model {
 
     // labels
     public $labels = [
-        'Cluster' => 'Cluster',
+        'CodCluster' => 'Cluster',
         'CNPJ' => 'CNPJ',
         'Razao' => 'Razao',
-        'l.Nome' => 'Nome',
+        'Nome' => 'Nome',
         'Endereco' => 'Endereco',
         'Numero' => 'Numero',
         'Complemento' => 'Complemento',
@@ -66,6 +66,37 @@ class LojasFinder extends MY_Model {
     public function nome( $nome ) {
         $this->where( " Nome = '$nome' " );
         return $this;
+    }
+    /**
+    * filtro
+    *
+    * volta o array para formatar os filtros
+    *
+    */
+    public function filtro() {
+
+        // prepara os dados
+        $this->db->from( $this->table )
+        ->select( 'CodLoja as Valor, Nome as Label' );
+
+        // faz a busca
+        $busca = $this->db->get();
+
+        // verifica se existe resultados
+        if ( $busca->num_rows() > 0 ) {
+
+            // seta o array de retorna
+            $ret = [];
+
+            // percorre todos os dados
+            foreach( $busca->result_array() as $item ) {
+                $ret[$item['Valor']] = $item['Label'];
+            }
+
+            // retorna os dados
+            return $ret;
+
+        } else return [];
     }
 }
 

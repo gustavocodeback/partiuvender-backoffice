@@ -62,7 +62,7 @@ class Treinamentos extends MY_Controller {
 		$this->TreinamentosFinder->grid()
 
 		// seta os filtros
-        ->addFilter( 'nome', 'text' )
+        ->addFilter( 'Nome', 'text' )
 		->filter()
 		->order()
 		->paginate( 0, 20 )

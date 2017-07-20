@@ -66,11 +66,16 @@ class Produtos extends MY_Controller {
     */
 	public function index() {
 
+        // carrega os categorias
+        $categorias = $this->CategoriasFinder->filtro();
+
         // faz a paginacao
 		$this->ProdutosFinder->grid()
 
 		// seta os filtros
         ->addFilter( 'BasicCode', 'text' )
+        ->addFilter( 'Nome', 'text', false, 'p' )
+        ->addFilter( 'CodCategoria', 'select', $categorias, 'p' )
 		->filter()
 		->order()
 		->paginate( 0, 20 )

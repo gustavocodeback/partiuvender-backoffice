@@ -36,10 +36,6 @@ class Vendas extends MY_Controller {
                 'label' => 'CPF',
                 'rules' => 'required|min_length[14]|max_length[14]|trim'
             ], [
-                'field' => 'produto',
-                'label' => 'Produto',
-                'rules' => 'required'
-            ], [
                 'field' => 'quantidade',
                 'label' => 'Quantidade',
                 'rules' => 'required'
@@ -63,7 +59,7 @@ class Vendas extends MY_Controller {
         // faz a paginacao
 		$this->VendasFinder->clean()->grid()
 
-		// seta os filtros
+		// seta os filtros        
 		->order()
 		->paginate( 0, 20 )
 
@@ -137,10 +133,17 @@ class Vendas extends MY_Controller {
     *
     */
     public function salvar() {
+
+        //carrega o produto da venda
+        $produto = $this->ProdutosFinder->key( $this->input->post( 'produto' ) )->get( true );
         
         // carrega as categorias
         $categorias = $this->CategoriasFinder->get();
-        $this->view->set( 'categorias', $categorias );
+        $this->view->set( 'categorias', $categorias );        
+        
+        // carrega produtos da categoria selecionada
+        $produtos = $this->ProdutosFinder->clean()->porCategoria( $this->input->post( 'categoria' ) )->get();
+        $this->view->set( 'produtos', $produtos );
 
         $search = array('.','/','-');
         $cpf = str_replace ( $search , '' , $this->input->post( 'cpf') );
@@ -148,37 +151,54 @@ class Vendas extends MY_Controller {
         // pega o funcionario da venda
         $funcionario = $this->FuncionariosFinder->cpf( $cpf )->get(true);
 
-        // retorna erro caso o funcionario não exista no sistema
-        if( !$funcionario ) {
-            $this->view->set( 'errors', 'Funcionário inexistente no sistema!' );
-            return;
-        }
-
-        //carrega o produto da venda
-        $produto = $this->ProdutosFinder->key( $this->input->post( 'produto' ) )->get( true );
-
-        $pontos = $produto->pontos * $this->input->post( 'quantidade' );
-
-        $funcionario->addPontos( $pontos );
-
         $data = date( 'Y-m-d', strtotime( $this->input->post( 'data' ) ) );
-
+        
         // instancia um novo objeto classificacao
-        $venda = $this->VendasFinder->getVenda();
-        $venda->setFuncionario( $funcionario->CodFuncionario );
-        $venda->setProduto( $this->input->post( 'produto' ) );
-        $venda->setQuantidade( $this->input->post( 'quantidade' ) );
-        $venda->setPontos( $pontos );
-        $venda->setData( $data );
-        $venda->setLoja( $funcionario->loja );
+        $venda = $this->VendasFinder->getVenda();  
+        
+        $venda->cpf = $cpf;
+
+        $venda->categoria = $this->input->post( 'categoria' );
+      
+        $venda->setData( $data ); 
+        $venda->setQuantidade( $this->input->post( 'quantidade' ) );  
         $venda->setCod( $this->input->post( 'cod' ) );
 
+        // verifica se existe produto
+        if( !$produto ) {
+
+            $this->view->set( 'errors', $this->view->item( 'errors' ) ? 
+                            $this->view->item( 'errors' ).'Selecione um produto!<br>' : 'Selecione um produto!<br>' );
+            
+        } else {
+
+            $pontos = $produto->pontos * $this->input->post( 'quantidade' );
+            $venda->setProduto( $this->input->post( 'produto' ) );
+            $venda->setPontos( $pontos );  
+
+        }
+        
+        // retorna erro caso o funcionario não exista no sistema
+        if( !$funcionario ) {
+
+            $this->view->set( 'errors', $this->view->item( 'errors' ) ? 
+                            $this->view->item( 'errors' ).'Funcionário inexistente no sistema!<br>' : $view->item( 'errors' ).'Funcionário inexistente no sistema!<br>' );
+        }  else {            
+
+            $funcionario->addPontos( $pontos );
+            
+            $venda->setLoja( $funcionario->loja );
+            $venda->setFuncionario( $funcionario->CodFuncionario );
+        }
+
+
         // verifica se o formulario é valido
-        if ( !$this->_formularioVenda() ) {
+        if ( !$this->_formularioVenda() || $this->view->item( 'errors' ) ) {
 
             // seta os erros de validacao            
             $this->view->set( 'venda', $venda );
-            $this->view->set( 'errors', validation_errors() );
+            $this->view->set( 'errors', $this->view->item( 'errors' ) ? 
+                            $this->view->item( 'errors' ).validation_errors() : validation_errors() );
             
             // carrega a view de adicionar
             $this->view->setTitle( 'Samsung - Adicionar venda' )->render( 'forms/venda' );
