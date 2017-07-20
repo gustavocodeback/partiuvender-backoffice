@@ -67,6 +67,11 @@ class LojasFinder extends MY_Model {
         $this->where( " Nome = '$nome' " );
         return $this;
     }
+
+    public function cnpj( $cnpj ) {
+        $this->where( " CNPJ = '$cnpj' " );
+        return $this;
+    }
     /**
     * filtro
     *
