@@ -38,16 +38,17 @@ $config['Cluster'] = [
 ];
 
 $config['Loja'] = [
-    'cluster'     => 'CodCluster',
-    'cnpj'        => 'CNPJ',
-    'razao'       => 'Razao',
-    'nome'        => 'Nome',
-    'endereco'    => 'Endereco',
-    'numero'      => 'Numero',
-    'complemento' => 'Complemento',
-    'bairro'      => 'Bairro',
-    'cidade'      => 'CodCidade',
-    'estado'      => 'CodEstado'
+    'cluster'        => 'CodCluster',
+    'cnpj'           => 'CNPJ',
+    'razao'          => 'Razao',
+    'nome'           => 'Nome',
+    'endereco'       => 'Endereco',
+    'numero'         => 'Numero',
+    'complemento'    => 'Complemento',
+    'bairro'         => 'Bairro',
+    'cidade'         => 'CodCidade',
+    'estado'         => 'CodEstado',
+    'pontosiniciais' => 'PontosIniciais'
 ];
 
 $config['Funcionario'] = [
