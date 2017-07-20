@@ -161,10 +161,12 @@ class Disparos extends MY_Controller {
             $this->FuncionariosFinder->cargo( $this->input->post( 'grupo' ) )->get() :
             $this->FuncionariosFinder->get();
 
+        // pega a notificacao
         $notificacao = $this->NotificacoesFinder->key( $this->input->post( 'notificacao' ) )->get( true );
         $notificacao->setDisparos( $notificacao->disparos + 1 );
         $notificacao->save();
 
+        // // salva os disparos
         foreach ( $funcionarios as $key => $funcionario ) {         
             
             // instancia um novo objeto grupo
@@ -177,6 +179,14 @@ class Disparos extends MY_Controller {
             $disparo->save();
         }
 
+        // carrega a library de push
+        $this->load->library( 'Push' );
+        $this->push->setTitle( $notificacao->nome )
+        ->setBody( $notificacao->texto )
+        ->setImage( base_url( 'uploads/'.$notificacao->notificacao ) )
+        ->fire();
+
+        // redireciona
         redirect( site_url( 'disparos/index' ) );
     }
 }
