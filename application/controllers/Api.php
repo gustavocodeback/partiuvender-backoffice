@@ -468,8 +468,6 @@ class Api extends MY_Controller {
      * METODOS DE RANKING
      *
      * ------------------------------------------------------------- */
-     public function obter_primeiros_colocados() {
-     }
 
     /**
      * obter_ranking_loja
@@ -523,7 +521,7 @@ class Api extends MY_Controller {
      public function obter_ranking_cluster() {
 
         // carrega os finders
-        $this->load->finder( [ 'FuncionariosFinder', 'LojasFinder' ] );
+        $this->load->finder( [ 'FuncionariosFinder', 'LojasFinder', 'ClustersFinder' ] );
 
         // obtem o funcionario
         $func = $this->FuncionariosFinder
@@ -552,6 +550,31 @@ class Api extends MY_Controller {
 
             // seta o resolve
             $this->response->resolve( $ranking );
+        } else {
+            
+            // pega a loja
+            $loja = $this->LojasFinder->key( $func->loja )->get( true );
+            if ( !$loja ) return $this->response->reject( 'Nenhuma loja encontrada' );
+
+            // pega o cluster
+            $cluster = $this->ClustersFinder->key( $loja->cluster )->get( true );
+            if ( !$cluster ) return $this->response->reject( 'Nenhuma cluster encontrada' );
+            
+            // pega o ranking
+            $ranking = $cluster->obterPrimeirosColocados();
+
+            // faz o mapeamento do array
+            $ranking = array_map( function( $func ) {
+                return [
+                    'uid'    => $func['CodLoja'],
+                    'pontos' => $func['Total'],
+                    'cpf'    => null,
+                    'nome'   => $func['Nome'],
+                ];
+            }, $ranking );
+
+            // seta o resolve
+            $this->response->resolve( $ranking );
         }
      }
 
@@ -564,7 +587,7 @@ class Api extends MY_Controller {
      public function obter_minha_colocacao() {
 
           // carrega os finders
-        $this->load->finder( [ 'FuncionariosFinder', 'LojasFinder' ] );
+        $this->load->finder( [ 'FuncionariosFinder', 'LojasFinder', 'ClustersFinder' ] );
 
         // obtem o funcionario
         $func = $this->FuncionariosFinder
@@ -586,6 +609,31 @@ class Api extends MY_Controller {
                             'uid'     => $ranking['UID'],
                             'pontos'  => $ranking['Pontos'],
                             'cpf'     => $ranking['CPF'],
+                            'nome'    => $ranking['Nome'],
+                            'ranking' => $ranking['ranking']
+                        ];
+    
+            // seta o resolve
+            $this->response->resolve( $ranking );
+        } else {
+            
+            // pega a loja
+            $loja = $this->LojasFinder->key( $func->loja )->get( true );
+            if ( !$loja ) return $this->response->reject( 'Nenhuma loja encontrada' );
+            
+            // pega o cluster
+            $cluster = $this->ClustersFinder->key( $loja->cluster )->get( true );
+            if ( !$cluster ) return $this->response->reject( 'Nenhuma cluster encontrada' );
+            
+            // pega o ranking
+            $ranking = $cluster->obterLojaPosicao( $loja->CodLoja );
+            if ( !$ranking ) return $this->response->reject( 'Loja sem posicao no ranking' );
+
+            // faz o mapeamento do array
+            $ranking = [
+                            'uid'     => $ranking['CodLoja'],
+                            'pontos'  => $ranking['Total'],
+                            'cpf'     => null,
                             'nome'    => $ranking['Nome'],
                             'ranking' => $ranking['ranking']
                         ];

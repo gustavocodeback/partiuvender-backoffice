@@ -45,7 +45,10 @@ class Response {
             $func = $this->ci->FuncionariosFinder->clean()->uid( $uid )->get( true );
         
             // pega as notificacoes
-            $data['notificacoes'] = $func->naoLidas();
+            if ( $func )
+                $data['notificacoes'] = $func->naoLidas();
+            else
+                $data['notificacoes'] = 0;
         }
         
         // envia os dados
