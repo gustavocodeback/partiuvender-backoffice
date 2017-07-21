@@ -154,6 +154,10 @@ $config['schema']['Lojas'] = [
         'type'       => 'int',
         'constraint' => '11',
         'null'       => true        
+    ],
+    'PontosIniciais' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
     ]
 ];
 
@@ -200,28 +204,6 @@ $config['schema']['Funcionarios'] = [
     'Pontos' => [
         'type'       => 'varchar',
         'constraint' => '100',
-    ]
-];
-
-// Tabela de Vendas
-$config['schema']['Vendas'] = [
-    'CodVenda' => [
-        'type'        => 'int',
-        'constraint'  => '11',
-        'primary_key' => TRUE,
-        'auto_increment' => TRUE,
-    ],
-    'CodProduto' => [
-        'type'       => 'int',
-        'constraint' => '11'
-    ],
-    'Quantidade' => [
-        'type'       => 'int',
-        'constraint' => '11'
-    ],
-    'Ponto' => [
-        'type'       => 'int',
-        'constraint' => '11'
     ]
 ];
 
