@@ -85,7 +85,7 @@ class Api extends MY_Controller {
         $func->setUid( $uid );
 
         $modal = false;
-        if( !$func->endereco || !$func->numero || !$func->cep || !$func->complemento
+        if( !$func->endereco || !$func->numero || !$func->cep 
             || !$func->estado || !$func->cidade || !$func->celular || !$func->rg ) $modal = true;
 
         // faz o update
