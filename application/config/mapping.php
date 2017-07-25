@@ -144,4 +144,12 @@ $config['Mensagem'] = [
     'data'        => 'Data'
 ];
 
+$config['Cartao'] = [
+    'funcionario'   => 'CodFuncionario',
+    'status'        => 'Status',
+    'data'          => 'Data',
+    'valor'         => 'Valor',
+    'codigo'        => 'Codigo'
+];
+
 /* end of file */

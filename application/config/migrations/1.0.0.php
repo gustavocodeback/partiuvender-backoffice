@@ -528,4 +528,34 @@ $config['schema']['Mensagens'] = [
     ]
 ];
 
+// Tabela de Cartoes
+$config['schema']['Cartoes'] = [
+    'CodCartao' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+        'primary_key'    => TRUE,
+        'auto_increment' => TRUE
+    ],
+    'CodFuncionario' => [
+        'type'       => 'int',
+        'constraint' => '11',
+        'null'       => true
+    ],
+    'Valor' => [
+        'type'       => 'float',
+    ],
+    'Data' => [
+        'type'       => 'datetime',
+        'null'       => true
+    ],
+    'Status' => [
+        'type'       => 'varchar',
+        'constraint' => '2'
+    ],
+    'Codigo' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
+];
+
 /* end of file */

@@ -851,6 +851,80 @@ class Api extends MY_Controller {
             return $this->request->reject( 'Erro ao enviar a mensagem' );
         }
     }
+    
+    /**  -----------------------------------------------------------
+     * 
+     * METODOS DO CARTAO
+     *
+     
+     * ------------------------------------------------------------- */
+     
+     /**
+     * usar_cartao
+     *
+     * seta o status do cartao como usado
+     *
+     */
+     public function usar_cartao( $codigo ) {
+         
+        // carrega os finders
+        $this->load->finder( [ 'CartoesFinder' ] );
+
+        // busca o cartao pelo codigo
+        $cartao = $this->CartoesFinder->clean()->codigo( $codigo )->get( true );
+
+        // seta o funcionario
+        $funcionario = $this->request->user();
+
+        // verifica se o cartao pode ser utilizado
+        if( $cartao->status != 'A' ) return $this->request->reject( 'Erro ao tentar usar o cartão, tente mais tarde' );
+        
+        // verifica se o funcionario existe
+        if( !$funcionario ) return $this->request->reject( 'Erro ao tentar usar o cartão, tente mais tarde' );
+
+        $cartao->setFunc( $funcionario->CodFuncionario );
+        $cartao->setData( date( 'Y-m-d H:i:s', time() ) );
+        $cartao->setStatus( 'U' );
+
+        if( $cartao->save() ) return $this->response->resolve( $cartao );
+     }
+
+     /**
+     * obter_cartoes_funcionario
+     *
+     * obtem uma lista de notificacoe recentes do usuario
+     *
+     */
+     public function obter_cartoes_funcionario( $pagina ) {
+
+         // carrega os finders
+         $this->load->finder( [ 'CartoesFinder' ] );
+
+        // seta o funcionario
+        $funcionario = $this->request->user();
+                
+        // verifica se o funcionario existe
+        if( !$funcionario ) return $this->request->reject( 'Erro, tente mais tarde' );
+
+        $cartoes = $this->CartoesFinder->porFunc( $funcionario->CodFuncionario )->paginate( $pagina, 5, true );
+
+        if ( count( $cartoes ) == 0 ) {
+        return $this->response->resolve( [] );
+        }
+
+        // faz o mapeamento dos treinamentos
+        $cartoes = array_map( function( $cartao ) {
+            return  [ 
+                        'CodCartao' => $cartao->CodCartao, 
+                        'Codigo'    => $cartao->codigo,
+                        'Status'    => $cartao->status,
+                        'Data'      => $cartao->data,
+                        'Valor'     => $cartao->valor
+                    ];
+        }, $cartoes );
+
+        return $this->response->resolve( $cartoes );
+     }
 }
 
 /* end of file */
