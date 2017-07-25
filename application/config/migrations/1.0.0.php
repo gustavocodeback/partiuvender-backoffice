@@ -204,7 +204,47 @@ $config['schema']['Funcionarios'] = [
     'Pontos' => [
         'type'       => 'varchar',
         'constraint' => '100',
-    ]
+    ],
+    'Endereco' => [
+        'type'      => 'text',
+        'constraint' => '100',
+        'null'      => true        
+    ],
+    'Numero' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true
+    ],
+    'Complemento' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true        
+    ],
+    'Cep' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true        
+    ],
+    'Celular' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true        
+    ],
+    'RG' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true        
+    ],
+    'CodCidade' => [
+        'type'       => 'int',
+        'constraint' => '11',
+        'null'       => true        
+    ],
+    'CodEstado' => [
+        'type'       => 'int',
+        'constraint' => '11',
+        'null'       => true        
+    ],
 ];
 
 // Tabela de Produtos

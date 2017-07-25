@@ -87,6 +87,13 @@ class EstadosFinder extends MY_Model {
 
         } else return [];
     }
+
+    public function estados() {
+        
+        $this->db->order_by( 'CodEstado', 'ASC' );
+
+        return $this;
+    }
 }
 
 /* end of file */

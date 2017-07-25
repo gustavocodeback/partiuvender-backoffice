@@ -28,6 +28,30 @@ class Funcionario extends MY_Model {
 
     // pontos
     public $pontos;
+    
+    // endereco
+    public $endereco;
+
+    // numero
+    public $numero;
+
+    // complemento
+    public $complemento;
+
+    // cep
+    public $cep;
+
+    // cidade
+    public $cidade;
+
+    // estado
+    public $estado;
+
+    // celular
+    public $celular;
+
+    // rg
+    public $rg;
 
     // entidade
     public $entity = 'Funcionario';
@@ -87,6 +111,47 @@ class Funcionario extends MY_Model {
     public function setPontos( $pontos ) {
         $this->pontos = $pontos;
     }
+
+    // endereco
+    public function setEndereco( $endereco ) {
+        $this->endereco = $endereco;
+    }  
+
+    // numero
+    public function setNumero( $numero ) {
+        $this->numero = $numero;
+    }
+
+    // complemento
+    public function setComplemento( $complemento ) {
+        $this->complemento = $complemento;
+    }
+
+    // cep
+    public function setCep( $cep ) {
+        $this->cep = $cep;
+    }
+
+    // cidade
+    public function setCidade( $cidade ) {
+        $this->cidade = $cidade;
+    }
+
+    // estado
+    public function setEstado( $estado ) {
+        $this->estado = $estado;
+    }
+
+    // celular
+    public function setCelular( $celular ) {
+        $this->celular = $celular;
+    }
+
+    // rg
+    public function setRg( $rg ) {
+        $this->rg = $rg;
+    }
+
 
     // adiciona pontos
     public function addPontos( $pontos ) {

@@ -15,7 +15,7 @@ class Funcionarios extends MY_Controller {
         parent::__construct();
         
         // carrega o finder
-        $this->load->finder( [ 'LojasFinder', 'FuncionariosFinder' ] );
+        $this->load->finder( [ 'LojasFinder', 'FuncionariosFinder', 'EstadosFinder', 'CidadesFinder' ] );
         
         // chama o modulo
         $this->view->module( 'navbar' )->module( 'aside' )->module( 'jquery-mask' );
@@ -51,6 +51,30 @@ class Funcionarios extends MY_Controller {
                 'field' => 'pontos',
                 'label' => 'Pontos',
                 'rules' => 'required'
+            ],  [
+                'field' => 'endereco',
+                'label' => 'Endereco',
+                'rules' => 'min_length[3]|max_length[50]|trim'
+            ], [
+                'field' => 'numero',
+                'label' => 'Numero',
+                'rules' => 'min_length[1]|max_length[5]|trim'
+            ], [
+                'field' => 'complemento',
+                'label' => 'Complemento',
+                'rules' => 'min_length[3]|max_length[32]|trim'
+            ], [
+                'field' => 'cep',
+                'label' => 'Bairro',
+                'rules' => 'min_length[9]|max_length[9]|trim'
+            ], [
+                'field' => 'cidade',
+                'label' => 'Cidade',
+                'rules' => 'min_length[1]|trim'
+            ], [
+                'field' => 'estado',
+                'label' => 'Estado',
+                'rules' => 'min_length[1]|trim'
             ]
         ];
 
@@ -114,6 +138,10 @@ class Funcionarios extends MY_Controller {
 
         // carrega o jquery mask
         $this->view->module( 'jquery-mask' );
+        
+        // carrega os estados
+        $estados = $this->EstadosFinder->get();
+        $this->view->set( 'estados', $estados );
 
         // carrega os lojas
         $lojas = $this->LojasFinder->get();
@@ -136,6 +164,10 @@ class Funcionarios extends MY_Controller {
 
         // carrega o classificacao
         $funcionario = $this->FuncionariosFinder->key( $key )->get( true );
+        
+        // carrega os estados
+        $estados = $this->EstadosFinder->get();
+        $this->view->set( 'estados', $estados );
 
         // carrega os lojas
         $lojas = $this->LojasFinder->get();
@@ -143,8 +175,15 @@ class Funcionarios extends MY_Controller {
 
         // verifica se o mesmo existe
         if ( !$funcionario ) {
-            redirect( 'lojas/index' );
+            redirect( 'funcionarios/index' );
             exit();
+        }
+
+        if( $funcionario->estado ) {
+        
+            // carrega as cidades
+            $cidades = $this->CidadesFinder->clean()->porEstado( $funcionario->estado )->get();
+            $this->view->set( 'cidades', $cidades );
         }
 
         // salva na view
@@ -179,8 +218,11 @@ class Funcionarios extends MY_Controller {
         $lojas = $this->LojasFinder->get();
         $this->view->set( 'lojas', $lojas );
 
-        $search = array('.','/','-');
+        $search = array('.','/','-','(',')',' ');
         $cpf = str_replace ( $search , '' , $this->input->post( 'cpf') );
+        $cep = str_replace ( $search , '' , $this->input->post( 'cep') );
+        $celular = str_replace ( $search , '' , $this->input->post( 'celular') );
+        $rg = str_replace ( $search , '' , $this->input->post( 'rg') );
 
         // instancia um novo objeto classificacao
         $funcionario = $this->FuncionariosFinder->getFuncionario();
@@ -189,6 +231,14 @@ class Funcionarios extends MY_Controller {
         $funcionario->setNome( $this->input->post( 'nome' ) );
         $funcionario->setCargo( $this->input->post( 'cargo' ) );
         $funcionario->setPontos( $this->input->post( 'pontos' ) );
+        $funcionario->setEndereco( $this->input->post( 'endereco' ) );
+        $funcionario->setNumero( $this->input->post( 'numero' ) );
+        $funcionario->setComplemento( $this->input->post( 'complemento' ) );
+        $funcionario->setCep( $cep );
+        $funcionario->setCidade( $this->input->post( 'cidade' ) );
+        $funcionario->setEstado( $this->input->post( 'estado' ) );
+        $funcionario->setCelular( $celular );
+        $funcionario->setRg( $rg );
         $funcionario->setCod( $this->input->post( 'cod' ) );
 
         // verifica se o formulario é valido

@@ -47,10 +47,10 @@ class Api extends MY_Controller {
 
         // devolve o funcionario
         $data = [
-            'nome' => $func->nome,
-            'cpf' => $func->cpf,
+            'nome'  => $func->nome,
+            'cpf'   => $func->cpf,
             'cargo' => $func->cargo,
-            'uid' => $func->uid            
+            'uid'   => $func->uid,       
         ];
         return $this->response->resolve( $data );
     }
@@ -84,6 +84,10 @@ class Api extends MY_Controller {
         if ( !$uid ) return $this->response->reject( 'Nenhum UID informado.' );
         $func->setUid( $uid );
 
+        $modal = false;
+        if( !$func->endereco || !$func->numero || !$func->cep || !$func->complemento
+            || !$func->estado || !$func->cidade || !$func->celular || !$func->rg ) $modal = true;
+
         // faz o update
         if ( $func->save() ) {
 
@@ -94,12 +98,69 @@ class Api extends MY_Controller {
                 'cargo'     => $func->cargo,
                 'uid'       => $func->uid,
                 'loja'      => $loja->nome,
-                'cluster'   => $cluster->nome
+                'cluster'   => $cluster->nome,
+                'modal'     => $modal     
             ];
             return $this->response->resolve( $data );
 
         } else return $this->response->reject( 'Houve um erro ao tentar salvar o UID desse funcionário.' );
     }
+    
+    /**
+     * salvar_dados
+     *
+     * salva o endereco, telefone e rg do funcionario
+     *
+     */
+    public function salvar_dados() {
+
+        // carrega os finders
+        $this->load->finder( [ 'FuncionariosFinder'] );
+        
+        // seta o funcionario
+        if( $this->input->post( 'cpf' ) ) {
+            $funcionario = $this->FuncionariosFinder->clean()->cpf( $this->input->post( 'cpf' ) )->get( true );
+        }
+        if( $this->input->post( 'uid' ) ) {
+            $funcionario = $this->FuncionariosFinder->clean()->uid( $this->input->post( 'uid' ) )->get( true );
+        }
+                
+        // verifica se o funcionario existe
+        if( !$funcionario ) return $this->request->reject( 'Erro, tente mais tarde' );
+
+        $funcionario->setCelular( $this->input->post( 'celular' ) );
+        $funcionario->setRg( $this->input->post( 'rg' )  );        
+        $funcionario->setEndereco( $this->input->post( 'endereco' )  );
+        $funcionario->setNumero( $this->input->post( 'numero' )  );
+        $funcionario->setComplemento( $this->input->post( 'complemento' )  );
+        $funcionario->setCep( $this->input->post( 'cep' )  );
+        $funcionario->setCidade( $this->input->post( 'cidade' )  );
+        $funcionario->setEstado( $this->input->post( 'estado' )  );
+
+        // faz o update
+        if ( $funcionario->save() ) {
+
+            return $this->response->resolve( $funcionario );
+
+        } else return $this->response->reject( 'Houve um erro ao tentar salvar o endereço desse funcionário.' );
+    }
+
+    /**
+     * obter_funcionario
+     *
+     * busca um funcionario
+     *
+     */
+     public function obter_funcionario() {         
+
+        $CodFuncionario = $this->request->user()->CodFuncionario;
+
+        // carrega o funcionario
+        $funcionario = $this->FuncionariosFinder->clean()->key( $CodFuncionario )->get( true );
+
+        if( !$funcionario ) $this->response->reject( 'Funcionario inexistente' );
+        return $this->response->resolve( $funcionario );
+     }
 
     /**  -----------------------------------------------------------
      * 
@@ -924,6 +985,79 @@ class Api extends MY_Controller {
         }, $cartoes );
 
         return $this->response->resolve( $cartoes );
+     }
+
+     /**  -----------------------------------------------------------
+     * 
+     * METODOS DO ESTADOS
+     *
+     
+     * ------------------------------------------------------------- */
+     /**
+     * obter_estados
+     *
+     * obtem uma lista de estados
+     *
+     */
+     public function obter_estados() {
+
+         // carrega os finders
+         $this->load->finder( [ 'EstadosFinder' ] );
+
+         $estados = $this->EstadosFinder->estados()->get();
+
+         if ( count( $estados ) == 0 ) {
+            return $this->response->resolve( [] );
+        }
+
+        // faz o mapeamento dos estados
+        $estados = array_map( function( $estado ) {
+            return  [ 
+                        'CodEstado' => $estado->CodEstado, 
+                        'nome'      => $estado->nome,
+                        'uf'        => $estado->uf
+                    ];
+        }, $estados );
+
+        return $this->response->resolve( $estados );
+     }
+     
+     /**  -----------------------------------------------------------
+     * 
+     * METODOS DO CIDADES
+     *
+     
+     * ------------------------------------------------------------- */
+     /**
+     * obter_cidades_estados
+     *
+     * obtem uma lista de estados
+     *
+     */
+     public function obter_cidades_estados( $CodEstado ) {
+
+         // carrega os finders
+         $this->load->finder( [ 'EstadosFinder', 'CidadesFinder' ] );
+
+         $estado = $this->EstadosFinder->key( $CodEstado )->get( true );
+
+        if( !$estado ) return $this->request->reject( 'Estado informado não existe' );
+
+        $cidades = $this->CidadesFinder->porEstado( $CodEstado )->get();
+
+        if ( count( $cidades ) == 0 ) {
+        return $this->response->resolve( [] );
+        }
+
+        // faz o mapeamento dos estados
+        $cidades = array_map( function( $cidade ) {
+            return  [ 
+                        'CodCidade' => $cidade->CodCidade, 
+                        'nome' => $cidade->nome
+                    ];
+        }, $cidades );
+
+        return $this->response->resolve( $cidades );
      }
 }
 

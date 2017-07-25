@@ -14,8 +14,11 @@ $( '.telefone' ).mask( SPMaskBehavior, spOptions );
 // mascara para o cpf
 $( '.cpf' ).mask( '999.999.999-99' );
 
+// mascara para o rg
+$( '.rg' ).mask( '99.999.999-9' );
+
 // mascara para o cnpj
 $( '.cnpj' ).mask( '99.999.999/9999-99' );
 
 // mascara para o cnpj
-$( '.cep' ).mask( '999999-999' );
+$( '.cep' ).mask( '99999-999' );
