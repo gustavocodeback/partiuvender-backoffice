@@ -23,13 +23,20 @@
         <div class="row margin fade-in">
             
             <?php if ( $view->item( 'add_url' ) ): ?>        
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <a href="<?php echo $view->item( 'add_url' ); ?>" class="btn btn-primary z-depth-2">Adicionar</a> 
             </div>
             <?php endif; ?>
 
+            <?php if ( $view->item( 'export_url' ) ): ?>
+                <div class="col-md-2">
+                    <a href="<?php echo $view->item( 'export_url' ); ?>" class="btn-info btn z-depth-2">
+                        Exportar como XLS
+                    </a>
+                </div>
+            <?php endif; ?>
             <?php if ( $view->item( 'import_url' ) ): ?>
-            <?php echo form_open_multipart( $view->item( 'import_url' ), [  'id' => 'import-form', 'class' => 'col-md-6 text-right' ] ); ?>
+            <?php echo form_open_multipart( $view->item( 'import_url' ), [  'id' => 'import-form', 'class' => 'col-md-2 text-right' ] ); ?>
                 <input  id="planilha" 
                         name="planilha" 
                         onchange="importarPlanilha( $( this ) )" 

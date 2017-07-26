@@ -11,7 +11,7 @@ class MensagensFinder extends MY_Model {
     public $table = 'Mensagens';
 
     // chave primaria
-    public $primaryKey = 'CodCluster';
+    public $primaryKey = 'CodMensagem';
 
     // labels
     public $labels = [];
@@ -34,6 +34,35 @@ class MensagensFinder extends MY_Model {
     */
     public function getMensagem() {
         return new $this->entity();
+    }
+
+    /**
+    * grid
+    *
+    * funcao usada para gerar o grid
+    *
+    */
+    public function grid() {
+        $this->db->from( $this->table.' m' )
+        ->select( 'f.Nome, count( m.CodFuncionario ) as Mensagens, m.CodFuncionario as Ações' )
+       ->join( 'Funcionarios f', 'f.CodFuncionario = m.CodFuncionario' )
+       ->group_by( 'm.CodFuncionario' );
+        return $this;
+    }
+
+    /**
+    * grid
+    *
+    * funcao usada para gerar o grid
+    *
+    */
+    public function gridFunc( $CodFuncionario ) {
+        
+        $this->where( " m.CodFuncionario = '$CodFuncionario' " );
+        $this->db->from( $this->table.' m' )
+        ->select( 'f.Nome, m.Texto, m.Data' )
+       ->join( 'Funcionarios f', 'f.CodFuncionario = m.CodFuncionario' );
+        return $this;
     }
 
    /**

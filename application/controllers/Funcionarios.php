@@ -122,10 +122,27 @@ class Funcionarios extends MY_Controller {
 		
         // seta a url para adiciona
         $this->view->set( 'add_url', site_url( 'funcionarios/adicionar' ) )
-        ->set( 'import_url', site_url( 'funcionarios/importar_planilha' ) );
+        ->set( 'import_url', site_url( 'funcionarios/importar_planilha' ) )
+        ->set( 'export_url', site_url( 'funcionarios/exportar_planilha' ) );
 
 		// seta o titulo da pagina
 		$this->view->setTitle( 'Funcionários - listagem' )->render( 'grid' );
+    }
+
+    public function exportar_planilha() {
+
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=FuncionariosExportação".date( 'H:i d-m-Y', time() ).".xls" );
+
+        // faz a paginacao
+		$this->FuncionariosFinder->clean()->exportar()
+        ->paginate( 1, 0, false, false )
+
+		// renderiza o grid
+		->render( site_url( 'funcionarios/index' ) );
+
+		// seta o titulo da pagina
+		$this->view->component( 'table' );
     }
 
    /**

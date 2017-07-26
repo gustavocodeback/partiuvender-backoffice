@@ -49,9 +49,26 @@ class VendasFinder extends MY_Model {
     public function grid() {
         $this->db->from( $this->table.' v' )
         ->select( 'CodVenda as Código, f.CPF, p.Nome as Produto, v.Quantidade, v.Pontos as Pontos,
-         v.Data as Data, CodVenda as Ações' )
+         v.Data as Data, l.Nome as Loja, CodVenda as Ações' )
         ->join( 'Funcionarios f', 'f.CodFuncionario = v.CodFuncionario' )
-        ->join( 'Produtos p', 'p.CodProduto = v.CodProduto' );
+        ->join( 'Produtos p', 'p.CodProduto = v.CodProduto' )
+        ->join( 'Lojas l', 'l.CodLoja = v.CodLoja' );
+        return $this;
+    }
+    
+   /**
+    * grid
+    *
+    * funcao usada para gerar o grid
+    *
+    */
+    public function exportar() {
+        $this->db->from( $this->table.' v' )
+        ->select( 'CodVenda as Código, f.CPF as Funcionario, p.Nome as Produto, v.Quantidade, v.Pontos as Pontos,
+         v.Data as Data, l.Nome as Loja' )
+        ->join( 'Funcionarios f', 'f.CodFuncionario = v.CodFuncionario' )
+        ->join( 'Produtos p', 'p.CodProduto = v.CodProduto' )
+        ->join( 'Lojas l', 'l.CodLoja = v.CodLoja' );
         return $this;
     }
 
