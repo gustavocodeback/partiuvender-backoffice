@@ -938,6 +938,7 @@ class Api extends MY_Controller {
         $texto .= '<br>'.$func->email;
         $texto .= '<br>'.$func->cpf;
         $texto .= '<br>'.$mensagem->texto;
+        if ( $func->celular ) $texto .= '<br>'.$func->celular;
 
         // carrega a library
         $this->load->library( 'email', $config );
