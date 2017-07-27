@@ -886,7 +886,7 @@ class Api extends MY_Controller {
      public function enviar_mensagem() {
 
         // carrega os finders
-        $this->load->finder( [ 'FuncionariosFinder', 'MensagensFinder' ] );
+        $this->load->finder( [ 'FuncionariosFinder', 'MensagensFinder', 'ParametrosFinder' ] );
 
         // pega o funcionario
         $func = $this->request->user();
@@ -907,14 +907,25 @@ class Api extends MY_Controller {
 
         // tenta salvar
         if ( $mensagem->save() ) {
-            $this->enviarEmail( $func, $mensagem );
+
+            // carrega os email
+            $users = $this->ParametrosFinder->parametro( 'EMAIL_SUPORTE' )->get();
+            foreach( $users as $item ) {
+                $this->enviarEmail( $func, $mensagem, $item->valor );                
+            }
             return $this->response->resolve( 'Mensagem enviada com sucesso' );
         } else {
             return $this->request->reject( 'Erro ao enviar a mensagem' );
         }
     }
 
-    private function enviarEmail( $func, $mensagem ) {
+    /**
+     * enviarEmail
+     *
+     * envia o email avisando sobre a mensagem recebida
+     *
+     */
+    private function enviarEmail( $func, $mensagem, $email ) {
 
         // configuracoes do email
         $config = [
@@ -933,7 +944,7 @@ class Api extends MY_Controller {
 
         // seta os emails
         $this->email->from( 'suporte@neotass.com', 'Suporte Neotass' )
-        ->to( 'gu.boas13@gmail.com' )
+        ->to( $email )
 
         // seta o corpo
         ->subject( 'Nova mensagem de colaborador' )
