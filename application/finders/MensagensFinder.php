@@ -44,9 +44,13 @@ class MensagensFinder extends MY_Model {
     */
     public function grid() {
         $this->db->from( $this->table.' m' )
-        ->select( 'f.Nome, count( m.CodFuncionario ) as Mensagens, m.CodFuncionario as Ações' )
-       ->join( 'Funcionarios f', 'f.CodFuncionario = m.CodFuncionario' )
-       ->group_by( 'm.CodFuncionario' );
+        ->select( ' distinct ( m.CodFuncionario ) as `Código do funcionário`,
+                    f.Nome as Nome,
+                    f.Cpf,
+                    m.Data,
+                    f.CodFuncionario as Ações ' )
+        ->join( 'Funcionarios f', 'f.CodFuncionario = m.CodFuncionario' )
+        ->order_by( 'Data', 'DESC' );        
         return $this;
     }
 
@@ -61,7 +65,7 @@ class MensagensFinder extends MY_Model {
         $this->where( " m.CodFuncionario = '$CodFuncionario' " );
         $this->db->from( $this->table.' m' )
         ->select( 'f.Nome, m.Texto, m.Data' )
-       ->join( 'Funcionarios f', 'f.CodFuncionario = m.CodFuncionario' );
+        ->join( 'Funcionarios f', 'f.CodFuncionario = m.CodFuncionario' );
         return $this;
     }
 
@@ -75,6 +79,25 @@ class MensagensFinder extends MY_Model {
         $this->where( " CodFuncionario = '$cod' " );
         $this->db->order_by( 'Data', 'DESC' );
         return $this;
+    }
+
+   /**
+    * count
+    *
+    * conta quantos funcionarios possui o sistema
+    *
+    */
+    public function count() {
+
+        // monta a query
+        $this->db->select( 'count( distinct( CodFuncionario ) ) as Total' )
+        ->from( 'Mensagens' );
+
+        // faz a busca
+        $busca = $this->db->get();
+
+        // volta o resultado
+        return ( $busca->num_rows() ) ? $busca->result_array()[0]['Total'] - 1 : 0;
     }
 }
 

@@ -46,8 +46,10 @@ class Request {
 
             // seta o email
             $this->userData->email = $email;
+            $this->userData->save();
         }
     }
+
    /**
     * header
     *

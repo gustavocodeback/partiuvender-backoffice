@@ -907,10 +907,43 @@ class Api extends MY_Controller {
 
         // tenta salvar
         if ( $mensagem->save() ) {
+            $this->enviarEmail( $func, $mensagem );
             return $this->response->resolve( 'Mensagem enviada com sucesso' );
         } else {
             return $this->request->reject( 'Erro ao enviar a mensagem' );
         }
+    }
+
+    private function enviarEmail( $func, $mensagem ) {
+
+        // configuracoes do email
+        $config = [
+            'mailtype' => 'html',
+        ];
+
+        // texto
+        $texto = 'Uma nova mensagem de colaborador foi enviado através da plataforma #PartiuVender';
+        $text .= '<br>'.$func->nome;
+        $text .= '<br>'.$func->email;
+        $text .= '<br>'.$func->cpf;
+        $text .= '<br>'.$mensagem->texto;
+
+        // carrega a library
+        $this->load->library( 'email', $config );
+
+        // seta os emails
+        $this->email->from( 'suporte@neotass.com', 'Suporte Neotass' )
+        ->to( 'gu.boas13@gmail.com' )
+
+        // seta o corpo
+        ->subject( 'Nova mensagem de colaborador' )
+        ->message( $texto )
+        ->set_mailtype( 'html' );
+        
+        // envia o email
+        if ( !$this->email->send() ) {
+
+        } else echo 'E-mail enviado com sucesso';
     }
     
     /**  -----------------------------------------------------------

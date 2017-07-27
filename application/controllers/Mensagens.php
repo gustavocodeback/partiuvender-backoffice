@@ -30,7 +30,7 @@ class Mensagens extends MY_Controller {
 	public function index() {
 
         // faz a paginacao
-		$this->MensagensFinder->grid()
+		$this->MensagensFinder->clean()->grid()
 
 		// seta os filtros
 		->order()
@@ -40,9 +40,15 @@ class Mensagens extends MY_Controller {
 		->onApply( 'Ações', function( $row, $key ) {
 			echo '<a href="'.site_url( 'mensagens/ver/'.$row[$key] ).'" class="margin btn btn-xs btn-info"><span class="glyphicon glyphicon-envelope"></span></a>';   
 		})
+        ->onApply( 'Data', function( $row, $key ) {
+			echo date( 'H:i:s d/m/Y', strtotime( $row[$key] ) );   
+		})
 
 		// renderiza o grid
 		->render( site_url( 'mensagens/index' ) );
+
+        // faz a contagem
+        $this->MensagensFinder->count = $this->MensagensFinder->count();
 
 		// seta o titulo da pagina
 		$this->view->setTitle( 'Mensagens - listagem' )->render( 'grid' );

@@ -105,6 +105,7 @@ $db['umbler'] = array(
 	'database' => 'partiuvender',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
+	'port'     => '41890',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
