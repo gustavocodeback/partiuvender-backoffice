@@ -907,20 +907,25 @@ class Api extends MY_Controller {
 
         // tenta salvar
         if ( $mensagem->save() ) {
-            $this->enviarEmail();
+            $this->enviarEmail( $func, $mensagem );
             return $this->response->resolve( 'Mensagem enviada com sucesso' );
         } else {
             return $this->request->reject( 'Erro ao enviar a mensagem' );
         }
     }
 
-    private function enviarEmail() {
+    private function enviarEmail( $func, $mensagem ) {
 
         // configuracoes do email
         $config = [
             'mailtype' => 'html',
-            'charset'  => 'iso-8859-1'
         ];
+
+        // texto
+        $texto = 'Uma nova mensagem de colaborador foi enviado através da plataforma #PartiuVender';
+        $text .= '<br>'.$func->nome;
+        $text .= '<br>'.$func->cpf;
+        $text .= '<br>'.$mensagem->texto;
 
         // carrega a library
         $this->load->library( 'email', $config );
@@ -931,7 +936,7 @@ class Api extends MY_Controller {
 
         // seta o corpo
         ->subject( 'Nova mensagem de colaborador' )
-        ->message( 'Uma nova mensagem de colaborador foi enviado através da plataforma #PartiuVender' )
+        ->message( $texto )
         ->set_mailtype( 'html' );
         
         // envia o email
