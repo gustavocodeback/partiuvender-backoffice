@@ -52,8 +52,21 @@ class ProdutosFinder extends MY_Model {
         ->join('Categorias c', 'c.CodCategoria = p.CodCategoria');
         return $this;
     }
+    
+    /**
+    * exportar
+    *
+    * funcao usada para organizar os dados para exportacao
+    *
+    */
+    public function exportar() {
+        $this->db->from( $this->table .' p' )
+        ->select( 'p.CodProduto as Codigo, p.BasicCode, c.Nome as Categoria, p.Nome as Nome, p.Pontos, p.Descricao, p.Foto, p.Video' )
+        ->join('Categorias c', 'c.CodCategoria = p.CodCategoria');
+        return $this;
+    }
 
-     /**
+    /**
     * porCategoria
     *
     * obtem os produtos por categoria

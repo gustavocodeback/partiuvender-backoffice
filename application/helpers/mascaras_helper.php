@@ -40,6 +40,19 @@ if ( ! function_exists( 'mascara_cpf' ) ) {
 }
 
 /**
+ * mascara_rg
+ *
+ * formata o rg
+ *
+ */
+if ( ! function_exists( 'mascara_rg' ) ) {
+    function mascara_rg( $val ) {
+        return substr( $val, 0, 3 ).'.'.substr( $val, 3, 3 ).'.'.substr( $val, 6, 3).'-'.substr( $val, 9, 2 );
+    }
+}
+
+
+/**
  * mascara_telefone
  *
  * formata o telefone

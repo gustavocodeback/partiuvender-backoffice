@@ -52,14 +52,22 @@ $config['Loja'] = [
 ];
 
 $config['Funcionario'] = [
-    'loja'   => 'CodLoja',
-    'uid'    => 'UID',
-    'token'  => 'Token',
-    'cargo'  => 'Cargo',
-    'nome'   => 'Nome',
-    'email'  => 'Email',
-    'cpf'    => 'CPF',
-    'pontos' => 'Pontos'
+    'loja'           => 'CodLoja',
+    'uid'            => 'UID',
+    'token'          => 'Token',
+    'cargo'          => 'Cargo',
+    'nome'           => 'Nome',
+    'email'          => 'Email',
+    'cpf'            => 'CPF',
+    'pontos'         => 'Pontos',
+    'endereco'       => 'Endereco',
+    'numero'         => 'Numero',
+    'complemento'    => 'Complemento',
+    'cep'            => 'Cep',
+    'celular'        => 'Celular',
+    'rg'             => 'RG',
+    'cidade'         => 'CodCidade',
+    'estado'         => 'CodEstado',
 ];
 
 $config['Categoria'] = [
@@ -142,6 +150,14 @@ $config['Mensagem'] = [
     'funcionario' => 'CodFuncionario',
     'texto'       => 'Texto',
     'data'        => 'Data'
+];
+
+$config['Cartao'] = [
+    'funcionario'   => 'CodFuncionario',
+    'status'        => 'Status',
+    'data'          => 'Data',
+    'valor'         => 'Valor',
+    'codigo'        => 'Codigo'
 ];
 
 /* end of file */

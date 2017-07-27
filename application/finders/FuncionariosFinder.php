@@ -54,9 +54,27 @@ class FuncionariosFinder extends MY_Model {
     */
     public function grid() {
         $this->db->from( $this->table.' f' )
-        ->select( 'f.UID, f.CPF, f.Nome, f.Cargo,
-         l.Nome as Loja, CodFuncionario as Ações' )
-        ->join( 'Lojas l', 'l.CodLoja = f.CodLoja' );
+        ->select( 'CodFuncionario as Ações, f.CodFuncionario as Codigo, l.Nome as Loja, f.CPF, f.RG, f.Nome, f.Pontos, f.Celular, f.UID, f.Token, f.Cargo, f.Email,
+        f.Endereco, f.Numero, f.Complemento, f.Cep, c.Nome as Cidade, e.UF as Estado')
+        ->join( 'Lojas l', 'l.CodLoja = f.CodLoja' )
+        ->join( 'Cidades c', 'c.CodCidade = f.CodCidade', 'left' )
+        ->join( 'Estados e', 'e.CodEstado = f.CodEstado', 'left' );
+        return $this;
+    }
+
+    /**
+    * exportar
+    *
+    * funcao usada para organizar os dados para exportacao
+    *
+    */
+    public function exportar() {
+        $this->db->from( $this->table.' f' )
+        ->select( 'f.CodFuncionario as Codigo, l.Nome as Loja, f.UID, f.Token, f.Cargo, f.CPF, f.RG, f.Nome, f.Email, f.Pontos,
+        f.Endereco, f.Numero, f.Complemento, f.Cep, f.Celular, c.Nome as Cidade, e.UF as Estado')
+        ->join( 'Lojas l', 'l.CodLoja = f.CodLoja' )
+        ->join( 'Cidades c', 'c.CodCidade = f.CodCidade', 'left' )
+        ->join( 'Estados e', 'e.CodEstado = f.CodEstado', 'left' );
         return $this;
     }
 

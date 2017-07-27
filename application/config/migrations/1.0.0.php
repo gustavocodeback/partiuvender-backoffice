@@ -204,7 +204,47 @@ $config['schema']['Funcionarios'] = [
     'Pontos' => [
         'type'       => 'varchar',
         'constraint' => '100',
-    ]
+    ],
+    'Endereco' => [
+        'type'      => 'text',
+        'constraint' => '100',
+        'null'      => true        
+    ],
+    'Numero' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true
+    ],
+    'Complemento' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true        
+    ],
+    'Cep' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true        
+    ],
+    'Celular' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true        
+    ],
+    'RG' => [
+        'type'       => 'varchar',
+        'constraint' => '100',
+        'null'       => true        
+    ],
+    'CodCidade' => [
+        'type'       => 'int',
+        'constraint' => '11',
+        'null'       => true        
+    ],
+    'CodEstado' => [
+        'type'       => 'int',
+        'constraint' => '11',
+        'null'       => true        
+    ],
 ];
 
 // Tabela de Produtos
@@ -526,6 +566,36 @@ $config['schema']['Mensagens'] = [
     'Data' => [
         'type' => 'datetime',
     ]
+];
+
+// Tabela de Cartoes
+$config['schema']['Cartoes'] = [
+    'CodCartao' => [
+        'type'           => 'int',
+        'constraint'     => '11',
+        'primary_key'    => TRUE,
+        'auto_increment' => TRUE
+    ],
+    'CodFuncionario' => [
+        'type'       => 'int',
+        'constraint' => '11',
+        'null'       => true
+    ],
+    'Valor' => [
+        'type'       => 'float',
+    ],
+    'Data' => [
+        'type'       => 'datetime',
+        'null'       => true
+    ],
+    'Status' => [
+        'type'       => 'varchar',
+        'constraint' => '2'
+    ],
+    'Codigo' => [
+        'type'       => 'varchar',
+        'constraint' => '255'
+    ],
 ];
 
 /* end of file */

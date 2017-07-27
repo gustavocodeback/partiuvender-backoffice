@@ -292,7 +292,7 @@ class MY_Model extends CI_Model {
     * pagina os resultados
     *
     */
-    public function paginate( $page = 0, $qtde = 20, $return = false ) {
+    public function paginate( $page = 0, $qtde = 20, $return = false, $pages = true ) {
 
         // seta os resultados como zero
         $this->count = 0;
@@ -308,8 +308,11 @@ class MY_Model extends CI_Model {
         // seta o offset
         $this->offset = $this->offset < 0 ? 0 : $this->offset;
 
-        // seta o limite
-        $this->db->limit( $this->perPage, $this->offset );
+        if( $pages ) {
+            
+            // seta o limite
+            $this->db->limit( $this->perPage, $this->offset );
+        }
 
         // verifica o retorno
         if ( $return ) return $this->get();

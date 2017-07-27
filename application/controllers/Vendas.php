@@ -15,7 +15,7 @@ class Vendas extends MY_Controller {
         parent::__construct();
         
         // carrega o finder
-        $this->load->finder( [ 'FuncionariosFinder', 'CategoriasFinder', 'ProdutosFinder', 'VendasFinder' ] );
+        $this->load->finder( [ 'FuncionariosFinder', 'CategoriasFinder', 'ProdutosFinder', 'VendasFinder', 'LojasFinder' ] );
         
         // chama o modulo
         $this->view->module( 'navbar' )->module( 'aside' )->module( 'jquery-mask' );
@@ -56,10 +56,15 @@ class Vendas extends MY_Controller {
     */
 	public function index() {
 
+        // carrega os categorias
+        $lojas = $this->LojasFinder->filtro();
+
         // faz a paginacao
 		$this->VendasFinder->clean()->grid()
 
-		// seta os filtros        
+		// seta os filtros
+        ->addFilter( 'CodLoja', 'select', $lojas, 'v' )
+		->filter()
 		->order()
 		->paginate( 0, 20 )
 
@@ -81,10 +86,27 @@ class Vendas extends MY_Controller {
 		
         // seta a url para adiciona
         $this->view->set( 'add_url', site_url( 'vendas/adicionar' ) )
-        ->set( 'import_url', site_url( 'vendas/importar_planilha' ) );
+        ->set( 'import_url', site_url( 'vendas/importar_planilha' ) )             
+        ->set( 'export_url', site_url( 'vendas/exportar_planilha' ) );
 
 		// seta o titulo da pagina
 		$this->view->setTitle( 'Vendas - listagem' )->render( 'grid' );
+    }
+
+    public function exportar_planilha() {
+
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=LojasExportação".date( 'H:i d-m-Y', time() ).".xls" );
+
+        // faz a paginacao
+		$this->VendasFinder->clean()->exportar()
+        ->paginate( 1, 0, false, false )
+
+		// renderiza o grid
+		->render( site_url( 'vendas/index' ) );
+
+		// seta o titulo da pagina
+		$this->view->component( 'table' );
     }
 
    /**
