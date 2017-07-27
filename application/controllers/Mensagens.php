@@ -47,6 +47,7 @@ class Mensagens extends MY_Controller {
 		// renderiza o grid
 		->render( site_url( 'mensagens/index' ) );
 
+        // faz a contagem
         $this->MensagensFinder->count = $this->MensagensFinder->count();
 
 		// seta o titulo da pagina

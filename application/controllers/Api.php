@@ -924,6 +924,7 @@ class Api extends MY_Controller {
         // texto
         $texto = 'Uma nova mensagem de colaborador foi enviado através da plataforma #PartiuVender';
         $text .= '<br>'.$func->nome;
+        $text .= '<br>'.$func->email;
         $text .= '<br>'.$func->cpf;
         $text .= '<br>'.$mensagem->texto;
 
