@@ -598,4 +598,22 @@ $config['schema']['Cartoes'] = [
     ],
 ];
 
+// tabela de parametros
+$config['schema']['Parametros'] = [
+    'CodParametro' => [
+        'type'           => 'int',
+        'primary_key'    => TRUE,
+        'constraint'     => '11',
+        'auto_increment' => true
+    ],
+    'Nome' => [
+        'type'       => 'varchar',
+        'constraint' => '255',
+    ],
+    'Valor' => [
+        'type'       => 'varchar',
+        'constraint' => '255',
+    ]
+];
+
 /* end of file */

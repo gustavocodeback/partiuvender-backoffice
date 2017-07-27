@@ -160,4 +160,9 @@ $config['Cartao'] = [
     'codigo'        => 'Codigo'
 ];
 
+$config['Parametro'] = [
+    'valor' => 'Valor',
+    'nome'  => 'Nome',
+];
+
 /* end of file */
