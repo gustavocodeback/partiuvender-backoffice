@@ -63,11 +63,23 @@ class LojasFinder extends MY_Model {
         return $this;
     }
 
+   /**
+    * nome
+    *
+    * filtra pelo nome
+    *
+    */
     public function nome( $nome ) {
         $this->where( " Nome = '$nome' " );
         return $this;
     }
 
+   /**
+    * cnpj
+    *
+    * filtra pelo cnpj
+    *
+    */
     public function cnpj( $cnpj ) {
         $this->where( " CNPJ = '$cnpj' " );
         return $this;
@@ -102,6 +114,25 @@ class LojasFinder extends MY_Model {
             return $ret;
 
         } else return [];
+    }
+
+   /**
+    * count
+    *
+    * faz a contagem de lojas no sistema
+    *
+    */
+    public function count() {
+
+        // monta a query
+        $this->db->select( 'count( * ) as Total' )
+        ->from( 'Lojas' );
+
+        // faz a busca
+        $busca = $this->db->get();
+
+        // volta o resultado
+        return ( $busca->num_rows() ) ? $busca->result_array()[0]['Total'] : 0;
     }
 }
 

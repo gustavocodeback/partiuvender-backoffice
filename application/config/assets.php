@@ -66,7 +66,13 @@ $config['aside'] = [
 // seta o dashboard
 $config['dashboard'] = [
     'css'=> [
-        site_url( 'assets/pages/dashboard/dashboard.css' )
+        site_url( 'assets/pages/dashboard/dashboard.css' ),
+        '//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css'
+    ], 
+    'js' => [
+        '//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
+        '//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js',
+        site_url( 'assets/pages/dashboard/dashboard.js' )
     ]
 ];
 

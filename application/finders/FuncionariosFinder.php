@@ -171,6 +171,44 @@ class FuncionariosFinder extends MY_Model {
         return $busca->result_array();
     }
     
+   /**
+    * count
+    *
+    * conta quantos funcionarios possui o sistema
+    *
+    */
+    public function count() {
+
+        // monta a query
+        $this->db->select( 'count( * ) as Total' )
+        ->from( 'Funcionarios' );
+
+        // faz a busca
+        $busca = $this->db->get();
+
+        // volta o resultado
+        return ( $busca->num_rows() ) ? $busca->result_array()[0]['Total'] : 0;
+    }
+
+    /**
+    * countLogged
+    *
+    * conta quantos funcionarios possui o sistema
+    *
+    */
+    public function countLogged() {
+
+        // monta a query
+        $this->db->select( 'count( * ) as Total' )
+        ->from( 'Funcionarios' )
+        ->where( " uid IS NOT NULL " );
+
+        // faz a busca
+        $busca = $this->db->get();
+
+        // volta o resultado
+        return ( $busca->num_rows() ) ? $busca->result_array()[0]['Total'] : 0;
+    }
 }
 
 /* end of file */
