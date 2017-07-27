@@ -44,13 +44,15 @@ class MensagensFinder extends MY_Model {
     */
     public function grid() {
         $this->db->from( $this->table.' m' )
-        ->select( ' distinct ( m.CodFuncionario ) as `Código do funcionário`,
+        ->select( ' m.CodFuncionario as `Código do funcionário`,
                     f.Nome as Nome,
                     f.Cpf,
                     m.Data,
+                    count( m.CodMensagem ) as Total,
                     f.CodFuncionario as Ações ' )
         ->join( 'Funcionarios f', 'f.CodFuncionario = m.CodFuncionario' )
-        ->order_by( 'Data', 'DESC' );        
+        ->order_by( 'Data', 'DESC' )
+        ->group_by( 'm.CodFuncionario' );   
         return $this;
     }
 
@@ -64,7 +66,7 @@ class MensagensFinder extends MY_Model {
         
         $this->where( " m.CodFuncionario = '$CodFuncionario' " );
         $this->db->from( $this->table.' m' )
-        ->select( 'f.Nome, m.Texto, m.Data' )
+        ->select( 'f.Email, f.Cpf, f.Nome, m.Texto, m.Data' )
         ->join( 'Funcionarios f', 'f.CodFuncionario = m.CodFuncionario' );
         return $this;
     }
