@@ -21,6 +21,7 @@ body {
     left: 250px;
     position: absolute;
     top: 0px;
+    padding-bottom: 100px;
     overflow-y: scroll;
     overflow-x: scroll;
     background: #F7FAFF;    

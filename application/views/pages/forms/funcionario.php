@@ -40,6 +40,20 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                 <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input  type="text" 
+                            class="form-control" 
+                            id="email" 
+                            name="email" 
+                            value="<?php echo $funcionario ? $funcionario->email : ''; ?>"
+                            placeholder="Roberto">
+                </div>
+            </div>
+        </div>
         
         <div class="row">
             <div class="col-md-2">
