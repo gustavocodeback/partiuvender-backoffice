@@ -52,22 +52,23 @@ $config['Loja'] = [
 ];
 
 $config['Funcionario'] = [
-    'loja'           => 'CodLoja',
-    'uid'            => 'UID',
-    'token'          => 'Token',
-    'cargo'          => 'Cargo',
-    'nome'           => 'Nome',
-    'email'          => 'Email',
-    'cpf'            => 'CPF',
-    'pontos'         => 'Pontos',
-    'endereco'       => 'Endereco',
-    'numero'         => 'Numero',
-    'complemento'    => 'Complemento',
-    'cep'            => 'Cep',
-    'celular'        => 'Celular',
-    'rg'             => 'RG',
-    'cidade'         => 'CodCidade',
-    'estado'         => 'CodEstado',
+    'loja'        => 'CodLoja',
+    'uid'         => 'UID',
+    'token'       => 'Token',
+    'cargo'       => 'Cargo',
+    'nome'        => 'Nome',
+    'email'       => 'Email',
+    'cpf'         => 'CPF',
+    'pontos'      => 'Pontos',
+    'endereco'    => 'Endereco',
+    'numero'      => 'Numero',
+    'complemento' => 'Complemento',
+    'cep'         => 'Cep',
+    'celular'     => 'Celular',
+    'rg'          => 'RG',
+    'cidade'      => 'CodCidade',
+    'estado'      => 'CodEstado',
+    'plataforma'   => 'Plataforma'
 ];
 
 $config['Categoria'] = [

@@ -245,6 +245,10 @@ $config['schema']['Funcionarios'] = [
         'constraint' => '11',
         'null'       => true        
     ],
+    'Plataforma' => [
+        'type'       => 'varchar',
+        'constraint' => '2',
+    ]
 ];
 
 // Tabela de Produtos

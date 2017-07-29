@@ -21,6 +21,28 @@ class Api extends MY_Controller {
         $this->load->library( [ 'Response', 'Request' ] );
     }
 
+    // lista as lojas cadastradas no sistema
+    public function obter_lojas() {
+
+        // carrega o finder
+        $this->load->finder( [ 'LojasFinder' ] );
+
+        // carrega as lojas
+        $lojas = $this->LojasFinder->get();
+
+        // faz o mapeamento do array
+        $lojas = array_map( function( $value ) {
+            return [
+                'cod'   => $value->CodLoja,
+                'razao' => $value->razao,
+                'nome'  => $value->nome
+            ];
+        }, $lojas );
+
+        // envia as lojas
+        $this->response->resolve( $lojas );
+    }
+
     /**  -----------------------------------------------------------
      * 
      * METODOS DE LOGIN
@@ -53,6 +75,42 @@ class Api extends MY_Controller {
             'uid'   => $func->uid,       
         ];
         return $this->response->resolve( $data );
+    }
+
+    /**
+     * salvar_cpf
+     *
+     * salva o cpf
+     *
+     */
+    public function salvar_cpf() {
+
+        // carrega o finder
+        $this->load->finder( [ 'FuncionariosFinder' ] );
+
+        // pega os dados
+        $cpf   = $this->input->post( 'cpf' );
+        $nome  = $this->input->post( 'nome' );
+        $loja  = $this->input->post( 'loja' );
+        $cargo = $this->input->post( 'cargo' );
+
+        // verifica se o cpf eh valido
+        if ( !$this->valid_cpf( $cpf ) ) return $this->response->reject( 'O CPF informado é inválido.' );
+
+        // carrega uma instancia do funcionario
+        $func = $this->FuncionariosFinder->getFuncionario();
+
+        // seta as propriedades
+        $func->setCpf( $cpf );
+        $func->setNome( $nome );
+        $func->setLoja( $loja );
+        $func->setCargo( $cargo );
+        $func->setPlataforma( 'A' );
+
+        // tenta salvar o funcionario
+        if ( $func->save() ) {
+            return $this->response->resolve( $func->serialize() );
+        } else return $this->response->reject( 'Nao foi possivel criar o funcionário' );
     }
 
     /**

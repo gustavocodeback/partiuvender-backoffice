@@ -53,6 +53,9 @@ class Funcionario extends MY_Model {
     // rg
     public $rg;
 
+    // plataform
+    public $plataforma = 'S';
+
     // entidade
     public $entity = 'Funcionario';
     
@@ -75,6 +78,11 @@ class Funcionario extends MY_Model {
     // seta o codigo
     public function setCod( $cod ) {
         $this->CodFuncionario = $cod;
+    }
+
+    // seta a plataform
+    public function setPlataforma( $plataforma ) {
+        $this->plataforma = $plataforma;
     }
 
     // loja
