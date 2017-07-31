@@ -158,7 +158,7 @@ class FuncionariosFinder extends MY_Model {
             INNER JOIN Lojas l on f.CodLoja = l.CodLoja 
             INNER JOIN Clusters c on l.CodCluster = c.CodCluster 
             WHERE c.CodCluster = '$cluster'
-            ORDER BY f.Pontos DESC ) as f ) as s
+            ORDER BY f.Pontos DESC, f.CodFuncionario ) as f ) as s
         WHERE CodFuncionario = $cod
         LiMIT 10" );
 
@@ -182,8 +182,8 @@ class FuncionariosFinder extends MY_Model {
             INNER JOIN Lojas l on f.CodLoja = l.CodLoja 
             INNER JOIN Clusters c on l.CodCluster = c.CodCluster 
             WHERE c.CodCluster = '$cluster'
-            ORDER BY f.Pontos DESC ) as f ) as s
-        LiMIT 10" );
+            ORDER BY f.Pontos DESC, f.CodFuncionario ) as f ) as s
+        LiMIT 10 ORDER BY CodFuncionario" );
 
         // volta o array
         return $busca->result_array();
