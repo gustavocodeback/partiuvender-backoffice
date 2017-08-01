@@ -183,7 +183,6 @@ class FuncionariosFinder extends MY_Model {
             INNER JOIN Clusters c on l.CodCluster = c.CodCluster 
             WHERE c.CodCluster = '$cluster'
             ORDER BY f.Pontos DESC, f.CodFuncionario ) as f ) as s
-        ORDER BY CodFuncionario
         LIMIT 10 " );
 
         // volta o array
