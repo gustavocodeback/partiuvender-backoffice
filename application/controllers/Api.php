@@ -102,7 +102,7 @@ class Api extends MY_Controller {
 
         // seta as propriedades
         $func->setCpf( $cpf );
-        $func->setNome( $nome );
+        $func->setNome( strtoupper( $nome ) );
         $func->setLoja( $loja );
         $func->setCargo( $cargo );
         $func->setPlataforma( 'A' );
@@ -197,9 +197,7 @@ class Api extends MY_Controller {
 
         // faz o update
         if ( $funcionario->save() ) {
-
             return $this->response->resolve( $funcionario );
-
         } else return $this->response->reject( 'Houve um erro ao tentar salvar o endereço desse funcionário.' );
     }
 
