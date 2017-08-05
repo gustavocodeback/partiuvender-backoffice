@@ -392,7 +392,7 @@ class Vendas extends MY_Controller {
             $this->view->set( 'errors', $this->planilhas->errors );
         } else {
             $planilha->apply( function( $linha, $num ) {
-                $this->importar_linha( $linha, $num );
+                $this->importar_linha_nova( $linha, $num );
             });
             $planilha->excluir();
         }
@@ -400,4 +400,185 @@ class Vendas extends MY_Controller {
         // carrega a view
         $this->index();
     }
+
+    
+   /**
+    * importar_linha_nova
+    *
+    * importa a linha
+    *
+    */
+    public function importar_linha_nova( $linha, $num ) {
+
+        // percorre todos os campos
+        foreach( $linha as $chave => $coluna ) {
+            $linha[$chave] = in_cell( $linha[$chave] ) ? $linha[$chave] : null;
+        }
+
+        // pega as entidades relacionaveis
+
+        $neoCode = str_replace( [ '(', ')', ' ', '-', '.', '_' ], '', $linha['CODNEOTASS']);
+
+        // busca o funcionario pelo neoCode
+        $func = $this->FuncionariosFinder->clean()->neoCode( $neoCode )->get( true );
+
+        // verifica se o funcionario nao existe
+        if( !$func ){
+
+            // busca os funcionarios com o nome
+            $func = $this->FuncionariosFinder->clean()->nome( $linha['NOME'] )->get();
+
+            // verifica se existe mais de 1
+            if( count( $func ) > 1 ) {
+
+                // percorre todos funcionarios com o nome informado
+                foreach ($func as $key => $value) {
+                    
+                    // pega a loja do funcionario
+                    $loja = $this->LojasFinder->clean()->key( $value->loja )->get( true );
+
+                    // verifica se o nome da loja se encontra na linha da planilha
+                    if( strpos( $linha['PDV'], $loja->nome  ) != -1 ){
+
+                        // Loja
+                        $linha['CodLoja'] = $this->verificaEntidade( 'LojasFinder', 'key', $loja->CodLoja, 'Lojas', 'Vendas', $num, 'CodLoja', 'I' );
+                        
+                        // seta o neoCode
+                        $value->setNeoCode( $neoCode );
+
+                        // Funcionario
+                        $linha['CodFuncionario'] = $this->verificaEntidade( 'FuncionariosFinder', 'key', $value->CodFuncionario, 'Funcionarios', 'Vendas', $num, 'CodFuncionario', 'I' );  
+                        
+                        // salva a alteracao do neoCode
+                        $value->save();
+                        break;
+                    }
+                }
+            } else if ( count( $func ) == 1 ) {
+
+                // carrega a loja do funcionario
+                $loja = $this->LojasFinder->clean()->key( $func[0]->loja )->get( true );
+
+                // seta o neocode
+                $func[0]->setNeoCode( $neoCode );
+
+                // Funcionario
+                $linha['CodFuncionario'] = $this->verificaEntidade( 'FuncionariosFinder', 'key', $func[0]->CodFuncionario, 'Funcionarios', 'Vendas', $num, 'CodFuncionario', 'I' );
+
+                // salva
+                $func[0]->save();
+
+                // Loja
+                $linha['CodLoja'] = $this->verificaEntidade( 'LojasFinder', 'key', $loja->CodLoja, 'Lojas', 'Vendas', $num, 'CodLoja', 'I' );
+            } else {
+
+                // log de erro
+                $linha['CodFuncionario'] = $this->verificaEntidade( 'FuncionariosFinder', 'nome', $linha['NOME'], 'Funcionarios', 'Vendas', $num, 'CodFuncionario', 'I' );
+                return;
+            }
+        } else {
+
+            // Funcionario
+            $linha['CodFuncionario'] = $this->verificaEntidade( 'FuncionariosFinder', 'key', $func->CodFuncionario, 'Funcionarios', 'Vendas', $num, 'CodFuncionario', 'I' );
+            
+            // Loja
+            $linha['CodLoja'] = $this->verificaEntidade( 'LojasFinder', 'key', $func->loja, 'Lojas', 'Vendas', $num, 'CodLoja', 'I' );
+        }
+
+        // pega os 7 primeiros digitos do codigo do produto
+        $refProduto = substr( $linha['CODPRODUTO'], 0, 7 );
+
+        // Produto
+        $linha['CodProduto'] = $this->verificaEntidade( 'ProdutosFinder', 'basicCode', $refProduto, 'Produtos', 'Vendas', $num, 'CodProduto', 'I' );
+
+        // verifica se existe um nome
+        if ( !in_cell( $linha['CodProduto'] )  
+        || !in_cell( $linha['PONTO'] )
+        || !in_cell( $linha['CodLoja'] )
+        || !in_cell( $linha['CodFuncionario'] )
+        || !in_cell( $linha['DATA'] ) ) {
+
+            // grava o log
+            $this->LogsFinder->getLog()
+            ->setEntidade( 'Vendas' )
+            ->setPlanilha( $this->planilhas->filename )
+            ->setMensagem( 'Não foi possivel inserir a Vendasenda pois os campos obrigatórios não foram informados, ou não estão corretos - linha '.$num )
+            ->setData( date( 'Y-m-d H:i:s', time() ) )
+            ->setStatus( 'B' )            
+            ->save();
+
+        } else {
+
+            // carrega o produto da venda
+            $produto = $this->ProdutosFinder->clean()->key( $linha['CodProduto'] )->get( true );
+
+            // ve a quantidade pelos pontos gerados pela venda
+            $linha['QUANTIDADE'] = $linha['PONTO'] / $produto->pontos;
+
+            // carrega o funcionario
+            $func = $this->FuncionariosFinder->clean()->key( $linha['CodFuncionario'] )->get( true );
+
+            // adiciona os pontos
+            $func->addPontos( $linha['PONTO'] );
+
+            // salva
+            $func->save();
+
+            // formata a data
+            $data = substr( $linha['DATA'], 6, 4) .'-' .substr( $linha['DATA'], 0, 1) .'-' .substr( $linha['DATA'], 2, 2);        
+
+            // verifica se carregou
+            $venda = $this->VendasFinder->clean()->getVenda();
+
+            // preenche os dados
+            $venda->setFuncionario( $linha['CodFuncionario'] );
+            $venda->setQuantidade( $linha['QUANTIDADE'] );
+            $venda->setProduto( $linha['CodProduto'] );            
+            $venda->setPontos( $linha['PONTO'] );
+            $venda->setData( $data );
+            $venda->setLoja( $linha['CodLoja'] );
+
+            // tenta salvar a venda
+            if ( $venda->save() ) {
+
+                // grava o log
+                $this->LogsFinder->getLog()
+                ->setEntidade( 'Vendas' )
+                ->setPlanilha( $this->planilhas->filename )
+                ->setMensagem( 'Venda criada com sucesso - '.$num )
+                ->setData( date( 'Y-m-d H:i:s', time() ) )
+                ->setStatus( 'S' )            
+                ->save();
+
+            } else {
+
+                // grava o log
+                $this->LogsFinder->getLog()
+                ->setEntidade( 'Vendas' )
+                ->setPlanilha( $this->planilhas->filename )
+                ->setMensagem( 'Não foi possivel inserir a Venda - linha '.$num )
+                ->setData( date( 'Y-m-d H:i:s', time() ) )
+                ->setStatus( 'B' )            
+                ->save();
+            }
+        }
+    }
+    
+    // public function calcular_pontos_iniciais() {
+
+    //     // faz a busca
+    //     $query = $this->db->query( " select SUM( Pontos ) as total, CodLoja from Vendas GROUP BY CodLoja " );
+
+    //     // percorre os dados
+    //     foreach( $query->result_array() as $item ) {
+
+    //         // carrega o finder de lojas
+    //         $this->load->finder( [ 'LojasFinder' ] );
+
+    //         // carrega a loja
+    //         $loja = $this->LojasFinder->clean()->key( $item['CodLoja'] )->get( true );
+    //         $loja->setPontosIniciais( $item['total'] );
+    //         $loja->save();
+    //     }
+    // }
 }

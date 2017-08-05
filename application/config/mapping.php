@@ -68,7 +68,8 @@ $config['Funcionario'] = [
     'rg'          => 'RG',
     'cidade'      => 'CodCidade',
     'estado'      => 'CodEstado',
-    'plataforma'   => 'Plataforma'
+    'plataforma'  => 'Plataforma',
+    'neoCode'     => 'NeoCode'
 ];
 
 $config['Categoria'] = [

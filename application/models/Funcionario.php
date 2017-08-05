@@ -56,6 +56,14 @@ class Funcionario extends MY_Model {
     // plataform
     public $plataforma = 'S';
 
+    // neoCode
+    public $neoCode;
+
+    // neoCode
+    public function setNeoCode( $neoCode ) {
+        $this->neoCode = $neoCode;
+    }
+
     // entidade
     public $entity = 'Funcionario';
     

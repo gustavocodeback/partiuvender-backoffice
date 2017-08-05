@@ -129,6 +129,12 @@ class Funcionarios extends MY_Controller {
 		$this->view->setTitle( 'Funcionários - listagem' )->render( 'grid' );
     }
 
+   /**
+    * exportar_planilha
+    *
+    * exportar a planilha
+    *
+    */
     public function exportar_planilha() {
 
         header("Content-type: application/vnd.ms-excel");
@@ -421,5 +427,99 @@ class Funcionarios extends MY_Controller {
 
         // carrega a view
         $this->index();
+    }
+
+    /**
+    * similarity
+    *
+    * calcula a similaridade entre duas strings
+    *
+    */
+    public function similarity($str1, $str2) {
+        $len1 = strlen($str1);
+        $len2 = strlen($str2);
+        
+        $max = max($len1, $len2);
+        $similarity = $i = $j = 0;
+        
+        while (($i < $len1) && isset($str2[$j])) {
+            if ($str1[$i] == $str2[$j]) {
+                $similarity++;
+                $i++;
+                $j++;
+            } elseif ($len1 < $len2) {
+                $len1++;
+                $j++;
+            } elseif ($len1 > $len2) {
+                $i++;
+                $len1--;
+            } else {
+                $i++;
+                $j++;
+            }
+        }
+
+        return round($similarity / $max, 2);
+    }
+
+   /**
+    * importar_linha_neocode
+    *
+    * importa a linha adicionando o neocode na planilha
+    *
+    */
+    public function importar_linha_neocode( $linha, $num ) {
+
+        // verifica se tem cluster
+        if ( !in_cell( $linha['CLUSTER'] ) ) return;
+
+        // carrega o finder do funcionario
+        $this->load->finder( [ 'FuncionariosFinder', 'LojasFinder' ] );
+
+        // tenta carregar o funcionario pelo nome
+        $funcs = $this->FuncionariosFinder->clean()->nome( strtoupper( $linha['NOMENEO'] ) )->get();
+
+        // verifica quantos funcionarios foram encontrados
+        $cont = count( $funcs );
+
+        // faz o switch
+        switch( $cont ) {
+            case 0:
+            break;
+            case 1:
+
+                // prepara os dados
+                $dados = [
+                    'neo'     => str_replace(  '-', '', $linha['COD_NEO'] ),
+                    'func_id' => $funcs[0]->CodFuncionario,
+                ];
+
+                // insere
+                $this->db->insert( 'temp_table', $dados );
+
+            break;
+            default:
+                foreach( $funcs as $func ) {
+                    
+                    // pega a loja
+                    $loja = $this->LojasFinder->clean()->key( $func->loja )->get( true );
+
+                    // verifica a similiraridade no nome da loja
+                    $percent = $this->similarity( $linha['PDV'], $loja->nome );
+
+                    if ( $percent > 0.3 ) {
+                        
+                        // prepara os dados
+                        $dados = [
+                            'neo'           => str_replace( '-', '', $linha['COD_NEO'] ),
+                            'func_id'       => $func->CodFuncionario,
+                        ];
+
+                        // insere
+                        $this->db->insert( 'temp_table', $dados );
+                    };
+                }
+            break;
+        };
     }
 }

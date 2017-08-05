@@ -248,6 +248,10 @@ $config['schema']['Funcionarios'] = [
     'Plataforma' => [
         'type'       => 'varchar',
         'constraint' => '2',
+    ],
+    'NeoCode' => [
+        'type'       => 'int',
+        'constraint' => '11'
     ]
 ];
 

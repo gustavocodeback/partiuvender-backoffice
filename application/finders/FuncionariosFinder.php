@@ -132,6 +132,28 @@ class FuncionariosFinder extends MY_Model {
     }
 
    /**
+    * nome
+    *
+    * filtra pelo nome
+    *
+    */
+    public function nome( $nome ) {
+        $this->where( " Nome LIKE '%$nome%'" );
+        return $this;
+    }
+
+   /**
+    * neoCode
+    *
+    * filtra pelo neoCode
+    *
+    */
+    public function neoCode( $neoCode ) {
+        $this->where( " NeoCode = '$neoCode'" );
+        return $this;
+    }
+
+   /**
     * orderByPontos
     *
     * ordena pelos pontos
