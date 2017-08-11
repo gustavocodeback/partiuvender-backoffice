@@ -8,7 +8,7 @@
   </div>
 
   <div class="right pull-right">
-    <div class="dropdown">
+    <div class="dropdown pull-right">
       <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         <?php echo $view->user->data['email']; ?>
         <span class="caret"></span>
@@ -17,5 +17,8 @@
         <li><a href="<?php echo site_url( 'dashboard/logout' ); ?>">Sair</a></li>
       </ul>
     </div>
+    <a href="<?php echo site_url(); ?>" class="btn btn-primary pull-right">
+      <span class="glyphicon glyphicon-home"></span>
+    </a>
   </div>
 </div>

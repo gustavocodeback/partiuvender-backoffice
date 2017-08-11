@@ -34,15 +34,15 @@ class Classificacoes extends MY_Controller {
             [
                 'field' => 'nome',
                 'label' => 'Nome',
-                'rules' => 'required|min_length[2]|max_length[30]'
+                'rules' => 'required|min_length[2]'
             ], [
                 'field' => 'icone',
                 'label' => 'Icone',
-                'rules' => 'required|min_length[2]|max_length[30]'
+                'rules' => 'required|min_length[2]'
             ], [
                 'field' => 'ordem',
                 'label' => 'Ordem',
-                'rules' => 'required|numeric|max_length[30]'
+                'rules' => 'required|numeric'
             ]
         ];
 

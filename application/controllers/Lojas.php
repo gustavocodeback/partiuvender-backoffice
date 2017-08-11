@@ -38,31 +38,31 @@ class Lojas extends MY_Controller {
             ], [
                 'field' => 'cnpj',
                 'label' => 'CNPJ',
-                'rules' => 'min_length[18]|max_length[18]|trim'
+                'rules' => 'min_length[18]|trim'
             ], [
                 'field' => 'razao',
                 'label' => 'Razao',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
+                'rules' => 'required|min_length[3]|trim'
             ], [
                 'field' => 'nome',
                 'label' => 'Nome',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
+                'rules' => 'required|min_length[3]|trim'
             ], [
                 'field' => 'endereco',
                 'label' => 'Endereco',
-                'rules' => 'min_length[3]|max_length[50]|trim'
+                'rules' => 'min_length[3]|trim'
             ], [
                 'field' => 'numero',
                 'label' => 'Numero',
-                'rules' => 'min_length[1]|max_length[5]|trim'
+                'rules' => 'min_length[1]|trim'
             ], [
                 'field' => 'complemento',
                 'label' => 'Complemento',
-                'rules' => 'min_length[3]|max_length[32]|trim'
+                'rules' => 'min_length[3]|trim'
             ], [
                 'field' => 'bairro',
                 'label' => 'Bairro',
-                'rules' => 'min_length[3]|max_length[32]|trim'
+                'rules' => 'min_length[3]|trim'
             ], [
                 'field' => 'cidade',
                 'label' => 'Cidade',
@@ -134,6 +134,10 @@ class Lojas extends MY_Controller {
 		$this->LojasFinder->clean()->exportar()
         ->paginate( 1, 0, false, false )
 
+        ->onApply( '*', function( $row, $key ) {
+            echo strtoupper( mb_convert_encoding( $row[$key], 'UTF-16LE', 'UTF-8' ) );
+        })
+        
 		// renderiza o grid
 		->render( site_url( 'lojas/index' ) );
 

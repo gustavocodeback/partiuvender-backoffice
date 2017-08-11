@@ -34,7 +34,7 @@ class Disparos extends MY_Controller {
             [
                 'field' => 'grupo',
                 'label' => 'Grupo',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
+                'rules' => 'required|min_length[3]|trim'
             ],[
                 'field' => 'notificacao',
                 'label' => 'Notificacao',

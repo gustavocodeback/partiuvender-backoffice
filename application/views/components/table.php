@@ -12,7 +12,7 @@
         <?php foreach( $view->item( 'grid' ) as $row ): ?>
             <tr>
                 <?php foreach( $row as $key => $item ): ?>
-                <td><?php echo $finder->apply( $key, $row ); ?></td>
+                <td><?php $finder->apply( $key, $row ); ?></td>
                 <?php endforeach; ?>
             </tr>                    
         <?php endforeach; ?>

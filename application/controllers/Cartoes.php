@@ -34,7 +34,7 @@ class Cartoes extends MY_Controller {
             [
                 'field' => 'cpf',
                 'label' => 'CPF',
-                'rules' => 'min_length[14]|max_length[14]|trim'
+                'rules' => 'min_length[14]|trim'
             ], [
                 'field' => 'valor',
                 'label' => 'Valor',
@@ -50,13 +50,13 @@ class Cartoes extends MY_Controller {
                 $rules[] = [
                     'field' => 'codigo',
                     'label' => 'Codigo',
-                    'rules' => 'required|min_length[3]|max_length[250]|trim|is_unique[Cartoes.Codigo]'
+                    'rules' => 'required|min_length[3]|trim|is_unique[Cartoes.Codigo]'
                 ];
             } else {
                 $rules[] = [
                     'field' => 'codigo',
                     'label' => 'Codigo',
-                    'rules' => 'required|min_length[3]|max_length[250]|trim'
+                    'rules' => 'required|min_length[3]|trim'
                 ];
             }
 
@@ -64,7 +64,7 @@ class Cartoes extends MY_Controller {
             $rules[] = [
                 'field' => 'codigo',
                 'label' => 'Codigo',
-                'rules' => 'required|min_length[3]|max_length[250]|trim|is_unique[Cartoes.Codigo]'
+                'rules' => 'required|min_length[3]|trim|is_unique[Cartoes.Codigo]'
             ];
         }
 

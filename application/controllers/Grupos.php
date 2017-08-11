@@ -34,7 +34,7 @@ class Grupos extends MY_Controller {
             [
                 'field' => 'grupo',
                 'label' => 'Grupo',
-                'rules' => 'required|min_length[2]|max_length[30]'
+                'rules' => 'required|min_length[2]'
             ]
         ];
 

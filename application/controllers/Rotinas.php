@@ -34,7 +34,7 @@ class Rotinas extends MY_Controller {
             [
                 'field' => 'rotina',
                 'label' => 'Rotinas',
-                'rules' => 'required|min_length[2]|max_length[30]'
+                'rules' => 'required|min_length[2]'
             ]
         ];
 
