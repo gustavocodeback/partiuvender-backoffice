@@ -34,11 +34,11 @@ class Cidades extends MY_Controller {
             [
                 'field' => 'nome',
                 'label' => 'Nome',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
+                'rules' => 'required|min_length[3]|trim'
             ],[
                 'field' => 'estado',
                 'label' => 'Estado',
-                'rules' => 'required|min_length[1]|max_length[2]|trim'
+                'rules' => 'required|min_length[1]|trim'
             ]
         ];
 

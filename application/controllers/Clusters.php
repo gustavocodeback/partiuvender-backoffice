@@ -34,7 +34,7 @@ class Clusters extends MY_Controller {
             [
                 'field' => 'nome',
                 'label' => 'Nome',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
+                'rules' => 'required|min_length[3]|trim'
             ]
         ];
 

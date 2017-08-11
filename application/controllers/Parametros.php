@@ -34,11 +34,11 @@ class Parametros extends MY_Controller {
             [
                 'field' => 'nome',
                 'label' => 'Nome',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
+                'rules' => 'required|min_length[3]|trim'
             ],[
                 'field' => 'valor',
                 'label' => 'Valor',
-                'rules' => 'required|min_length[1]|max_length[40]|trim'
+                'rules' => 'required|min_length[1]|trim'
             ]
         ];
 

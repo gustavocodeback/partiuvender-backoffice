@@ -34,7 +34,7 @@ class Vendas extends MY_Controller {
             [
                 'field' => 'cpf',
                 'label' => 'CPF',
-                'rules' => 'required|min_length[14]|max_length[14]|trim'
+                'rules' => 'required|min_length[10]|trim'
             ], [
                 'field' => 'quantidade',
                 'label' => 'Quantidade',

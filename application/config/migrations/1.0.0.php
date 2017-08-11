@@ -94,7 +94,7 @@ $config['schema']['Clusters'] = [
     ],
     'Nome' => [
         'type'       => 'varchar',
-        'constraint' => '100'
+        'constraint' => '255'
     ]
 ];
 
@@ -118,12 +118,12 @@ $config['schema']['Lojas'] = [
     ],
     'Razao' => [
         'type'       => 'varchar',
-        'constraint' => '100',
+        'constraint' => '255',
         'null'       => true        
     ],
     'Nome' => [
         'type'       => 'varchar',
-        'constraint' => '100',
+        'constraint' => '255',
         'null'       => true        
     ],
     'Endereco' => [
@@ -187,15 +187,15 @@ $config['schema']['Funcionarios'] = [
     ],
     'Nome' => [
         'type'       => 'varchar',
-        'constraint' => '100',
+        'constraint' => '255',
     ],
     'Email' => [
         'type'       => 'varchar',
-        'constraint' => '100',
+        'constraint' => '255',
     ],
     'Senha' => [
         'type'       => 'varchar',
-        'constraint' => '100',
+        'constraint' => '255',
     ],
     'CPF' => [
         'type'       => 'varchar',
@@ -374,7 +374,7 @@ $config['schema']['Perguntas'] = [
         'constraint' => '1'
     ],
     'Texto' => [
-        'type'       => 'text',
+        'type' => 'text',
     ],
     'Pontos' => [
         'type'       => 'int',
@@ -461,8 +461,7 @@ $config['schema']['Notificacoes'] = [
         'constraint' => '255'
     ],
     'Notificacao' => [
-        'type'       => 'varchar',
-        'constraint' => '255'
+        'type'=> 'text',
     ],
     'Disparos' => [
         'type'       => 'int',
@@ -590,11 +589,11 @@ $config['schema']['Cartoes'] = [
         'null'       => true
     ],
     'Valor' => [
-        'type'       => 'float',
+        'type' => 'float',
     ],
     'Data' => [
-        'type'       => 'datetime',
-        'null'       => true
+        'type' => 'datetime',
+        'null' => true
     ],
     'Status' => [
         'type'       => 'varchar',

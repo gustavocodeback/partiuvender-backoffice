@@ -456,7 +456,9 @@ class MY_Model extends CI_Model {
         // verifica se existe um apply
         if ( isset( $this->toApply[$key] ) ) {
             $this->toApply[$key]( $row, $key );
-        } else  echo $row[$key];
+        } elseif ( isset( $this->toApply['*'] ) ) {
+            $this->toApply['*']( $row, $key );
+        } else  echo strtoupper( $row[$key] );
     }
 
    /**
