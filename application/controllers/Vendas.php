@@ -102,6 +102,10 @@ class Vendas extends MY_Controller {
 		$this->VendasFinder->clean()->exportar()
         ->paginate( 1, 0, false, false )
 
+        ->onApply( '*', function( $row, $key ) {
+            echo strtoupper( mb_convert_encoding( $row[$key], 'UTF-16LE', 'UTF-8' ) );
+        })
+        
 		// renderiza o grid
 		->render( site_url( 'vendas/index' ) );
 

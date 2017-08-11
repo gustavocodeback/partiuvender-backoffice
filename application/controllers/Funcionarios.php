@@ -38,11 +38,11 @@ class Funcionarios extends MY_Controller {
             ], [
                 'field' => 'cpf',
                 'label' => 'CPF',
-                'rules' => 'required|min_length[14]|max_length[14]|trim'
+                'rules' => 'required|trim'
             ], [
                 'field' => 'nome',
                 'label' => 'Nome',
-                'rules' => 'required|min_length[3]|max_length[32]|trim'
+                'rules' => 'required|min_length[3]|trim'
             ], [
                 'field' => 'cargo',
                 'label' => 'Cargo',
@@ -54,19 +54,19 @@ class Funcionarios extends MY_Controller {
             ],  [
                 'field' => 'endereco',
                 'label' => 'Endereco',
-                'rules' => 'min_length[3]|max_length[50]|trim'
+                'rules' => 'min_length[3]|trim'
             ], [
                 'field' => 'numero',
                 'label' => 'Numero',
-                'rules' => 'min_length[1]|max_length[5]|trim'
+                'rules' => 'min_length[1]|trim'
             ], [
                 'field' => 'complemento',
                 'label' => 'Complemento',
-                'rules' => 'min_length[3]|max_length[32]|trim'
+                'rules' => 'min_length[3]|trim'
             ], [
                 'field' => 'cep',
                 'label' => 'Bairro',
-                'rules' => 'min_length[9]|max_length[9]|trim'
+                'rules' => 'min_length[9]|trim'
             ], [
                 'field' => 'cidade',
                 'label' => 'Cidade',
@@ -137,18 +137,22 @@ class Funcionarios extends MY_Controller {
     */
     public function exportar_planilha() {
 
-        header("Content-type: application/vnd.ms-excel");
+        header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Disposition: attachment; filename=FuncionariosExportação".date( 'H:i d-m-Y', time() ).".xls" );
 
         // faz a paginacao
 		$this->FuncionariosFinder->clean()->exportar()
         ->paginate( 1, 0, false, false )
 
+        ->onApply( '*', function( $row, $key ) {
+            echo strtoupper( mb_convert_encoding( $row[$key], 'UTF-16LE', 'UTF-8' ) );
+        })
+
 		// renderiza o grid
 		->render( site_url( 'funcionarios/index' ) );
 
 		// seta o titulo da pagina
-		$this->view->component( 'table' );
+		$html = $this->view->component( 'table' );
     }
 
    /**
