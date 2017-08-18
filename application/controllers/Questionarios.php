@@ -191,4 +191,25 @@ class Questionarios extends MY_Controller {
             redirect( site_url( 'questionarios/index' ) );
         }
     }
+
+    // public function calc_func_pontos() {
+
+    //     // faz a busca
+    //     $query = $this->db->query( " select SUM( Pontos ) as total, CodUsuario from QuestionariosEncerrados GROUP BY CodUsuario " );
+
+    //     // percorre os dados
+    //     foreach( $query->result_array() as $item ) {
+
+    //         // carrega o finder de lojas
+    //         $this->load->finder( [ 'FuncionariosFinder' ] );
+
+    //         // carrega a loja
+    //         $loja = $this->FuncionariosFinder->clean()->key( $item['CodUsuario'] )->get( true );
+
+    //         if( $loja ) {
+    //             $loja->addPontos( $item['total'] );
+    //             $loja->save();
+    //         }
+    //     }
+    // }
 }
