@@ -716,10 +716,10 @@ class Api extends MY_Controller {
         if ( $func->cargo == 'Vendedor' ) {
 
             // pega a loja
-            $loja = $this->LojasFinder->key( $func->loja )->get( true );
+            $loja = $this->LojasFinder->clean()->key( $func->loja )->get( true );
 
             // pega o ranking
-            $ranking = $this->FuncionariosFinder->rankingClusterPessoal( $loja->cluster, $func->CodFuncionario );
+            $ranking = $this->FuncionariosFinder->clean()->rankingClusterPessoal( $loja->cluster, $func->CodFuncionario );
         
             // faz o mapeamento do array
             $ranking = [
@@ -735,11 +735,11 @@ class Api extends MY_Controller {
         } else {
             
             // pega a loja
-            $loja = $this->LojasFinder->key( $func->loja )->get( true );
+            $loja = $this->LojasFinder->clean()->key( $func->loja )->get( true );
             if ( !$loja ) return $this->response->reject( 'Nenhuma loja encontrada' );
             
             // pega o cluster
-            $cluster = $this->ClustersFinder->key( $loja->cluster )->get( true );
+            $cluster = $this->ClustersFinder->clean()->key( $loja->cluster )->get( true );
             if ( !$cluster ) return $this->response->reject( 'Nenhuma cluster encontrada' );
             
             // pega o ranking
