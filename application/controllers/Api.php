@@ -682,9 +682,14 @@ class Api extends MY_Controller {
 
             // faz o mapeamento do array
             $ranking = array_map( function( $func ) {
+                
+                // verifica se existe um cociente
+                if ( !$func['Cociente'] ) $func['Cociente'] = 0;
+                
+                // volta os dados formatados
                 return [
                     'uid'    => $func['CodLoja'],
-                    'pontos' => $func['Total'],
+                    'pontos' => number_format( $func['Cociente'] * 100, 2 ),
                     'cpf'    => null,
                     'nome'   => $func['Nome'],
                 ];
@@ -746,10 +751,13 @@ class Api extends MY_Controller {
             $ranking = $cluster->obterLojaPosicao( $loja->CodLoja );
             if ( !$ranking ) return $this->response->reject( 'Loja sem posicao no ranking' );
 
+            // verifica se existe um cociente
+            if ( !$ranking['Cociente'] ) $ranking['Cociente'] = 0;
+
             // faz o mapeamento do array
             $ranking = [
                             'uid'     => $ranking['CodLoja'],
-                            'pontos'  => $ranking['Total'],
+                            'pontos'  => number_format( $ranking['Cociente'], 2 ),
                             'cpf'     => null,
                             'nome'    => $ranking['Nome'],
                             'ranking' => $ranking['ranking']
