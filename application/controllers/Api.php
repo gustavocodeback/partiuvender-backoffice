@@ -682,9 +682,14 @@ class Api extends MY_Controller {
 
             // faz o mapeamento do array
             $ranking = array_map( function( $func ) {
+                
+                // verifica se existe um cociente
+                if ( !$func['Cociente'] ) $func['Cociente'] = 0;
+                
+                // volta os dados formatados
                 return [
                     'uid'    => $func['CodLoja'],
-                    'pontos' => $func['Total'],
+                    'pontos' => number_format( $func['Cociente'] * 100, 2 ),
                     'cpf'    => null,
                     'nome'   => $func['Nome'],
                 ];
@@ -716,10 +721,10 @@ class Api extends MY_Controller {
         if ( $func->cargo == 'Vendedor' ) {
 
             // pega a loja
-            $loja = $this->LojasFinder->key( $func->loja )->get( true );
+            $loja = $this->LojasFinder->clean()->key( $func->loja )->get( true );
 
             // pega o ranking
-            $ranking = $this->FuncionariosFinder->rankingClusterPessoal( $loja->cluster, $func->CodFuncionario );
+            $ranking = $this->FuncionariosFinder->clean()->rankingClusterPessoal( $loja->cluster, $func->CodFuncionario );
         
             // faz o mapeamento do array
             $ranking = [
@@ -735,21 +740,24 @@ class Api extends MY_Controller {
         } else {
             
             // pega a loja
-            $loja = $this->LojasFinder->key( $func->loja )->get( true );
+            $loja = $this->LojasFinder->clean()->key( $func->loja )->get( true );
             if ( !$loja ) return $this->response->reject( 'Nenhuma loja encontrada' );
             
             // pega o cluster
-            $cluster = $this->ClustersFinder->key( $loja->cluster )->get( true );
+            $cluster = $this->ClustersFinder->clean()->key( $loja->cluster )->get( true );
             if ( !$cluster ) return $this->response->reject( 'Nenhuma cluster encontrada' );
             
             // pega o ranking
             $ranking = $cluster->obterLojaPosicao( $loja->CodLoja );
             if ( !$ranking ) return $this->response->reject( 'Loja sem posicao no ranking' );
 
+            // verifica se existe um cociente
+            if ( !$ranking['Cociente'] ) $ranking['Cociente'] = 0;
+
             // faz o mapeamento do array
             $ranking = [
                             'uid'     => $ranking['CodLoja'],
-                            'pontos'  => $ranking['Total'],
+                            'pontos'  => number_format( $ranking['Cociente'], 2 ),
                             'cpf'     => null,
                             'nome'    => $ranking['Nome'],
                             'ranking' => $ranking['ranking']

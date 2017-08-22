@@ -100,6 +100,7 @@ class Funcionarios extends MY_Controller {
 
 		// seta os filtros
         ->addFilter( 'CPF', 'text' )
+        ->addFilter( 'NeoCode', 'text' )
         ->addFilter( 'Nome', 'text', false, 'f' )
         ->addFilter( 'CodLoja', 'select', $lojas, 'f' )
 		->filter()
