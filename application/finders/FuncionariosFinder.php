@@ -54,7 +54,8 @@ class FuncionariosFinder extends MY_Model {
     */
     public function grid() {
         $this->db->from( $this->table.' f' )
-        ->select( 'CodFuncionario as Ações, f.NeoCode, f.CodFuncionario as Codigo, l.Nome as Loja, f.CPF, f.RG, f.Nome, f.Pontos, f.Celular, f.UID, f.Token, f.Cargo, f.Email,
+        ->select( 'CodFuncionario as Ações, f.NeoCode, f.CodFuncionario as Codigo, l.Nome as Loja, f.CPF, f.RG, 
+        f.Nome, f.Pontos, CodFuncionario as PontosVendas, CodFuncionario as PontosQuiz, f.Celular, f.UID, f.Token, f.Cargo, f.Email,
         f.Endereco, f.Numero, f.Complemento, f.Cep, c.Nome as Cidade, e.UF as Estado')
         ->join( 'Lojas l', 'l.CodLoja = f.CodLoja', 'left' )
         ->join( 'Cidades c', 'c.CodCidade = f.CodCidade', 'left' )
@@ -70,7 +71,8 @@ class FuncionariosFinder extends MY_Model {
     */
     public function exportar() {
         $this->db->from( $this->table.' f' )
-        ->select( 'f.CodFuncionario as Codigo, f.NeoCode, l.Nome as Loja, f.UID, f.Token, f.Cargo, f.CPF, f.RG, f.Nome, f.Email, f.Pontos,
+        ->select( 'f.CodFuncionario as Codigo, f.NeoCode, l.Nome as Loja, f.UID, f.Token, f.Cargo,
+        f.CPF, f.RG, f.Nome, f.Email, f.Pontos, sum(v.Pontos) as PontosVendas, sum(q.Pontos) as PontosQuiz
         f.Endereco, f.Numero, f.Complemento, f.Cep, f.Celular, c.Nome as Cidade, e.UF as Estado')
         ->join( 'Lojas l', 'l.CodLoja = f.CodLoja', 'left' )
         ->join( 'Cidades c', 'c.CodCidade = f.CodCidade', 'left' )
@@ -85,7 +87,7 @@ class FuncionariosFinder extends MY_Model {
     *
     */
     public function cpf( $cpf ) {
-        $this->where( " CPF = $cpf" );
+        $this->where( " CPF like '%$cpf%'" );
         return $this;
     }
 

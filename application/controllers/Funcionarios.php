@@ -118,6 +118,18 @@ class Funcionarios extends MY_Controller {
 			echo mascara_cpf( $row[$key] );        
 		})
 
+        // formata o Cnpj para exibicao
+        ->onApply( 'PontosVendas', function( $row, $key ) {
+            $f = $this->FuncionariosFinder->getFuncionario();
+            $pt = $f->getPontosVendas( $row[$key] );
+			echo $pt;        
+		})
+        ->onApply( 'PontosQuiz', function( $row, $key ) {
+            $f = $this->FuncionariosFinder->getFuncionario();
+            $pt = $f->getPontosQuiz( $row[$key] );
+			echo $pt;        
+		})
+
 		// renderiza o grid
 		->render( site_url( 'funcionarios/index' ) );
 		
@@ -527,4 +539,14 @@ class Funcionarios extends MY_Controller {
             break;
         };
     }
+
+    // public function atualizar() {
+
+    //     $funcs = $this->FuncionariosFinder->get();
+
+    //     foreach( $funcs as $func ) {
+    //         $func->pontos = $func->getPontosQuiz() + $func->getPontosVendas();
+    //         $func->save();
+    //     }
+    // }
 }

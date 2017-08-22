@@ -226,6 +226,46 @@ class Funcionario extends MY_Model {
         // volta o resultado
         return ( $busca->num_rows() > 0 ) ? $busca->result_array()[0]['Notificacoes'] : 0;
     }
+
+    
+    public function getPontosVendas( $id = false ) {
+
+        $id = $id ? $id : $this->CodFuncionario;
+        
+        $this->db->from( 'Vendas' )
+        ->select( ' sum(Pontos) as Pontos' )
+        ->group_by( " CodFuncionario" )
+        ->having( " CodFuncionario = $id " );
+        
+        $result = $this->db->get();
+
+        if( $result->num_rows() > 0) {
+            $result = $result->result_array();
+            return $result[0]['Pontos'];
+        } else {
+            return 0;
+        }
+    }
+    
+    
+    public function getPontosQuiz( $id = false ) {
+
+        $id = $id ? $id : $this->CodFuncionario;
+
+        $this->db->from( 'QuestionariosEncerrados' )
+        ->select( ' sum(Pontos) as Pontos' )
+        ->group_by( " CodUsuario" )
+        ->having( " CodUsuario = $id " );
+        
+        $result = $this->db->get();
+
+        if( $result->num_rows() > 0) {
+            $result = $result->result_array();
+            return $result[0]['Pontos'];
+        } else {
+            return 0;
+        }
+    }
 }
 
 /* end of file */
