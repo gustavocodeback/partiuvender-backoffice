@@ -62,10 +62,11 @@ class Vendas extends MY_Controller {
         // faz a paginacao
 		$this->VendasFinder->clean()->grid()
 
-		// seta os filtros
+        // seta os filtros
+        ->order()
         ->addFilter( 'CodLoja', 'select', $lojas, 'v' )
+        ->addFilter( 'CodFuncionario', 'text', false, 'f' )
 		->filter()
-		->order()
 		->paginate( 0, 20 )
 
 		// seta as funcoes nas colunas

@@ -54,7 +54,7 @@ class FuncionariosFinder extends MY_Model {
     */
     public function grid() {
         $this->db->from( $this->table.' f' )
-        ->select( 'CodFuncionario as Ações, f.CodFuncionario as Codigo, l.Nome as Loja, f.CPF, f.RG, f.Nome, f.Pontos, f.Celular, f.UID, f.Token, f.Cargo, f.Email,
+        ->select( 'CodFuncionario as Ações, f.NeoCode, f.CodFuncionario as Codigo, l.Nome as Loja, f.CPF, f.RG, f.Nome, f.Pontos, f.Celular, f.UID, f.Token, f.Cargo, f.Email,
         f.Endereco, f.Numero, f.Complemento, f.Cep, c.Nome as Cidade, e.UF as Estado')
         ->join( 'Lojas l', 'l.CodLoja = f.CodLoja', 'left' )
         ->join( 'Cidades c', 'c.CodCidade = f.CodCidade', 'left' )

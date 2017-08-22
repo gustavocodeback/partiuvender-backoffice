@@ -510,7 +510,13 @@ class MY_Model extends CI_Model {
             // monta a query
             $qry = '';
             if ( $filter['type'] !== 'select' ) {
-                $qry = $filter['query']." LIKE '%$elem%'";
+
+                // verifica se é numerico
+                if ( !is_numeric( $elem ) )
+                    $qry = $filter['query']." LIKE '%$elem%'";
+                else
+                    $qry = $filter['query']." = '$elem'";
+                
             } else {
                 $qry = $filter['query']." = '$elem'";                
             }

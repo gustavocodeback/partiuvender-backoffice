@@ -15,9 +15,9 @@ class VendasFinder extends MY_Model {
 
     // labels
     public $labels = [
-        'CodFuncionario'   => 'CodFuncionario',
-        'CodProduto'       => 'CodProduto',
-        'Funcionario'      => 'CPF'
+        'f.CodFuncionario' => 'f.CodFuncionario',
+        'CodProduto'     => 'CodProduto',
+        'Funcionario'    => 'CPF'
     ];
 
    /**
@@ -48,7 +48,7 @@ class VendasFinder extends MY_Model {
     */
     public function grid() {
         $this->db->from( $this->table.' v' )
-        ->select( 'CodVenda as Código, f.CPF, p.Nome as Produto, v.Quantidade, v.Pontos as Pontos,
+        ->select( 'CodVenda as Código, f.CodFuncionario as Vendedor, f.CPF, p.Nome as Produto, v.Quantidade, v.Pontos as Pontos,
          v.Data as Data, l.Nome as Loja, CodVenda as Ações' )
         ->join( 'Funcionarios f', 'f.CodFuncionario = v.CodFuncionario' )
         ->join( 'Produtos p', 'p.CodProduto = v.CodProduto' )
