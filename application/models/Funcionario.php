@@ -59,11 +59,6 @@ class Funcionario extends MY_Model {
     // neoCode
     public $neoCode;
 
-    // neoCode
-    public function setNeoCode( $neoCode ) {
-        $this->neoCode = $neoCode;
-    }
-
     // entidade
     public $entity = 'Funcionario';
     
@@ -87,7 +82,12 @@ class Funcionario extends MY_Model {
     public function setCod( $cod ) {
         $this->CodFuncionario = $cod;
     }
-
+    
+    // neoCode
+    public function setNeoCode( $neoCode ) {
+        $this->neoCode = $neoCode;
+    }
+    
     // seta a plataform
     public function setPlataforma( $plataforma ) {
         $this->plataforma = $plataforma;
@@ -167,7 +167,6 @@ class Funcionario extends MY_Model {
     public function setRg( $rg ) {
         $this->rg = $rg;
     }
-
 
     // adiciona pontos
     public function addPontos( $pontos ) {

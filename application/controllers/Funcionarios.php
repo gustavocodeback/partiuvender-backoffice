@@ -75,6 +75,10 @@ class Funcionarios extends MY_Controller {
                 'field' => 'estado',
                 'label' => 'Estado',
                 'rules' => 'min_length[1]|trim'
+            ], [
+                'field' => 'neoCode',
+                'label' => 'neoCode',
+                'rules' => 'required'
             ]
         ];
 
@@ -103,7 +107,7 @@ class Funcionarios extends MY_Controller {
         ->addFilter( 'NeoCode', 'text' )
         ->addFilter( 'Nome', 'text', false, 'f' )
         ->addFilter( 'CodLoja', 'select', $lojas, 'f' )
-		->filter()
+		->filter( true )
 		->order()
 		->paginate( 0, 20 )
 
@@ -281,6 +285,7 @@ class Funcionarios extends MY_Controller {
         $funcionario = $this->FuncionariosFinder->getFuncionario();
         $funcionario->setLoja( $this->input->post( 'loja' ) );
         $funcionario->setCpf( $cpf );
+        $funcionario->setNeoCode( $this->input->post( 'neoCode' ) );
         $funcionario->setNome( $this->input->post( 'nome' ) );
         $funcionario->setCargo( $this->input->post( 'cargo' ) );
         $funcionario->setPontos( $this->input->post( 'pontos' ) );

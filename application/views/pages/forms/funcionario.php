@@ -206,6 +206,19 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="neoCode">Neo Code</label>
+                    <input  type="number" 
+                            class="form-control" 
+                            id="neoCode" 
+                            name="neoCode" 
+                            value="<?php echo $funcionario ? $funcionario->neoCode : ''; ?>"
+                            placeholder="20170000">
+                </div>
+            </div>
+        </div>
 
         <?php if( $view->item( 'errors' ) ): ?>
         <div class="row">

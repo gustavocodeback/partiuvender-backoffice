@@ -496,7 +496,7 @@ class MY_Model extends CI_Model {
     * filtra os resultados da paginacao
     *
     */
-    public function filter() {
+    public function filter( $exact = false) {
 
         // percorre todos os filtros
         foreach( $this->filters as $filter ) {
@@ -512,7 +512,7 @@ class MY_Model extends CI_Model {
             if ( $filter['type'] !== 'select' ) {
 
                 // verifica se é numerico
-                if ( !is_numeric( $elem ) )
+                if ( !is_numeric( $elem ) || $exact )
                     $qry = $filter['query']." LIKE '%$elem%'";
                 else
                     $qry = $filter['query']." = '$elem'";
