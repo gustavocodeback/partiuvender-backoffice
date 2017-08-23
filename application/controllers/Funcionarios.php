@@ -161,6 +161,19 @@ class Funcionarios extends MY_Controller {
             echo strtoupper( mb_convert_encoding( $row[$key], 'UTF-16LE', 'UTF-8' ) );
         })
 
+        // formata o Cnpj para exibicao
+        ->onApply( 'PontosVendas', function( $row, $key ) {
+            $f = $this->FuncionariosFinder->getFuncionario();
+            $pt = $f->getPontosVendas( $row[$key] );
+			echo $pt;        
+		})
+        ->onApply( 'PontosQuiz', function( $row, $key ) {
+            $f = $this->FuncionariosFinder->getFuncionario();
+            $pt = $f->getPontosQuiz( $row[$key] );
+			echo $pt;        
+		})
+        
+
 		// renderiza o grid
 		->render( site_url( 'funcionarios/index' ) );
 
