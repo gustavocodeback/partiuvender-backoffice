@@ -282,7 +282,11 @@ class Funcionarios extends MY_Controller {
         $rg = str_replace ( $search , '' , $this->input->post( 'rg') );
 
         // instancia um novo objeto classificacao
-        $funcionario = $this->FuncionariosFinder->getFuncionario();
+        if( $this->input->post( 'cod' ) )
+            $funcionario = $this->FuncionariosFinder->clean()->key( $this->input->post( 'cod' ) )->get( true );
+        else
+            $funcionario = $this->FuncionariosFinder->getFuncionario();
+
         $funcionario->setLoja( $this->input->post( 'loja' ) );
         $funcionario->setCpf( $cpf );
         $funcionario->setNeoCode( $this->input->post( 'neoCode' ) );
@@ -297,7 +301,6 @@ class Funcionarios extends MY_Controller {
         $funcionario->setEstado( $this->input->post( 'estado' ) );
         $funcionario->setCelular( $celular );
         $funcionario->setRg( $rg );
-        $funcionario->setCod( $this->input->post( 'cod' ) );
 
         // verifica se o formulario é valido
         if ( !$this->_formularioFuncionario() ) {
