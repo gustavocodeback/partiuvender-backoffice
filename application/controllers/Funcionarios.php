@@ -603,13 +603,13 @@ class Funcionarios extends MY_Controller {
         };
     }
 
-    // public function atualizar() {
+    public function atualizar() {
 
-    //     $funcs = $this->FuncionariosFinder->get();
+        $funcs = $this->FuncionariosFinder->get();
 
-    //     foreach( $funcs as $func ) {
-    //         $func->pontos = $func->getPontosQuiz() + $func->getPontosVendas();
-    //         $func->save();
-    //     }
-    // }
+        foreach( $funcs as $func ) {
+            $func->pontos = $func->getPontosQuiz() + $func->getPontosVendas();
+            $func->save();
+        }
+    }
 }
