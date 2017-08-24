@@ -15,7 +15,15 @@
         <div class="row fade-in">
             <div class="col-md-12">
                 <div class="alert alert-danger">
-                    <?php echo $view->item( 'errors' ); ?>
+                    <?php $erros = $view->item( 'errors' ); 
+                           if( is_array( $erros ) ) : 
+                                foreach ($erros as $key => $erro) {
+                                    echo $erro;
+                                }
+                            else :
+                                echo $erros;
+                            endif;
+                    ?>
                 </div>
             </div>
         </div>
