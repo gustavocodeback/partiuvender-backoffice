@@ -375,39 +375,84 @@ class Funcionarios extends MY_Controller {
     */
     public function importar_linha( $linha, $num ) {
 
-        // percorre todos os campos
-        foreach( $linha as $chave => $coluna ) {
-            $linha[$chave] = in_cell( $linha[$chave] ) ? $linha[$chave] : null;
-        }
+        // carrega o finder de logs
+        $this->load->finder( 'LogsFinder' );
 
-        // pega as entidades relacionaveis
-        $linha['CodLoja'] = $this->verificaEntidade( 'LojasFinder', 'nome', $linha['CNPJ(Loja)'], 'Lojas', 'Funcionarios', $num, 'CodLoja', 'I' );
+        $f = $this->FuncionariosFinder->clean()->neoCode( str_replace(  '-', '', $linha['NeoId'] ) )->get( true );
 
-        // verifica se existe um nome
-        if ( !in_cell( $linha['CPF'] ) ) {
+        if( $f ) {
 
             // grava o log
             $this->LogsFinder->getLog()
             ->setEntidade( 'Funcionarios' )
             ->setPlanilha( $this->planilhas->filename )
-            ->setMensagem( 'Não foi possivel inserir o funcionario pois nenhum CPF foi informado - linha '.$num )
+            ->setMensagem( 'Funcionario informado já existe - linha '.$num )
+            ->setData( date( 'Y-m-d H:i:s', time() ) )
+            ->setStatus( 'B' )            
+            ->save();
+        }
+
+        // percorre todos os campos
+        foreach( $linha as $chave => $coluna ) {
+            $linha[$chave] = in_cell( $linha[$chave] ) ? $linha[$chave] : null;
+        }
+
+        $lojas = $this->LojasFinder->clean()->get();
+
+        $percent = 0;
+
+        $CodLoja = null;
+
+        foreach ($lojas as $key => $loja) {
+            $p = $this->similarity( $linha['Pdv'], $loja->nome );
+            if( $p > $percent ) {
+                $percent = $p;
+                $CodLoja = $loja->CodLoja;
+            }
+        }
+
+        if( strlen( $linha['CPF'] ) != 11 && $linha['CPF'] > 0 ) {
+            $sub = "";
+            for ($i=0; $i < 11 - strlen( $linha['CPF'] ) ; $i++) { 
+                $sub .= "0";
+            }
+            $linha['CPF'] = $sub .$linha['CPF'];
+        }
+
+        $cpf = $linha['CPF'] > 0 ? $linha['CPF'] : str_replace(  '-', '', $linha['NeoId'] );
+
+        // verifica se existe um nome
+        if ( !in_cell( $linha['NeoId'] ) || !in_cell( $linha['nomeneotass'] ) ) {
+
+            // prepara os dados
+                $dados = [
+                'func'     => str_replace(  '-', '', $linha['NeoId'] ),
+                'num' => $num,
+                'json' => json_encode( utf8_decode($linha) )
+            ];
+
+            // insere
+            $this->db->insert( 'temp_table', $dados );
+
+            // grava o log
+            $this->LogsFinder->getLog()
+            ->setEntidade( 'Funcionarios' )
+            ->setPlanilha( $this->planilhas->filename )
+            ->setMensagem( 'Não foi possivel inserir o funcionario pois nenhum NeoId ou nome foi informado - linha '.$num )
             ->setData( date( 'Y-m-d H:i:s', time() ) )
             ->setStatus( 'B' )            
             ->save();
 
         } else {
 
-            // tenta carregar a loja pelo nome
-            $func = $this->FuncionariosFinder->clean()->cpf( $linha['CPF'] )->get( true );
-
-            // verifica se carregou
-            if ( !$func ) $func = $this->FuncionariosFinder->getFuncionario();
+            $func = $this->FuncionariosFinder->getFuncionario();
 
             // preenche os dados
-            $func->setCargo( $linha['Cargo'] );
-            $func->setNome( $linha['Nome'] );
-            $func->setCpf( $linha['CPF'] );
-            $func->setLoja( $linha['CodLoja'] );
+            $func->setNeoCode( str_replace(  '-', '', $linha['NeoId'] ) );
+            $func->setCargo( $linha['CARGO'] );
+            $func->setNome( $linha['nomeneotass'] );
+            $func->setCpf( $cpf );
+            $func->setLoja( $CodLoja );
 
             // tenta salvar a loja
             if ( $func->save() ) {
