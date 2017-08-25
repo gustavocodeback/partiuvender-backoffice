@@ -615,7 +615,7 @@ class Api extends MY_Controller {
         $funcionarios = array_map( function( $func ) {
             return [
                 'uid'    => $func->uid,
-                'pontos' => $func->pontos,
+                'pontos' => $func->pontos.' pontos',
                 'cpf'    => $func->cpf,
                 'nome'   => $func->nome,
             ];
@@ -659,7 +659,7 @@ class Api extends MY_Controller {
             $ranking = array_map( function( $func ) {
                 return [
                     'uid'    => $func['UID'],
-                    'pontos' => $func['Pontos'],
+                    'pontos' => $func['Pontos'].' pontos',
                     'cpf'    => $func['CPF'],
                     'nome'   => $func['Nome'],
                 ];
@@ -689,7 +689,7 @@ class Api extends MY_Controller {
                 // volta os dados formatados
                 return [
                     'uid'    => $func['CodLoja'],
-                    'pontos' => number_format( $func['Cociente'], 2 ),
+                    'pontos' => number_format( $func['Cociente'], 2 ).' %',
                     'cpf'    => null,
                     'nome'   => $func['Nome'],
                 ];
@@ -729,7 +729,7 @@ class Api extends MY_Controller {
             // faz o mapeamento do array
             $ranking = [
                             'uid'     => $ranking['UID'],
-                            'pontos'  => $ranking['Pontos'],
+                            'pontos'  => $ranking['Pontos'].' pontos',
                             'cpf'     => $ranking['CPF'],
                             'nome'    => $ranking['Nome'],
                             'ranking' => $ranking['ranking']
@@ -757,7 +757,7 @@ class Api extends MY_Controller {
             // faz o mapeamento do array
             $ranking = [
                             'uid'     => $ranking['CodLoja'],
-                            'pontos'  => number_format( $ranking['Cociente'], 2 ),
+                            'pontos'  => number_format( $ranking['Cociente'], 2 ).' %',
                             'cpf'     => null,
                             'nome'    => $ranking['Nome'],
                             'ranking' => $ranking['ranking']
