@@ -258,7 +258,6 @@ class Lojas extends MY_Controller {
             $loja = $this->LojasFinder->getLoja();
 
         // instancia um novo objeto classificacao
-        $loja = $this->LojasFinder->getLoja();
         $loja->setCluster( $this->input->post( 'cluster' ) );
         $loja->setCnpj( $cnpj );
         $loja->setRazao( $this->input->post( 'razao' ) );
