@@ -433,17 +433,12 @@ class Vendas extends MY_Controller {
     */
     public function importar_linha_nova( $linha, $num ) {
 
-        $l = [];
+        $l = $linha;
 
         // percorre todos os campos
-        foreach( $linha as $chave => $coluna ) {
-            $a = utf8_encode($chave);
-            $t = utf8_encode( $linha[$chave] );
-            $l[$a] = in_cell( $linha[$chave] ) ? $t : null;
-        }
+        
         // pega as entidades relacionaveis
-
-        $neoCode = str_replace( [ '(', ')', ' ', '-', '.', '_' ], '', $l['CODNEOTASS']);
+        $neoCode = str_replace( [ '(', ')', ' ', '-', '.', '_' ], '', $l['nomeneo']);
 
         // Funcionario
         $l['CodFuncionario'] = $this->verificaEntidade( 'FuncionariosFinder', 'neoCode', $neoCode, 'Funcionarios', 'Vendas', $num, 'CodFuncionario', 'I' );
@@ -492,7 +487,14 @@ class Vendas extends MY_Controller {
             // formata a data
             if( strlen( $l['DataDocumento'] ) == 9 ) $data = substr( $l['DataDocumento'], 5, 4) .'-' .substr( $l['DataDocumento'], 3, 1) .'-' .substr( $l['DataDocumento'], 0, 2);
             if( strlen( $l['DataDocumento'] ) == 8 ) $data = substr( $l['DataDocumento'], 4, 4) .'-' .substr( $l['DataDocumento'], 2, 1) .'-' .substr( $l['DataDocumento'], 0, 1);
- 
+            
+            // carrega o finder da loja
+            $this->load->finder( 'LojasFinder' );
+            $loja = $this->LojasFinder->clean()->key( $l['CodLoja'] )->get( true );
+
+            $loja->setPontosAtuais( $loja->pontosatuais += $l['tvalor'] );
+            $loja->save();
+
             // adiciona os pontos
             $func->addPontos( $l['tponto'] );
 

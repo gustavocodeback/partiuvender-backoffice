@@ -38,6 +38,9 @@ class Loja extends MY_Model {
     // pontosiniciais
     public $pontosiniciais;
 
+    // pontos atuais
+    public $pontosatuais;
+
     // entidade
     public $entity = 'Loja';
     
@@ -115,6 +118,11 @@ class Loja extends MY_Model {
     // pontosiniciais
     public function setPontosIniciais( $pontosiniciais ) {
         $this->pontosiniciais = $pontosiniciais;
+    }
+
+    // pontosfinais
+    public function setPontosAtuais( $pontosatuais ) {
+        $this->pontosatuais = $pontosatuais;
     }
 }
 

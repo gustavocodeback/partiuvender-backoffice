@@ -48,7 +48,8 @@ $config['Loja'] = [
     'bairro'         => 'Bairro',
     'cidade'         => 'CodCidade',
     'estado'         => 'CodEstado',
-    'pontosiniciais' => 'PontosIniciais'
+    'pontosiniciais' => 'PontosIniciais',
+    'pontosatuais'   => 'PontosAtuais',
 ];
 
 $config['Funcionario'] = [

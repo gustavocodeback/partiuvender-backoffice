@@ -156,8 +156,10 @@ $config['schema']['Lojas'] = [
         'null'       => true        
     ],
     'PontosIniciais' => [
-        'type'       => 'varchar',
-        'constraint' => '100',
+        'type' => 'float',
+    ],
+    'PontosAtuais' => [
+        'type' => 'float',
     ]
 ];
 
