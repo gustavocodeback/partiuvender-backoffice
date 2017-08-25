@@ -122,7 +122,7 @@ class Loja extends MY_Model {
 
     // pontosfinais
     public function setPontosAtuais( $pontosatuais ) {
-        $this->pontosatuais = $pontosatuais;
+        $this->pontosatuais += $pontosatuais;
     }
 }
 

@@ -371,6 +371,13 @@ class Vendas extends MY_Controller {
             // tenta salvar a venda
             if ( $venda->save() ) {
 
+                // carrega o finder da loja
+                $this->load->finder( 'LojasFinder' );
+                $loja = $this->LojasFinder->clean()->key( $linha['CodLoja'] )->get( true );
+
+                $loja->setPontosAtuais( $loja->pontosatuais += $l['tvalor'] );
+                $loja->save();
+
                 // grava o log
                 $this->LogsFinder->getLog()
                 ->setEntidade( 'Vendas' )
@@ -415,7 +422,7 @@ class Vendas extends MY_Controller {
             $this->view->set( 'errors', $this->planilhas->errors );
         } else {
             $planilha->apply( function( $linha, $num ) {
-                $this->importar_linha_pontos( $linha, $num );
+                $this->importar_linha_nova( $linha, $num );
             });
             $planilha->excluir();
         }
@@ -438,7 +445,7 @@ class Vendas extends MY_Controller {
         // percorre todos os campos
         
         // pega as entidades relacionaveis
-        $neoCode = str_replace( [ '(', ')', ' ', '-', '.', '_' ], '', $l['nomeneo']);
+        $neoCode = str_replace( [ '(', ')', ' ', '-', '.', '_' ], '', $l['CODNEOTASS']);
 
         // Funcionario
         $l['CodFuncionario'] = $this->verificaEntidade( 'FuncionariosFinder', 'neoCode', $neoCode, 'Funcionarios', 'Vendas', $num, 'CodFuncionario', 'I' );
@@ -514,6 +521,12 @@ class Vendas extends MY_Controller {
 
             // tenta salvar a venda
             if ( $venda->save() ) {
+
+                // loja
+                $this->load->finder( 'LojasFinder' );
+                $loja = $this->LojasFinder->clean()->key($l['CodLoja'] )->get( true );
+                $loja->setPontosAtuais( $l['tvalor'] );
+                $loja->save();
 
                 // grava o log
                 $this->LogsFinder->getLog()
