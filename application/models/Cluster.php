@@ -91,7 +91,7 @@ class Cluster extends MY_Model {
                         ( ( Lojas.PontosAtuais / Lojas.PontosIniciais ) * 100 ) as Cociente 
             FROM Lojas 
             WHERE Lojas.CodCluster = $this->CodCluster
-            ORDER BY Cociente DESC ) as Rankeado ) Posicao
+            ORDER BY Cociente DESC ) as Rankeado ) as Posicao
         WHERE CodLoja = $loja" );
 
         // volta o resultado
