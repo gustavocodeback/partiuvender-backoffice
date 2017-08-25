@@ -55,7 +55,7 @@ class LojasFinder extends MY_Model {
     */
     public function grid() {
         $this->db->from( $this->table.' l' )
-        ->select( 'CodLoja as Código, l.CNPJ, l.Razao, l.Nome, c.Nome as Cidade, 
+        ->select( 'CodLoja as Código, l.CNPJ, l.Razao, l.Nome, l.PontosIniciais, c.Nome as Cidade, 
         e.Nome as Estado, CodLoja as Ações' )
         ->join( 'Cidades c', 'c.CodCidade = l.CodCidade' )
         ->join( 'Estados e', 'e.CodEstado = l.CodEstado' )

@@ -145,6 +145,21 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="pontosiniciais">Pontos</label>
+                    <input  type="number" 
+                            class="form-control" 
+                            id="pontosiniciais" 
+                            name="pontosiniciais" 
+                            required
+                            <?php if( $view->user->data['gid'] == '3') echo "disabled='disabled'"; ?>
+                            value="<?php echo $loja ? $loja->pontosiniciais : 0; ?>"
+                            placeholder="99">
+                </div>
+            </div>
+        </div>
 
         <?php if( $view->item( 'errors' ) ): ?>
         <div class="row">

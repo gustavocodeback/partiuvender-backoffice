@@ -38,7 +38,7 @@ class Lojas extends MY_Controller {
             ], [
                 'field' => 'cnpj',
                 'label' => 'CNPJ',
-                'rules' => 'min_length[18]|trim'
+                'rules' => ''
             ], [
                 'field' => 'razao',
                 'label' => 'Razao',
@@ -71,7 +71,11 @@ class Lojas extends MY_Controller {
                 'field' => 'estado',
                 'label' => 'Estado',
                 'rules' => 'min_length[1]|trim'
-            ]
+            ], [
+                'field' => 'pontosiniciais',
+                'label' => 'PontosIniciais',
+                'rules' => 'required'
+            ],
         ];
 
 
@@ -244,6 +248,12 @@ class Lojas extends MY_Controller {
         $cnpj = str_replace ( $search , '' , $this->input->post( 'cnpj') );
 
         // instancia um novo objeto classificacao
+        if( $this->input->post( 'cod' ) )
+            $loja = $this->LojasFinder->clean()->key( $this->input->post( 'cod' ) )->get( true );
+        else
+            $loja = $this->LojasFinder->getLoja();
+
+        // instancia um novo objeto classificacao
         $loja = $this->LojasFinder->getLoja();
         $loja->setCluster( $this->input->post( 'cluster' ) );
         $loja->setCnpj( $cnpj );
@@ -255,7 +265,7 @@ class Lojas extends MY_Controller {
         $loja->setComplemento( $this->input->post( 'complemento' ) );
         $loja->setCidade( $this->input->post( 'cidade' ) );
         $loja->setEstado( $this->input->post( 'estado' ) );
-        $loja->setCod( $this->input->post( 'cod' ) );
+        $loja->setPontosIniciais( $this->input->post( 'pontosiniciais' ) );
 
         // verifica se o formulario é valido
         if ( !$this->_formularioLoja() ) {
