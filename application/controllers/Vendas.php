@@ -15,7 +15,7 @@ class Vendas extends MY_Controller {
         parent::__construct();
         
         // carrega o finder
-        $this->load->finder( [ 'FuncionariosFinder', 'CategoriasFinder', 'ProdutosFinder', 'VendasFinder', 'LojasFinder' ] );
+        $this->load->finder( [ 'FuncionariosFinder', 'LogsFinder', 'CategoriasFinder', 'ProdutosFinder', 'VendasFinder', 'LojasFinder' ] );
         
         // chama o modulo
         $this->view->module( 'navbar' )->module( 'aside' )->module( 'jquery-mask' );
@@ -66,6 +66,7 @@ class Vendas extends MY_Controller {
         ->order()
         ->addFilter( 'CodLoja', 'select', $lojas, 'v' )
         ->addFilter( 'CodFuncionario', 'text', false, 'f' )
+        ->addFilter( 'NeoCode', 'text', false, 'f' )
 		->filter()
 		->paginate( 0, 20 )
 
@@ -84,11 +85,21 @@ class Vendas extends MY_Controller {
 
 		// renderiza o grid
 		->render( site_url( 'vendas/index' ) );
-		
+
+        $export_url = site_url( 'vendas/exportar_planilha?' );
+
+        foreach ($_GET as $key => $value) {
+            if ( $key != 'page' ) {
+                $export_url .= $key .'=' .$value .'&';
+            }
+        }
+
+        $export_url = trim( $export_url, '&' );
+
         // seta a url para adiciona
         $this->view->set( 'add_url', site_url( 'vendas/adicionar' ) )
         ->set( 'import_url', site_url( 'vendas/importar_planilha' ) )             
-        ->set( 'export_url', site_url( 'vendas/exportar_planilha' ) );
+        ->set( 'export_url', $export_url );
 
 		// seta o titulo da pagina
 		$this->view->setTitle( 'Vendas - listagem' )->render( 'grid' );
@@ -96,12 +107,20 @@ class Vendas extends MY_Controller {
 
     public function exportar_planilha() {
 
+        // carrega os categorias
+        $lojas = $this->LojasFinder->filtro();
+
         header("Content-type: application/vnd.ms-excel");
         header("Content-Disposition: attachment; filename=LojasExportação".date( 'H:i d-m-Y', time() ).".xls" );
 
         // faz a paginacao
 		$this->VendasFinder->clean()->exportar()
+        ->addFilter( 'CodLoja', 'select', $lojas, 'v' )
+        ->addFilter( 'CodFuncionario', 'text', false, 'f' )
+        ->addFilter( 'NeoCode', 'text', false, 'f' )
+		->filter()
         ->paginate( 1, 0, false, false )
+        
 
         ->onApply( '*', function( $row, $key ) {
             echo strtoupper( mb_convert_encoding( $row[$key], 'UTF-16LE', 'UTF-8' ) );
@@ -510,6 +529,95 @@ class Vendas extends MY_Controller {
                 ->setEntidade( 'Vendas' )
                 ->setPlanilha( $this->planilhas->filename )
                 ->setMensagem( 'Não foi possivel inserir a Venda - linha '.$num )
+                ->setData( date( 'Y-m-d H:i:s', time() ) )
+                ->setStatus( 'B' )            
+                ->save();
+            }
+        }
+    }
+
+    
+    
+   /**
+    * importar_linha_nova
+    *
+    * importa a linha
+    *
+    */
+    public function importar_linha_pontos( $linha, $num ) {
+
+        $l = [];
+
+        // percorre todos os campos
+        foreach( $linha as $chave => $coluna ) {
+            $a = utf8_encode($chave);
+            $t = utf8_encode( $linha[$chave] );
+            $l[$a] = in_cell( $linha[$chave] ) ? $t : null;
+        }
+
+        $loja = $this->LojasFinder->clean()->nome( $l['PDV'] )->get( true );
+
+        if( !$loja ) {
+
+            // grava o log
+            $this->LogsFinder->getLog()
+            ->setEntidade( 'Lojas' )
+            ->setPlanilha( $this->planilhas->filename )
+            ->setMensagem( 'Não foi possivel inserir os pontos iniciais pois o PDV esta incorreto - linha '.$num )
+            ->setData( date( 'Y-m-d H:i:s', time() ) )
+            ->setStatus( 'B' )            
+            ->save();
+            return;
+        }
+        
+        // pega os 7 primeiros digitos do codigo do produto
+        $refProduto = substr( $l['Referência'], 0, 7 );
+        
+        // Produto
+        $l['CodProduto'] = $this->verificaEntidade( 'ProdutosFinder', 'basicCode', $refProduto, 'Produtos', 'Vendas', $num, 'CodProduto', 'I' );
+
+        // carrega o produto da venda
+        $produto = $this->ProdutosFinder->clean()->key( $l['CodProduto'] )->get( true );
+
+        // ve a quantidade pelos pontos gerados pela venda
+        $pontos = $l['Quantidade'] * $produto->pontos;
+
+        // verifica se existe um nome
+        if ( !in_cell( $l['CodProduto'] ) ) {
+
+            // grava o log
+            $this->LogsFinder->getLog()
+            ->setEntidade( 'Lojas' )
+            ->setPlanilha( $this->planilhas->filename )
+            ->setMensagem( 'Não foi possivel inserir os pontos iniciais pois os campos obrigatórios não foram informados, ou não estão corretos - linha '.$num )
+            ->setData( date( 'Y-m-d H:i:s', time() ) )
+            ->setStatus( 'B' )            
+            ->save();
+
+        } else {
+
+            // preenche os dados
+            $loja->setPontosIniciais( $loja->pontosiniciais + $pontos );
+
+            // tenta salvar a venda
+            if ( $loja->save() ) {
+
+                // grava o log
+                $this->LogsFinder->getLog()
+                ->setEntidade( 'Lojas' )
+                ->setPlanilha( $this->planilhas->filename )
+                ->setMensagem( 'Pontos iniciais alterado com sucesso - '.$num )
+                ->setData( date( 'Y-m-d H:i:s', time() ) )
+                ->setStatus( 'S' )            
+                ->save();
+
+            } else {
+
+                // grava o log
+                $this->LogsFinder->getLog()
+                ->setEntidade( 'Lojas' )
+                ->setPlanilha( $this->planilhas->filename )
+                ->setMensagem( 'Não foi possivel inserir os pontos iniciais - linha '.$num )
                 ->setData( date( 'Y-m-d H:i:s', time() ) )
                 ->setStatus( 'B' )            
                 ->save();
