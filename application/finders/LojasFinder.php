@@ -55,7 +55,14 @@ class LojasFinder extends MY_Model {
     */
     public function grid() {
         $this->db->from( $this->table.' l' )
-        ->select( 'CodLoja as Código, l.CNPJ, l.Razao, l.Nome, l.PontosIniciais, l.PontosAtuais, c.Nome as Cidade, 
+        ->select( ' CodLoja as Código, 
+                    l.CNPJ, 
+                    l.Razao, 
+                    l.Nome, 
+                    l.PontosIniciais, 
+                    l.PontosAtuais, 
+                    ( l.PontosAtuais / l.PontosIniciais ) as Crescimento, 
+                    c.Nome as Cidade, 
         e.Nome as Estado, CodLoja as Ações' )
         ->join( 'Cidades c', 'c.CodCidade = l.CodCidade' )
         ->join( 'Estados e', 'e.CodEstado = l.CodEstado' )
@@ -71,8 +78,19 @@ class LojasFinder extends MY_Model {
     */
     public function exportar() {
         $this->db->from( $this->table.' l' )
-        ->select( 'l.CodLoja as Codigo, r.Nome as Cluster, l.CNPJ, l.Razao, l.Nome, l.PontosIniciais, l.Endereco, l.Numero, l.Complemento,
-        l.Bairro, c.Nome as Cidade, e.UF as Estado')
+        ->select( ' l.CodLoja as Codigo, 
+                    r.Nome as Cluster, 
+                    l.CNPJ, 
+                    l.Razao, 
+                    l.Nome, 
+                    l.PontosIniciais, 
+                    ( l.PontosAtuais / l.PontosIniciais ) as Crescimento, 
+                    l.Endereco, 
+                    l.Numero, 
+                    l.Complemento,
+                    l.Bairro, 
+                    c.Nome as Cidade, 
+                    e.UF as Estado')
         ->join( 'Cidades c', 'c.CodCidade = l.CodCidade', 'left' )
         ->join( 'Estados e', 'e.CodEstado = l.CodEstado', 'left' )
         ->join( 'Clusters r', 'r.CodCluster = l.CodCluster' );

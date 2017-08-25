@@ -115,7 +115,11 @@ class Lojas extends MY_Controller {
         // formata o Cnpj para exibicao
         ->onApply( 'CNPJ', function( $row, $key ) {
 			echo mascara_cnpj( $row[$key] );        
-		})
+        })
+        ->onApply( 'Crescimento', function( $row, $key ) {
+            $row['PontosIniciais']  = $row['PontosIniciais']  == 0 ? 1 : $row['PontosIniciais'] ;
+            echo ( number_format( $row[$key], 2 ) * 100 ).' %';
+        })
 
 		// renderiza o grid
 		->render( site_url( 'lojas/index' ) );

@@ -415,7 +415,7 @@ class Vendas extends MY_Controller {
             $this->view->set( 'errors', $this->planilhas->errors );
         } else {
             $planilha->apply( function( $linha, $num ) {
-                $this->importar_linha_nova( $linha, $num );
+                $this->importar_linha_pontos( $linha, $num );
             });
             $planilha->excluir();
         }
@@ -539,7 +539,6 @@ class Vendas extends MY_Controller {
     }
 
     
-    
    /**
     * importar_linha_nova
     *
@@ -547,17 +546,17 @@ class Vendas extends MY_Controller {
     *
     */
     public function importar_linha_pontos( $linha, $num ) {
-
-        $l = [];
+        
+        $l = $linha;
 
         // percorre todos os campos
-        foreach( $linha as $chave => $coluna ) {
-            $a = utf8_encode($chave);
-            $t = utf8_encode( $linha[$chave] );
-            $l[$a] = in_cell( $linha[$chave] ) ? $t : null;
-        }
+        //foreach( $linha as $chave => $coluna ) {
+          //  $a = utf8_encode($chave);
+          //  $t = utf8_encode( $linha[$chave] );
+          //  $l[$a] = in_cell( $linha[$chave] ) ? $t : null;
+        // }
 
-        $loja = $this->LojasFinder->clean()->nome( $l['PDV'] )->get( true );
+        $loja = $this->LojasFinder->clean()->nome( trim( $l['PDV'] ) )->get( true );
 
         if( !$loja ) {
 
@@ -599,7 +598,7 @@ class Vendas extends MY_Controller {
         } else {
 
             // preenche os dados
-            $loja->setPontosIniciais( $loja->pontosiniciais + $pontos );
+            $loja->setPontosIniciais( $loja->pontosiniciais + $l['ValorTotal'] );
 
             // tenta salvar a venda
             if ( $loja->save() ) {

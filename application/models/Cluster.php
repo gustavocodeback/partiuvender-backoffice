@@ -38,14 +38,13 @@ class Cluster extends MY_Model {
     }
 
    /**
-    * obterPrimeirosColocados
-    *
+    * obterPrimeirosColocados            
     * Obtem os primeiros colocados
     *
     */
     public function obterPrimeirosColocados() {
 
-        // prepara a query
+        /* prepara a query
         $query = $this->db->query( "SELECT Rankeado.*, @i := @i+1 AS ranking
             FROM (SELECT @i:=0) AS foo,
             ( SELECT 	Lojas.CodLoja,
@@ -60,7 +59,17 @@ class Cluster extends MY_Model {
             ON Lojas.CodLoja = Pontuacao.CodLoja
             WHERE CodCluster = $this->CodCluster
             ORDER BY Cociente DESC ) as Rankeado
-        LIMIT 10" );
+        LIMIT 10" ); */
+        
+        $query = $this->db->query( "SELECT Rankeado.*, @i := @i+1 AS ranking
+            FROM (SELECT @i:=0) AS foo,
+            ( SELECT 	Lojas.CodLoja, 
+                        Lojas.Nome, 
+                        ( ( Lojas.PontosAtuais / Lojas.PontosIniciais ) * 100 ) as Cociente 
+            FROM Lojas 
+            WHERE Lojas.CodCluster = $this->CodCluster
+            ORDER BY Cociente DESC ) as Rankeado
+            LIMIT 10 " );
 
         // faz a busca
         return $query->result_array();
@@ -77,17 +86,11 @@ class Cluster extends MY_Model {
         // prepara a query
         $query = $this->db->query( "SELECT * FROM ( SELECT Rankeado.*, @i := @i+1 AS ranking
             FROM (SELECT @i:=0) AS foo,
-            ( SELECT 	Lojas.CodLoja,
-                Lojas.Nome,
-                ( CASE WHEN Total IS NULL THEN 0 ELSE Total END ) as Total,
-                ( Total / PontosIniciais ) as Cociente from Lojas 
-            LEFT JOIN
-                ( SELECT CodLoja, 
-                SUM( Pontos ) as Total 
-            FROM Vendas
-            GROUP BY CodLoja ) as Pontuacao
-            ON Lojas.CodLoja = Pontuacao.CodLoja
-            WHERE CodCluster = $this->CodCluster
+            ( SELECT 	Lojas.CodLoja, 
+                        Lojas.Nome, 
+                        ( ( Lojas.PontosAtuais / Lojas.PontosIniciais ) * 100 ) as Cociente 
+            FROM Lojas 
+            WHERE Lojas.CodCluster = $this->CodCluster
             ORDER BY Cociente DESC ) as Rankeado ) Posicao
         WHERE CodLoja = $loja" );
 

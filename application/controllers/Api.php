@@ -689,7 +689,7 @@ class Api extends MY_Controller {
                 // volta os dados formatados
                 return [
                     'uid'    => $func['CodLoja'],
-                    'pontos' => number_format( $func['Cociente'] * 100, 2 ),
+                    'pontos' => number_format( $func['Cociente'], 2 ),
                     'cpf'    => null,
                     'nome'   => $func['Nome'],
                 ];
