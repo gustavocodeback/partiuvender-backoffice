@@ -440,12 +440,12 @@ class Vendas extends MY_Controller {
     */
     public function importar_linha_nova( $linha, $num ) {
 
-        $l = $linha;
-        // foreach( $linha as $chave => $coluna ) {
-        //    $a = utf8_encode($chave);
-        //    $t = utf8_encode( $linha[$chave] );
-        //    $l[$a] = in_cell( $linha[$chave] ) ? $t : null;
-        // }
+        // $l = $linha;
+        foreach( $linha as $chave => $coluna ) {
+           $a = utf8_encode($chave);
+           $t = utf8_encode( $linha[$chave] );
+           $l[$a] = in_cell( $linha[$chave] ) ? $t : null;
+        }
         
         // pega as entidades relacionaveis
         $neoCode = str_replace( [ '(', ')', ' ', '-', '.', '_' ], '', $l['CODNEOTASS']);
