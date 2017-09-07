@@ -457,10 +457,12 @@ class Vendas extends MY_Controller {
         $func = $this->FuncionariosFinder->clean()->neoCode( $neoCode )->get( true );
         
         $l['CodLoja'] = false;
-        if( $func ){
+        if( $func && isset( $func->loja ) ){
 
             // Loja
             $l['CodLoja'] = $this->verificaEntidade( 'LojasFinder', 'key', $func->loja, 'Lojas', 'Vendas', $num, 'CodLoja', 'I' );
+        } else {
+            $l['CodLoja'] = false;
         }
         
         // pega os 7 primeiros digitos do codigo do produto
@@ -478,7 +480,6 @@ class Vendas extends MY_Controller {
         // verifica se existe um nome
         if ( !in_cell( $l['CodProduto'] )  
         || !in_cell( $l['tponto'] )
-        || !in_cell( $l['CodLoja'] )
         || !in_cell( $l['CodFuncionario'] )
         || !in_cell( $l['DataDocumento'] ) 
         || ( $qtd != $l['Quantidade'] && $produto->pontos != $l['ponto'] ) ) {
@@ -497,20 +498,6 @@ class Vendas extends MY_Controller {
             // formata a data
             if( strlen( $l['DataDocumento'] ) == 9 ) $data = substr( $l['DataDocumento'], 5, 4) .'-' .substr( $l['DataDocumento'], 3, 1) .'-' .substr( $l['DataDocumento'], 0, 2);
             if( strlen( $l['DataDocumento'] ) == 8 ) $data = substr( $l['DataDocumento'], 4, 4) .'-' .substr( $l['DataDocumento'], 2, 1) .'-' .substr( $l['DataDocumento'], 0, 1);
-            
-            // carrega o finder da loja
-            $this->load->finder( 'LojasFinder' );
-            $loja = $this->LojasFinder->clean()->key( $l['CodLoja'] )->get( true );
-
-            $l['tvalor'] = str_replace( [ ',' ], '.', $l['tvalor']);
-            $loja->setPontosAtuais( $loja->pontosatuais += $l['tvalor'] );
-            $loja->save();
-
-            // adiciona os pontos
-            $func->addPontos( $l['tponto'] );
-
-            // salva
-            $func->save();
 
             // verifica se carregou
             $venda = $this->VendasFinder->clean()->getVenda();
@@ -521,16 +508,27 @@ class Vendas extends MY_Controller {
             $venda->setProduto( $l['CodProduto'] );            
             $venda->setPontos( $l['tponto'] );
             $venda->setData( $data );
-            $venda->setLoja( $l['CodLoja'] );
+
+            if( $l['CodLoja'] ) $venda->setLoja( $l['CodLoja'] );
 
             // tenta salvar a venda
             if ( $venda->save() ) {
+               
+                if( $l['CodLoja'] ) {
 
-                // loja
-                $this->load->finder( 'LojasFinder' );
-                $loja = $this->LojasFinder->clean()->key($l['CodLoja'] )->get( true );
-                $loja->setPontosAtuais( $l['tvalor'] );
-                $loja->save();
+                    // carrega o finder da loja
+                    $this->load->finder( 'LojasFinder' );
+                    $loja = $this->LojasFinder->clean()->key( $l['CodLoja'] )->get( true );
+                    $l['tvalor'] = str_replace( [ ',' ], '.', $l['tvalor']);
+                    $loja->setPontosAtuais( $l['tvalor'] );
+                    $loja->save();
+                }
+
+                // adiciona os pontos
+                $func->addPontos( $l['tponto'] );
+
+                // salva
+                $func->save();
 
                 // grava o log
                 $this->LogsFinder->getLog()
