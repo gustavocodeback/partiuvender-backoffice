@@ -48,10 +48,6 @@ class Funcionarios extends MY_Controller {
                 'label' => 'Cargo',
                 'rules' => 'required'
             ], [
-                'field' => 'pontos',
-                'label' => 'Pontos',
-                'rules' => 'required'
-            ],  [
                 'field' => 'endereco',
                 'label' => 'Endereco',
                 'rules' => 'min_length[3]|trim'
@@ -75,11 +71,7 @@ class Funcionarios extends MY_Controller {
                 'field' => 'estado',
                 'label' => 'Estado',
                 'rules' => 'min_length[1]|trim'
-            ], [
-                'field' => 'neoCode',
-                'label' => 'neoCode',
-                'rules' => 'required'
-            ]
+            ], 
         ];
 
 

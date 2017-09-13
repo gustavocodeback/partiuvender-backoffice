@@ -34,7 +34,6 @@
                             class="form-control" 
                             id="pontos" 
                             name="pontos" 
-                            required
                             <?php if( $view->user->data['gid'] == '3') echo "disabled='disabled'"; ?>
                             value="<?php echo $funcionario ? $funcionario->pontos : 0; ?>"
                             placeholder="99">
