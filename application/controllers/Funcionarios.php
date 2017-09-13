@@ -136,11 +136,22 @@ class Funcionarios extends MY_Controller {
 
 		// renderiza o grid
 		->render( site_url( 'funcionarios/index' ) );
+
+        // monta url de exportacao
+        $export_url = site_url( 'funcionarios/exportar_planilha?' );
+
+        foreach ($_GET as $key => $value) {
+            if ( $key != 'page' ) {
+                $export_url .= $key .'=' .$value .'&';
+            }
+        }
+
+        $export_url = trim( $export_url, '&' );
 		
         // seta a url para adiciona
         $this->view->set( 'add_url', site_url( 'funcionarios/adicionar' ) )
         ->set( 'import_url', site_url( 'funcionarios/importar_planilha' ) )
-        ->set( 'export_url', site_url( 'funcionarios/exportar_planilha' ) );
+        ->set( 'export_url', $export_url );
 
 		// seta o titulo da pagina
 		$this->view->setTitle( 'Funcionários - listagem' )->render( 'grid' );
@@ -154,11 +165,24 @@ class Funcionarios extends MY_Controller {
     */
     public function exportar_planilha() {
 
+        // carrega os categorias
+        $lojas = $this->LojasFinder->filtro();
+
         header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Disposition: attachment; filename=FuncionariosExportação".date( 'H:i d-m-Y', time() ).".xls" );
 
         // faz a paginacao
+		// $this->FuncionariosFinder->clean()->exportar()
+        // ->paginate( 1, 0, false, false )
+        // faz a paginacao
 		$this->FuncionariosFinder->clean()->exportar()
+
+		// seta os filtros
+        ->addFilter( 'CPF', 'text' )
+        ->addFilter( 'NeoCode', 'text' )
+        ->addFilter( 'Nome', 'text', false, 'f' )
+        ->addFilter( 'CodLoja', 'select', $lojas, 'f' )
+		->filter()
         ->paginate( 1, 0, false, false )
 
         ->onApply( '*', function( $row, $key ) {
@@ -176,7 +200,6 @@ class Funcionarios extends MY_Controller {
             $pt = $f->getPontosQuiz( $row[$key] );
 			echo $pt;        
 		})
-        
 
 		// renderiza o grid
 		->render( site_url( 'funcionarios/index' ) );
